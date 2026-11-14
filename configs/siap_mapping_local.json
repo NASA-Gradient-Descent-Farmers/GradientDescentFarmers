@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source_id": "dgsiap_siap_district_mx",
+  "description": "Canonical column mapping for the SIAP 'Cierre agricola' municipal files (2003-2025). Each row already carries the official SIAP territorial hierarchy Idestado -> Idddr -> Idcader -> Idmunicipio, so no external municipality-to-district crosswalk is used.",
+  "files": {
+    "encoding": "latin-1",
+    "name_pattern": "^Cierre_agricola_mun_(\\d{4})\\.csv$",
+    "first_year": 2003,
+    "last_year": 2025,
+    "excluded_folders": ["Estatal (2000_2002)"]
+  },
+  "columns": {
+    "Anio": ["Anio"],
+    "Idestado": ["Idestado"],
+    "Nomestado": ["Nomestado"],
+    "Idddr": ["Idddr"],
+    "Nomddr": ["Nomddr"],
+    "Idcader": ["Idcader"],
+    "Nomcader": ["Nomcader"],
+    "Idmunicipio": ["Idmunicipio"],
+    "Nommunicipio": ["Nommunicipio"],
+    "Idciclo": ["Idciclo"],
+    "Nomcicloproductivo": ["Nomcicloproductivo"],
+    "Idmodalidad": ["Idmodalidad"],
+    "Nommodalidad": ["Nommodalidad"],
+    "Idunidadmedida": ["Idunidadmedida"],
+    "Nomunidad": ["Nomunidad"],
+    "Idcultivo": ["Idcultivo"],
+    "crop": ["Nomcultivo Sin Um", "Nomcultivo"],
+    "planted_ha": ["Sembrada"],
+    "harvested_ha": ["Cosechada"],
+    "damaged_ha": ["Siniestrada"],
+    "volume_t": ["Volumenproduccion"],
+    "reported_yield_t_ha": ["Rendimiento"],
+    "rural_price_mxn_t": ["Precio", "Preciomediorural"],
+    "production_value_mxn": ["Valorproduccion"]
+  },
+  "column_notes": {
+    "crop": "Nomcultivo in 2003-2014 and 2021-2025; 'Nomcultivo Sin Um' in 2015-2020. When both exist the unit-free name wins.",
+    "rural_price_mxn_t": "Precio in 2003-2020; Preciomediorural in 2021-2025. Current MXN per tonne.",
+    "reported_yield_t_ha": "Read for reference only. District yield is always recomputed as volume_t / harvested_ha."
+  },
+  "units": {
+    "accepted_unit_name": "Tonelada",
+    "accepted_unit_id": 200201,
+    "area": "ha",
+    "volume": "t",
+    "value": "MXN",
+    "price": "MXN/t"
+  },
+  "site_resolution": {
+    "method": "haversine",
+    "max_distance_km": 50
+  },
+  "pilot_sites": [
+    {
+      "site_id": "guasave_adolfo_ruiz_cortines",
+      "name": "Adolfo Ruiz Cortines, Guasave, Sinaloa",
+      "lat": 25.763611,
+      "lon": -108.861389,
+      "Idestado": 25,
+      "Nomestado": "Sinaloa",
+      "Idddr": 133,
+      "Nomddr": "Los Mochis",
+      "hierarchy_note": "Idmunicipio=11 Guasave, Idcader=8 Ruiz Cortinez, which belongs to Idddr=133 Los Mochis.",
+      "explicit_only_districts": [
+        {"Idddr": 134, "Nomddr": "Guasave"}
+      ]
+    },
+    {
+      "site_id": "cajeme_ciudad_obregon_sureste",
+      "name": "Zona agricola al sureste de Ciudad Obregon, Cajeme, Sonora",
+      "lat": 27.332202,
+      "lon": -110.162783,
+      "Idestado": 26,
+      "Nomestado": "Sonora",
+      "Idddr": 148,
+      "Nomddr": "Cajeme",
+      "hierarchy_note": "Contains Idmunicipio=18 Cajeme.",
+      "explicit_only_districts": []
+    },
+    {
+      "site_id": "valle_de_santiago",
+      "name": "Area agricola cercana a Valle de Santiago, Guanajuato",
+      "lat": 20.4243195,
+      "lon": -101.1466639,
+      "Idestado": 11,
+      "Nomestado": "Guanajuato",
+      "Idddr": 52,
+      "Nomddr": "Cortazar",
+      "hierarchy_note": "Contains Idmunicipio=42 Valle de Santiago, Idcader=7 Valle Santiago.",
+      "explicit_only_districts": []
+    }
+  ]
+}
