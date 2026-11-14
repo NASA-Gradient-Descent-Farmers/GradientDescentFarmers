@@ -17,6 +17,7 @@ tests/
   source_builder/
   model_builder/
   optimizer_builder/
+data/
 ```
 
 ## Empezar
