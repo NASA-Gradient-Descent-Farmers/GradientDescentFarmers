@@ -4,7 +4,7 @@ import types
 
 import pytest
 
-from farmadapt import auth as auth_module
+from gradientdescentfarmers.source_builder.core import auth as auth_module
 
 
 def _fake_earthaccess(monkeypatch, authenticated=True):
@@ -18,8 +18,8 @@ def _fake_earthaccess(monkeypatch, authenticated=True):
 
 def test_project_env_is_loaded_without_overwriting_shell(monkeypatch, tmp_path):
     root = tmp_path / "repo"
-    project = root / "farmadapt_v2"
-    package = project / "farmadapt"
+    project = root
+    package = project / "gradientdescentfarmers" / "source_builder" / "core"
     package.mkdir(parents=True)
     (project / ".env").write_text(
         "EARTHDATA_USERNAME=local-user\nEARTHDATA_PASSWORD=local-secret\n",
