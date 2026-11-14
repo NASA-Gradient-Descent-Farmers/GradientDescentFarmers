@@ -31,9 +31,12 @@ def _download(ctx: ProviderContext, short_name: str, version: str, start: str, e
         raise LookupError(f"no {short_name} granules found")
     folder = ctx.settings.cache_root / "earthdata" / subdir
     folder.mkdir(parents=True, exist_ok=True)
-    downloaded = earthaccess.download(found[:max_granules], local_path=str(folder))
-    # Earthaccess may also return .qa/.xml; these are not scientific HDF5.
-    return validate_local_hdf5(downloaded, required_groups=required_groups)
+    # Resumable, one-granule-at-a-time downloads to NEW paths. Never overwrite
+    # original cache objects, even when an HDF5 is truncated.
+    from .earthdata_recovery import GranuleRecovery
+    recover = GranuleRecovery(folder, required_groups=required_groups,
+                              retries=ctx.settings.retries)
+    return recover.acquire(earthaccess, found[:max_granules])
 
 
 def _read_rate(ds, index):
