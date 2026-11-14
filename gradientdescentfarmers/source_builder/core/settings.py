@@ -81,6 +81,7 @@ class BuilderSettings(BaseModel):
     cmip_model: str = "ACCESS-CM2"
     cmip_scenario: str = "ssp245"
     ee_project: str | None = None
+    modis_provider: str = Field(default="ornl", pattern=r"^(ornl|earth_engine)$")
     source_overrides: dict[str, bool] = Field(default_factory=dict)
     force_sources: bool = False
     input_files_root: Path = Path("./farm_inputs")
