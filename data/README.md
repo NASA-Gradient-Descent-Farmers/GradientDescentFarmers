@@ -6,6 +6,7 @@ README se versiona en Git; las descargas y datasets se excluyen.
 | Ruta | Qué contiene | Cuándo usarla |
 | --- | --- | --- |
 | `integrated_guanajuato/` | Dataset vigente, con manifiesto, tablas y reportes | Para consumir la entrega de Guanajuato |
+| `siap/` | CSV originales, tablas Parquet limpias, diccionario y manifiesto de producción agrícola SIAP | Consultar producción, rendimientos y precio medio rural por territorio/cultivo |
 | `cache/http/` | Respuestas HTTP reutilizables | Evitar repetir consultas |
 | `cache/soilgrids/` | Raster TIFF de suelo | Caché de adquisición |
 | `cache/earthdata/` | Gránulos originales MODIS, GPM y SMAP | Reanudar descargas; ocupa ~12.7 GiB en este ejemplo |
@@ -55,3 +56,10 @@ misma `cache_root=data/cache`: cada predio queda en
 `processed/<farm_id>/runs/<run_id>/`. La configuración de entrada vive en
 `resources/`, fuera de esta carpeta. Ver la
 [guía del builder](../gradientdescentfarmers/source_builder/README.md).
+
+## Datos regionales SIAP
+
+El módulo `gradientdescentfarmers.source_builder.siap` escribe en `data/siap/`
+por defecto. Conserva `raw/`, `parquet/`, `dictionary/` y `manifest.json`.
+`SIAP_DATA_DIR` permite usar otro directorio; en una VM debe apuntar a disco
+persistente. Ver la [guía SIAP](../gradientdescentfarmers/source_builder/siap/README.md).
