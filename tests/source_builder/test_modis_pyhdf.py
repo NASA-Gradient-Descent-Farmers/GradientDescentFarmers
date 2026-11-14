@@ -117,3 +117,23 @@ def test_recovery_hdf4_validation_uses_pyhdf_not_rasterio(tmp_path, monkeypatch)
     monkeypatch.setattr(modis, "list_science_datasets",
                         lambda file: {"250m 16 days NDVI": (4800, 4800)})
     assert GranuleRecovery(tmp_path, required_groups=()).check(path) == "valid"
+
+
+def test_real_pyhdf_sds_catalog_roundtrip(tmp_path):
+    """Exercise the actual HDF4 library, not only fake SDS objects."""
+    pytest.importorskip("pyhdf")
+    from pyhdf.SD import SD, SDC
+    path = tmp_path / "small_synthetic.hdf"
+    writer = SD(str(path), SDC.WRITE | SDC.CREATE)
+    ds = writer.create("sample", SDC.INT16, (2, 3))
+    ds.set(np.array([[1, 2, 3], [4, 5, 6]], dtype=np.int16))
+    ds.endaccess()
+    writer.end()
+    assert modis.list_science_datasets(path) == {"sample": (2, 3)}
+
+
+def test_malformed_hdf4_cache_is_invalid_not_exception(tmp_path):
+    pytest.importorskip("pyhdf")
+    path = tmp_path / "truncated.hdf"
+    path.write_bytes(b"Not HDF4" * 600)
+    assert GranuleRecovery(tmp_path, required_groups=()).check(path) == "invalid"
