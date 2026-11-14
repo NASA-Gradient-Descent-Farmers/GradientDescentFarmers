@@ -1,6 +1,6 @@
 # Guanajuato SourceBuilder — reproducible scientific data pipeline
 
-**Branch:** `daniel-sourcebuilder`. **Coordinates:** (20.4243195, -101.1466639), regional reference in Guanajuato, Mexico. **Not an observed farm.** The 1-ha field in `resources/guanajuato_reference.json` is a synthetic placeholder required by the input schema; no actual yields, management history or irrigation are asserted.
+**Branch:** `main` after team merge (develop further through feature branches). **Coordinates:** (20.4243195, -101.1466639), regional reference in Guanajuato, Mexico. **Not an observed farm.** The 1-ha field in `resources/guanajuato_reference.json` is a synthetic placeholder required by the input schema; no actual yields, management history or irrigation are asserted.
 
 This package migrates the scientific pipeline from `NASA-warm-up/farmadapt_v2/farmadapt/` into `gradientdescentfarmers/source_builder/core/`, keeping the original tests and domain schemas. It provides `NASAProfileSourceBuilder(SourceBuilder)` for the team's `Pipeline` contract.
 
@@ -42,7 +42,7 @@ python -m gradientdescentfarmers.source_builder --config resources/guanajuato_sm
 python -m gradientdescentfarmers.source_builder --config resources/guanajuato_full_day.json --run
 ```
 
-Never commit `.env`, `data/` or credential-bearing notebooks. Use `EARTHDATA_USERNAME` / `EARTHDATA_PASSWORD` or `EARTHDATA_TOKEN` in local `.env`. The old HDF5 `GranuleRecovery` helper is included but **not yet connected to `core/earthdata.py::_download`**; do not restart a large 48-granule download before fixing that.
+Never commit `.env`, `data/` or credential-bearing notebooks. Use `EARTHDATA_USERNAME` / `EARTHDATA_PASSWORD` or `EARTHDATA_TOKEN` in `gradientdescentfarmers/source_builder/.env` (preferred local setup) or the repository-root `.env`; either location is ignored by Git. Existing exported environment variables always take precedence. `GranuleRecovery` is wired into `core/earthdata.py::_download` for GPM/SMAP and supports HDF4 MODIS through `pyhdf`. A 48-granule GPM day must still pass live smoke, unique-slot QA and coverage checks before being treated as valid.
 
 Use `python -m gradientdescentfarmers.source_builder.core.audit --root data/processed --sites guanajuato_valle_demo --output data/phase1_guanajuato_audit.json` after baseline. Audit output must be reviewed: a `partial` state can be legitimate, and no synthetic value is scientific evidence.
 
