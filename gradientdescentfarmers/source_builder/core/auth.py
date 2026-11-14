@@ -1,9 +1,7 @@
-"""NASA Earthdata Login configuration for GPM and SMAP.
+"""NASA Earthdata Login configuration for MODIS, GPM and SMAP.
 
-Precedence: already-exported process environment > farmadapt_v2/.env >
-repository-root .env > current-working-directory .env. No credentials are logged.
-This module is intentionally separate from the acquisition providers so notebooks,
-CLI jobs and future APIs share the same authentication policy.
+Credential precedence: existing process environment > source_builder/.env >
+repository-root .env > current-working-directory .env. Never log secrets.
 """
 from __future__ import annotations
 
@@ -17,13 +15,13 @@ from dotenv import load_dotenv
 def load_project_env() -> list[Path]:
     """Load existing .env files without overwriting environment variables.
 
-    The project-local .env takes precedence over a repository-root .env; values
-    already exported by the shell or deployment environment always win.
-    Returns paths found for diagnostics, never values.
+    The source_builder-local .env takes precedence over a repository-root .env;
+    values exported by the shell or deployment always win. Paths are returned
+    for diagnostics but secret values are never returned or logged.
     """
-    project_root = Path(__file__).resolve().parents[3]
-    repo_root = project_root.parent
-    paths = [project_root / ".env", repo_root / ".env", Path.cwd() / ".env"]
+    source_root = Path(__file__).resolve().parents[1]
+    repository_root = Path(__file__).resolve().parents[3]
+    paths = [source_root / ".env", repository_root / ".env", Path.cwd() / ".env"]
     loaded: list[Path] = []
     seen: set[Path] = set()
     for path in paths:
@@ -68,7 +66,8 @@ def login_earthdata():
         except Exception as exc:
             raise RuntimeError(
                 "NASA Earthdata credentials not found. Set EARTHDATA_USERNAME and "
-                "EARTHDATA_PASSWORD (or EARTHDATA_TOKEN) in farmadapt_v2/.env "
+                "EARTHDATA_PASSWORD (or EARTHDATA_TOKEN) in "
+                "gradientdescentfarmers/source_builder/.env, repository-root .env, "
                 "or the process environment. Interactive prompts require a terminal."
             ) from exc
 
