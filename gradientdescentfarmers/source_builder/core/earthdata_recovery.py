@@ -32,7 +32,7 @@ class GranuleRecovery:
                 candidates.append(name)
         names = list(dict.fromkeys(candidates))
         if len(names) != 1:
-            raise ValueError("Expected exactly one HDF5 science file link per CMR granule")
+            raise ValueError("Expected exactly one HDF science file link per CMR granule")
         return names[0]
 
     def check(self, path: Path) -> str:
@@ -45,11 +45,9 @@ class GranuleRecovery:
             if not path.is_file() or path.stat().st_size < 4096:
                 return "invalid"
             if path.suffix.lower() == ".hdf":
-                # Native LP DAAC MODIS HDF4; do not pass this format to h5py.
-                # HDF4 support is required from the runtime GDAL/rasterio.
-                import rasterio
-                with rasterio.open(path) as ds:
-                    return "valid" if ds.subdatasets else "invalid"
+                # NASA LP DAAC HDF4 is not HDF5; validate its SDS via pyhdf.
+                from .modis_earthaccess import list_science_datasets
+                return "valid" if list_science_datasets(path) else "invalid"
             if not h5py.is_hdf5(str(path)):
                 return "invalid"
             with h5py.File(path, "r") as src:
