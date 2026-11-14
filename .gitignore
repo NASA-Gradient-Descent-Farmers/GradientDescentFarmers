@@ -9,7 +9,8 @@ __pycache__/
 *.pyc
 
 # Raw / downloaded data
-data/
+data/*
+!data/README.md
 
 # LaTeX build files
 *.aux
