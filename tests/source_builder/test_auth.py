@@ -18,8 +18,8 @@ def _fake_earthaccess(monkeypatch, authenticated=True):
 
 def test_project_env_is_loaded_without_overwriting_shell(monkeypatch, tmp_path):
     root = tmp_path / "repo"
-    project = root
-    package = project / "gradientdescentfarmers" / "source_builder" / "core"
+    project = root / "gradientdescentfarmers" / "source_builder"
+    package = project / "core"
     package.mkdir(parents=True)
     (project / ".env").write_text(
         "EARTHDATA_USERNAME=local-user\nEARTHDATA_PASSWORD=local-secret\n",
@@ -87,3 +87,61 @@ def test_rejected_credentials_do_not_trigger_interactive_fallback(monkeypatch):
     with pytest.raises(PermissionError, match="NASA Earthdata authentication failed"):
         auth_module.login_earthdata()
     assert calls == [{"strategy": "environment"}]
+
+
+def test_prefers_source_builder_env_over_repo_env(monkeypatch, tmp_path):
+    root = tmp_path / "repo"
+    source = root / "gradientdescentfarmers" / "source_builder"
+    core = source / "core"
+    core.mkdir(parents=True)
+    (root / ".env").write_text(
+        "EARTHDATA_USERNAME=root-user\nEARTHDATA_PASSWORD=root-secret\n",
+        encoding="utf-8",
+    )
+    (source / ".env").write_text(
+        "EARTHDATA_USERNAME=source-user\nEARTHDATA_PASSWORD=source-secret\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(auth_module, "__file__", str(core / "auth.py"))
+    monkeypatch.chdir(root)
+    for key in ("EARTHDATA_USERNAME", "EARTHDATA_PASSWORD", "EARTHDATA_TOKEN"):
+        monkeypatch.delenv(key, raising=False)
+    loaded = auth_module.load_project_env()
+    assert loaded[0] == source / ".env"
+    assert loaded[1] == root / ".env"
+    assert auth_module.os.environ["EARTHDATA_USERNAME"] == "source-user"
+    assert auth_module.os.environ["EARTHDATA_PASSWORD"] == "source-secret"
+
+
+def test_root_env_fallback_when_source_env_missing(monkeypatch, tmp_path):
+    root = tmp_path / "repo"
+    core = root / "gradientdescentfarmers" / "source_builder" / "core"
+    core.mkdir(parents=True)
+    (root / ".env").write_text(
+        "EARTHDATA_USERNAME=root-user\nEARTHDATA_PASSWORD=root-secret\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(auth_module, "__file__", str(core / "auth.py"))
+    monkeypatch.chdir(root)
+    for key in ("EARTHDATA_USERNAME", "EARTHDATA_PASSWORD", "EARTHDATA_TOKEN"):
+        monkeypatch.delenv(key, raising=False)
+    loaded = auth_module.load_project_env()
+    assert loaded == [root / ".env"]
+    assert auth_module.os.environ["EARTHDATA_USERNAME"] == "root-user"
+
+
+def test_exported_environment_takes_precedence_over_dotenv(monkeypatch, tmp_path):
+    root = tmp_path / "repo"
+    core = root / "gradientdescentfarmers" / "source_builder" / "core"
+    core.mkdir(parents=True)
+    (core.parent / ".env").write_text(
+        "EARTHDATA_USERNAME=file-user\nEARTHDATA_PASSWORD=file-secret\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(auth_module, "__file__", str(core / "auth.py"))
+    monkeypatch.chdir(root)
+    monkeypatch.setenv("EARTHDATA_USERNAME", "shell-user")
+    monkeypatch.setenv("EARTHDATA_PASSWORD", "shell-secret")
+    auth_module.load_project_env()
+    assert auth_module.os.environ["EARTHDATA_USERNAME"] == "shell-user"
+    assert auth_module.os.environ["EARTHDATA_PASSWORD"] == "shell-secret"
