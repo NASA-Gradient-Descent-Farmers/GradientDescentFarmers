@@ -69,7 +69,7 @@
     },
     {
       "site_id": "cajeme_ciudad_obregon_sureste",
-      "name": "Zona agricola al sureste de Ciudad Obregon, Cajeme, Sonora",
+      "name": "Farmland southeast of Ciudad Obregon, Cajeme, Sonora",
       "lat": 27.332202,
       "lon": -110.162783,
       "Idestado": 26,
@@ -81,7 +81,7 @@
     },
     {
       "site_id": "valle_de_santiago",
-      "name": "Area agricola cercana a Valle de Santiago, Guanajuato",
+      "name": "Farmland near Valle de Santiago, Guanajuato",
       "lat": 20.4243195,
       "lon": -101.1466639,
       "Idestado": 11,
