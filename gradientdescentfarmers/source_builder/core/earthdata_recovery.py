@@ -47,7 +47,12 @@ class GranuleRecovery:
             if path.suffix.lower() == ".hdf":
                 # NASA LP DAAC HDF4 is not HDF5; validate its SDS via pyhdf.
                 from .modis_earthaccess import list_science_datasets
-                return "valid" if list_science_datasets(path) else "invalid"
+                from pyhdf.error import HDF4Error
+                try:
+                    return "valid" if list_science_datasets(path) else "invalid"
+                except HDF4Error:
+                    # A truncated HDF4 file is invalid, not an uncaught crash.
+                    return "invalid"
             if not h5py.is_hdf5(str(path)):
                 return "invalid"
             with h5py.File(path, "r") as src:
