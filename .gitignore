@@ -1,3 +1,29 @@
+.DS_Store
+
+# Credentials
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Raw / downloaded data
+data/
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Personal tool settings (not shared)
+.claude/settings.local.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
