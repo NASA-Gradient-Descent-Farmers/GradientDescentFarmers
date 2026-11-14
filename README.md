@@ -1,18 +1,18 @@
 # GradientDescentFarmers
 
-Plantilla base para el proyecto NASA Space Apps. Requiere Python 3.10 o superior y no instala librerías de ML: cada implementación puede escoger su propio framework.
+Base template for the NASA Space Apps project. Requires Python 3.10 or higher and does not install ML libraries: each implementation can choose its own framework.
 
-## Estructura
+## Structure
 
 ```text
 gradientdescentfarmers/
-  app.py                 # configuración y orden de integración
-  source_builder/        # carga o preparación de datos
-  model_builder/         # construcción del modelo
-  optimizer_builder/     # construcción del optimizador
-  version.py             # versión única del paquete
+  app.py                 # configuration and integration order
+  source_builder/        # data loading or preparation
+  model_builder/         # model construction
+  optimizer_builder/     # optimizer construction
+  version.py             # single package version
 resources/
-  application.conf       # esquema JSON compartido
+  application.conf       # shared JSON schema
 tests/
   source_builder/
   model_builder/
@@ -20,20 +20,20 @@ tests/
 data/
 ```
 
-## Empezar
+## Getting started
 
-Desde la raíz del repositorio:
+From the repository root:
 
 ```bash
 python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 ```
 
-La configuración compartida tiene las secciones `source`, `model` y `optimizer`. Cada equipo puede crear un archivo propio, por ejemplo `resources/experimento.local.conf`, sin editar el archivo base. Los archivos `*.local.conf` se ignoran en Git.
+The shared configuration has the sections `source`, `model` and `optimizer`. Each team can create its own file, for example `resources/experiment.local.conf`, without editing the base file. `*.local.conf` files are ignored by Git.
 
-## Contratos entre módulos
+## Contracts between modules
 
-Cada módulo exporta una clase base (`SourceBuilder`, `ModelBuilder`, `OptimizerBuilder`) desde su `__init__.py`. Las implementaciones se agregan dentro del módulo correspondiente. El flujo común es:
+Each module exports a base class (`SourceBuilder`, `ModelBuilder`, `OptimizerBuilder`) from its `__init__.py`. Implementations are added inside the corresponding module. The common flow is:
 
 ```python
 from gradientdescentfarmers.app import Pipeline, PipelineConfig
@@ -44,34 +44,34 @@ from gradientdescentfarmers.optimizer_builder import OptimizerBuilder
 
 class MySource(SourceBuilder):
     def build(self, config):
-        return ...  # datos preparados
+        return ...  # prepared data
 
 
 class MyModel(ModelBuilder):
     def build(self, source, config):
-        return ...  # modelo construido a partir de los datos
+        return ...  # model built from the data
 
 
 class MyOptimizer(OptimizerBuilder):
     def build(self, model, config):
-        return ...  # optimizador configurado para el modelo
+        return ...  # optimizer configured for the model
 
 
 config = PipelineConfig.from_file("resources/application.conf")
 components = Pipeline(MySource(), MyModel(), MyOptimizer()).build(config)
 ```
 
-`Pipeline.build` arma los tres componentes; el entrenamiento y la evaluación pertenecen a la implementación que use esos componentes. El tipo concreto de datos y modelo se acuerda entre quienes integren esas ramas.
+`Pipeline.build` assembles the three components; training and evaluation belong to the implementation that uses those components. The concrete data and model types are agreed upon by whoever integrates those branches.
 
-## Versión del paquete
+## Package version
 
-La versión del paquete se cambia **solo** en `gradientdescentfarmers/version.py`; `pyproject.toml` la toma de ahí.
+The package version is changed **only** in `gradientdescentfarmers/version.py`; `pyproject.toml` takes it from there.
 
-## Trabajo en ramas
+## Working with branches
 
-1. Crea tu rama desde esta plantilla en `main`.
-2. Agrega implementaciones y pruebas en el módulo que te corresponda. Evita editar `base.py`, `app.py` y `application.conf` salvo que el contrato común realmente deba cambiar.
-3. Mantén datos, pesos y archivos de configuración local fuera de Git; usa rutas propias para cada experimento.
-4. Antes del pull request, integra los cambios recientes de `main` en tu rama y ejecuta `python3 -m unittest discover -s tests -v`.
+1. Create your branch from this template on `main`.
+2. Add implementations and tests in the module assigned to you. Avoid editing `base.py`, `app.py` and `application.conf` unless the common contract really needs to change.
+3. Keep data, weights and local configuration files out of Git; use separate paths for each experiment.
+4. Before the pull request, merge the latest changes from `main` into your branch and run `python3 -m unittest discover -s tests -v`.
 
-Cuando el equipo acuerde implementaciones concretas, pueden crear un punto de entrada que las instancie y ejecute entrenamiento, evaluación y exportación.
+Once the team agrees on concrete implementations, they can create an entry point that instantiates them and runs training, evaluation and export.
