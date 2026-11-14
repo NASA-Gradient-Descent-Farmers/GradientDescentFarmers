@@ -1,5 +1,4 @@
-"""Implementations that prepare a data source for the pipeline."""
-
+"""Scientific data pipeline implementations of the team's SourceBuilder contract."""
 from .base import SourceBuilder
-
-__all__ = ["SourceBuilder"]
+from .adapter import NASAProfileSourceBuilder
+__all__ = ["SourceBuilder","NASAProfileSourceBuilder"]

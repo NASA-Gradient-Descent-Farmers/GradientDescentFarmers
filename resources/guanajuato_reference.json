@@ -1,0 +1,28 @@
+{
+  "farm_id": "guanajuato_valle_demo",
+  "mode": "basic",
+  "latitude": 20.4243195,
+  "longitude": -101.1466639,
+  "country_iso3": "MEX",
+  "fields": [
+    {
+      "field_id": "reference_plot_demo",
+      "area_ha": 1,
+      "boundary_geojson": null
+    }
+  ],
+  "crop_history": [],
+  "irrigation": "unknown",
+  "soil_tests": [],
+  "crop_preferences": [],
+  "objective_weights": {
+    "profit": 30,
+    "downside_risk": 20,
+    "water": 15,
+    "soil_health": 20,
+    "climate_resilience": 15
+  },
+  "cropping_mode": "both",
+  "language": "es",
+  "farmer_notes": "Regional coordinate only; field area 1 ha is a synthetic required placeholder. No farmer, field, yield, irrigation or crop history has been verified."
+}

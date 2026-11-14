@@ -1,0 +1,21 @@
+{
+  "source_overrides": {
+    "nasa_power": true,
+    "srtm": true,
+    "soilgrids_wcs": true,
+    "modis_mod13q1": true,
+    "modis_mod11a2": true,
+    "modis_mod16a2gf": true,
+    "worldbank_agriculture": true,
+    "gpm_imerg_v07": false,
+    "smap_l4": false
+  },
+  "weather_start": "2024-01-01",
+  "weather_end": "2025-12-31",
+  "modis_start": "2024-01-01",
+  "modis_end": "2025-12-31",
+  "soil_scope": "pilot",
+  "soil_max_requests": 24,
+  "cache_enabled": true,
+  "export_format": "csv"
+}

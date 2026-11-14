@@ -1,0 +1,29 @@
+name: SourceBuilder scientific regression
+on:
+  push:
+    branches: [daniel-sourcebuilder]
+    paths:
+      - 'gradientdescentfarmers/source_builder/**'
+      - 'tests/source_builder/**'
+      - 'tests/conftest.py'
+      - 'tests/test_scaffold.py'
+      - 'resources/guanajuato*.json'
+      - 'pyproject.toml'
+      - '.github/workflows/sourcebuilder-tests.yml'
+  pull_request:
+    paths:
+      - 'gradientdescentfarmers/source_builder/**'
+      - 'tests/source_builder/**'
+      - 'tests/conftest.py'
+      - 'resources/guanajuato*.json'
+      - 'pyproject.toml'
+jobs:
+  offline-scientific:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -e '.[source,source-test,source-modis]'
+      - run: python -m pytest tests/source_builder tests/test_scaffold.py -q

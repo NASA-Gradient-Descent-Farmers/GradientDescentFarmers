@@ -1,0 +1,21 @@
+{
+  "source_overrides": {
+    "nasa_power": false,
+    "srtm": false,
+    "soilgrids_wcs": false,
+    "modis_mod13q1": false,
+    "modis_mod11a2": false,
+    "modis_mod16a2gf": false,
+    "worldbank_agriculture": false,
+    "gpm_imerg_v07": true,
+    "smap_l4": true
+  },
+  "gpm_start": "2024-07-01T00:00:00",
+  "gpm_end": "2024-07-01T00:59:59",
+  "gpm_max_granules": 2,
+  "smap_start": "2024-07-01",
+  "smap_end": "2024-07-02",
+  "smap_max_granules": 2,
+  "cache_enabled": true,
+  "export_format": "csv"
+}
