@@ -55,3 +55,11 @@ Use `python -m gradientdescentfarmers.source_builder.core.audit --root data/proc
 remains a SoilGrids dependency, but its HDF4 driver is **not** required for
 MODIS. See `docs/MODIS_EARTHACCESS.md`. Do not interpret pilot (1–2 granule)
 coverage as a complete MODIS time series.
+
+## WOFOST handoff for the team
+
+Read [`docs/WOFOST_DATA_HANDOFF.md`](docs/WOFOST_DATA_HANDOFF.md) for the
+full inventory of data sources, local `data/` paths, source-to-PCSE weather
+variable mapping, required crop/site/agromanagement inputs, QA, and current
+Guanajuato run statuses. An integrated scientific inventory is **not** an
+approved WOFOST PP/WLP simulation input.
