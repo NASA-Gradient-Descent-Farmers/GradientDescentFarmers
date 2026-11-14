@@ -248,3 +248,9 @@ El aviso deprecado `DataGranule.size()` de `earthaccess` es un `FutureWarning` d
 - [GUANAJUATO_INTEGRATED_RUN.md](GUANAJUATO_INTEGRATED_RUN.md) — comandos del run integral.
 - [PCSE Code Documentation](https://pcse.readthedocs.io/en/stable/code.html) — campos de `WeatherDataContainer`.
 - [PCSE Reference Guide](https://pcse.readthedocs.io/en/stable/reference_guide.html) — proveedores de parámetros de cultivo y clases del modelo.
+
+## Ruta alternativa: dataset WOFOST ligero (sin HDF)
+
+Ante restricciones de almacenamiento, **priorizar** [GUANAJUATO_WOFOST_LIGHT_RUN.md](GUANAJUATO_WOFOST_LIGHT_RUN.md).
+Esta guía contiene el comando limitado a NASA POWER, SRTM y SoilGrids, el gate científico `wofost_source_report.json`
+y la subida de un solo run versionado a GCS. Las fuentes MODIS/GPM/SMAP permanecen pendientes para integración complementaria.
