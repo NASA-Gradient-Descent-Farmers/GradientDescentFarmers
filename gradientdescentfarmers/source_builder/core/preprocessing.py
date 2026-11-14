@@ -54,7 +54,8 @@ def standardize_mod11(frame: pd.DataFrame):
 
 def standardize_mod16(frame:pd.DataFrame):
     d=frame[["date","modis_date","farm_id"]].copy()
-    d["date"]=pd.to_datetime(d.date)
+    # Uniform tz-naive UTC acquisition dates for the 8-day/year-end arithmetic.
+    d["date"]=pd.to_datetime(d.date, utc=True).dt.tz_localize(None)
     d["et_qc"]=pd.to_numeric(frame["ET_QC_500m"],errors="coerce")
     d["modland_qa"]=_bits(d.et_qc,0,1)
     d["cloud_state"]=_bits(d.et_qc,3,3)
