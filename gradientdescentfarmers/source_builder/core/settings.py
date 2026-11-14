@@ -68,6 +68,8 @@ class BuilderSettings(BaseModel):
     weather_end: date = date(2025, 12, 31)
     modis_start: date = date(2024, 1, 1)
     modis_end: date = date(2025, 12, 31)
+    modis_provider: str = Field(default="ornl", pattern=r"^(ornl|earthaccess)$")
+    modis_max_granules: int = Field(default=3, ge=1, le=300)
     gpm_start: str = "2024-07-01T00:00:00"
     gpm_end: str = "2024-07-01T23:59:59"
     gpm_max_granules: int = Field(default=48, ge=1, le=1000)

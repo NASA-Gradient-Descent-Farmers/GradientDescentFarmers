@@ -133,7 +133,7 @@ def get_modis_earthaccess(ctx: ProviderContext, product: str) -> ProviderPayload
             "requested_max_granules": settings.modis_max_granules,
         },
         warnings=(
-            ["Pilot subset only: not continuous two-year MODIS coverage"]
-            if len(df) < 20 else []
+            ["CMR query reached the requested max granules; completeness not established"]
+            if len(granules) >= settings.modis_max_granules else []
         ),
     )

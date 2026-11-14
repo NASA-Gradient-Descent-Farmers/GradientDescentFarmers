@@ -69,6 +69,14 @@ class FarmProfileBuilder:
         from .earth_engine import get_grace, get_cmip, get_landcover
         funcs.update({"gpm_imerg_v07":get_gpm,"smap_l4":get_smap,"grace_fo_mascon":get_grace,
                       "nex_gddp_cmip6":get_cmip,"modis_landcover":get_landcover})
+        if self.settings.modis_provider == "earthaccess":
+            from .modis_earthaccess import get_modis_earthaccess
+            for key, product in (
+                ("modis_mod13q1", "MOD13Q1"),
+                ("modis_mod11a2", "MOD11A2"),
+                ("modis_mod16a2gf", "MOD16A2GF"),
+            ):
+                funcs[key] = lambda ctx, product=product: get_modis_earthaccess(ctx, product)
         if providers:
             unknown=set(providers)-set(SOURCE_TABLES)
             if unknown: raise ValueError(f"unknown injected provider(s): {sorted(unknown)}")
@@ -109,7 +117,8 @@ class FarmProfileBuilder:
         for source in SOURCE_TABLES:
             enabled=self.settings.enabled(source,self.farmer.mode)
             base=_metadata_defaults(source)
-            record=SourceRecord(source=source,provider=base["provider"],enabled=enabled,
+            provider_name = ("NASA LP DAAC via earthaccess" if source.startswith("modis_mod") and self.settings.modis_provider=="earthaccess" else base["provider"])
+            record=SourceRecord(source=source,provider=provider_name,enabled=enabled,
                                 status=SourceStatus.NOT_REQUESTED if not enabled else SourceStatus.MISSING,
                                 alternative_providers=base["alternatives"])
             if not enabled:

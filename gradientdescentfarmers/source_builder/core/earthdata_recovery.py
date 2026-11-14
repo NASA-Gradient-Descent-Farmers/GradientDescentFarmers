@@ -26,7 +26,7 @@ class GranuleRecovery:
         for link in links:
             parsed = urlparse(link)
             name = unquote(parsed.path.rsplit("/", 1)[-1])
-            if parsed.scheme == "https" and name.lower().endswith((".h5", ".hdf5")):
+            if parsed.scheme == "https" and name.lower().endswith((".h5", ".hdf5", ".hdf")):
                 if name != Path(name).name or "/" in name or "\\" in name:
                     raise ValueError("Unsafe CMR filename")
                 candidates.append(name)
@@ -44,6 +44,12 @@ class GranuleRecovery:
         try:
             if not path.is_file() or path.stat().st_size < 4096:
                 return "invalid"
+            if path.suffix.lower() == ".hdf":
+                # Native LP DAAC MODIS HDF4; do not pass this format to h5py.
+                # HDF4 support is required from the runtime GDAL/rasterio.
+                import rasterio
+                with rasterio.open(path) as ds:
+                    return "valid" if ds.subdatasets else "invalid"
             if not h5py.is_hdf5(str(path)):
                 return "invalid"
             with h5py.File(path, "r") as src:
