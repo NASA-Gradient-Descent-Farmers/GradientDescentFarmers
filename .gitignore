@@ -216,5 +216,7 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+resources/*.local.conf
+
 # Streamlit
 .streamlit/secrets.toml
