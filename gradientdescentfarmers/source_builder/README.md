@@ -46,7 +46,7 @@ Never commit `.env`, `data/` or credential-bearing notebooks. Use `EARTHDATA_USE
 
 Use `python -m gradientdescentfarmers.source_builder.core.audit --root data/processed --sites guanajuato_valle_demo --output data/phase1_guanajuato_audit.json` after baseline. Audit output must be reviewed: a `partial` state can be legitimate, and no synthetic value is scientific evidence.
 
-**Status:** migration code committed; Guanajuato remote runs, GPM 48/48, and independent scientific field validation are **pending**. Offline regression tests validate code behavior only.
+**Status (2026-11-14):** Guanajuato integrated run `67b66942681a4214` passed manifest integrity and environmental QA: 731 POWER days, MODIS calendars 46/92/92, GPM 48/48 exact UTC slots and a two-granule SMAP snapshot. `build_state=partial` preserves MODIS QA gaps; no enabled source has an error. See [the verified run and delivery location](docs/GUANAJUATO_INTEGRATED_RUN.md). PCSE input adaptation and independent scientific field validation remain pending. Offline regression tests validate code behavior only.
 
 ## MODIS native HDF4 without GDAL HDF4
 

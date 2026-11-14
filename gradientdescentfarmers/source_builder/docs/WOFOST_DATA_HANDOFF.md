@@ -3,7 +3,7 @@
 **Proyecto:** GradientDescentFarmers / FarmAdapt · **Módulo:** `gradientdescentfarmers/source_builder/`  
 **Farm ID:** `guanajuato_valle_demo` · **Punto de referencia:** 20.4243195, -101.1466639 (Guanajuato, México)  
 **Contrato:** `FarmProfile` versión 2.0.0, con `run_id`, tablas separadas, QA, unidades, procedencia y SHA-256.  
-**Estado:** las pruebas offline del código se aprobaron; el run **integral** todavía no se ha reportado como ejecutado. Esta guía sirve para que el equipo WOFOST avance en paralelo.
+**Estado (2026-11-14):** run integral `67b66942681a4214` ejecutado y auditado: integridad y QA ambiental aprobadas. `build_state=partial` conserva faltantes de QA en MODIS; los calendarios están completos y no hay fuentes habilitadas con error. La preparación de entradas PCSE sigue a cargo del equipo WOFOST.
 
 > **Importante:** Guanajuato es una ubicación de referencia, no una parcela georreferenciada. El campo de **1 ha es un placeholder sintético** requerido por el esquema. No hay especie, variedad, fecha de siembra, rendimiento, riego ni costos observados que podamos afirmar como datos reales.
 
@@ -234,7 +234,26 @@ El equipo de datos entregará como mínimo el directorio versionado `runs/<RUN_I
 
 ## 8. Estado de los runs y límites
 
-A fecha de esta guía, los resultados confirmados por la ejecución local son: POWER/SRTM/SoilGrids disponibles en el baseline, World Bank recuperado, MODIS piloto en las tres colecciones y **smoke GPM `partial` + SMAP `available`** (run `2d18a644f624482e`). Ningún resultado del **GPM 48/48** ni del **run integrado** se ha confirmado todavía. No presentar como entregables finales archivos que no se hayan auditado realmente.
+El run integral **`67b66942681a4214`** pasó la auditoría el 14 de noviembre de 2026:
+
+- **Integridad y QA:** hashes correctos y las 16 tablas exportadas con QA aprobada.
+- **POWER / terreno / suelo:** 731 días consecutivos de 2024–2025, cinco muestras SRTM y las 24 combinaciones SoilGrids del piloto.
+- **MODIS:** calendarios completos de 46/92/92 composiciones; pares utilizables tras QA: 41 NDVI/EVI, 67 LST día/noche y 79 ET/PET. `partial` describe estos faltantes de calidad, sin imputación.
+- **GPM / SMAP / World Bank:** un día UTC con 48/48 intervalos válidos, snapshot SMAP de dos gránulos y 192 registros de contexto nacional.
+- **Commit de adquisición:** `396f2968e81678a099e13d104e2ac3fd077db06d`. Se conserva `e07e32b` como referencia del intento interrumpido; el código de adquisición y su configuración integral no cambiaron entre ambos.
+
+Directorio local: `data/integrated_guanajuato/guanajuato_valle_demo/runs/67b66942681a4214/`.
+Destino de entrega: `gs://data_dump_samples/farm_profiles/guanajuato_valle_demo/runs/67b66942681a4214/`.
+El paquete contiene el manifiesto original, tablas, reportes QA, procedencia de
+ejecución y `SHA256SUMS`. `gcs_upload_receipt.json` confirma la transferencia
+solo después de verificar el SHA-256 de todos los archivos remotos. Ver el
+[inventario del run](GUANAJUATO_INTEGRATED_RUN.md).
+
+El smoke histórico `2d18a644f624482e` sigue siendo parcial para GPM y no debe
+confundirse con este run integral. La entrega ambiental aprobada todavía no
+incluye un `WeatherDataProvider` PCSE, parámetros de cultivar/sitio, plan futuro
+de manejo ni la hidráulica/agua inicial de WLP. No constituye una simulación
+ni una validación de rendimientos.
 
 El aviso deprecado `DataGranule.size()` de `earthaccess` es un `FutureWarning` de la biblioteca, **no** un error de archivo, fuente ni QA.
 
@@ -253,4 +272,4 @@ El aviso deprecado `DataGranule.size()` de `earthaccess` es un `FutureWarning` d
 
 Ante restricciones de almacenamiento, **priorizar** [GUANAJUATO_WOFOST_LIGHT_RUN.md](GUANAJUATO_WOFOST_LIGHT_RUN.md).
 Esta guía contiene el comando limitado a NASA POWER, SRTM y SoilGrids, el gate científico `wofost_source_report.json`
-y la subida de un solo run versionado a GCS. Las fuentes MODIS/GPM/SMAP permanecen pendientes para integración complementaria.
+y la subida de un solo run versionado a GCS. MODIS/GPM/SMAP están excluidos de esa alternativa ligera; sí están incluidos en el run integral auditado descrito arriba.
