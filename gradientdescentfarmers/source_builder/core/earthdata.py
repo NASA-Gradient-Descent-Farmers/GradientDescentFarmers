@@ -102,7 +102,21 @@ def gpm_daily(half_hourly: pd.DataFrame):
         valid_slots=("precip_30min_mm","count"),
         precip_sum_valid_mm=("precip_30min_mm",lambda x:x.sum(min_count=1)),
         max_30min_mm=("precip_30min_mm","max"))
-    out["complete_48_slots"] = out.slots.eq(48) & out.valid_slots.eq(48)
+    # Count alone is insufficient: require the exact UTC 00:00, 00:30, ...
+    # 23:30 set. This rejects shifted/irregular granules and missing slots.
+    actual = frame.groupby("date_utc")["datetime_utc"].apply(
+        lambda stamps: set(pd.to_datetime(stamps, utc=True))
+    )
+    expected = {
+        day: set(pd.date_range(day, periods=48, freq="30min", tz="UTC"))
+        for day in out["date_utc"]
+    }
+    out["exact_utc_half_hours"] = out["date_utc"].map(
+        lambda day: actual[day] == expected[day]
+    )
+    out["complete_48_slots"] = (
+        out.slots.eq(48) & out.valid_slots.eq(48) & out.exact_utc_half_hours
+    )
     out["precip_total_mm"] = out.precip_sum_valid_mm.where(out.complete_48_slots)
     return out
 
