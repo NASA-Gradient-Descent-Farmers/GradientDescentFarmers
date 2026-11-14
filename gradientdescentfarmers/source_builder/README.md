@@ -26,7 +26,7 @@ See [DATA_PIPELINE](docs/DATA_PIPELINE.md), [FARM_PROFILE_CONTRACT](docs/FARM_PR
 Requires Python 3.11 for the scientific components.
 
 ```bash
-python -m pip install -e '.[source,source-test]'
+python -m pip install -e '.[source,source-test,source-modis]'
 python -m pytest tests/source_builder tests/test_scaffold.py -q
 
 # Preview (no remote data acquisition)
@@ -47,3 +47,11 @@ Never commit `.env`, `data/` or credential-bearing notebooks. Use `EARTHDATA_USE
 Use `python -m gradientdescentfarmers.source_builder.core.audit --root data/processed --sites guanajuato_valle_demo --output data/phase1_guanajuato_audit.json` after baseline. Audit output must be reviewed: a `partial` state can be legitimate, and no synthetic value is scientific evidence.
 
 **Status:** migration code committed; Guanajuato remote runs, GPM 48/48, and independent scientific field validation are **pending**. Offline regression tests validate code behavior only.
+
+## MODIS native HDF4 without GDAL HDF4
+
+`gradientdescentfarmers/source_builder/discovery.ipynb` is an opt-in
+`earthaccess` + `pyhdf` + `pyproj` inspection notebook. Rasterio
+remains a SoilGrids dependency, but its HDF4 driver is **not** required for
+MODIS. See `docs/MODIS_EARTHACCESS.md`. Do not interpret pilot (1–2 granule)
+coverage as a complete MODIS time series.

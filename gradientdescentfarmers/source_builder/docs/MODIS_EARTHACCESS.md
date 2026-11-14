@@ -9,19 +9,28 @@ The source is explicitly configured as `modis_provider: earthaccess`.
 1. CMR spatial/temporal search for MOD13Q1.061, MOD11A2.061 and MOD16A2GF.061.
 2. Download native HDF4 granules with `earthaccess` into
    `data/cache/earthdata/modis/<product>/recovery/attempt-*/`. Cache validation
-   uses GDAL/rasterio HDF4 subdatasets; originals are never overwritten.
-3. Project longitude/latitude (20.4243195, -101.1466639) to each native
-   MODIS sinusoidal raster CRS and sample the containing grid cell.
+   uses the native HDF4 SD datasets via pyhdf, without GDAL; originals
+   are never overwritten.
+3. Project longitude/latitude (20.4243195, -101.1466639) to the native
+   MODLAND sinusoidal grid using pyproj, verify the HDF4 tile h/v against
+   the coordinate, then read one pixel per SDS using pyhdf.SD.
 4. Preserve the **raw integer science bands AND QA bands**. Run the same
    `standardize_mod13`, `standardize_mod11`, `standardize_mod16` logic as
    the existing ORNL provider (native scales, bits, masked variables).
 5. Export original file names, source, QA validation, units and run manifest.
 
 **Important:** `earthaccess` is a CMR/search/download library, not an HDF4
-raster reader. Native HDF4 sampling additionally needs **rasterio with HDF4
-GDAL support**; not all `pip` wheels include the HDF4 driver.
-Verify `gdalinfo --formats | grep -i hdf4` before a large download.
-A missing HDF4 driver is an environment error, not a failed science observation.
+raster reader. Native HDF4 sampling needs **pyhdf** and **pyproj**, not the GDAL HDF4
+plugin. Install via `python -m pip install -e '.[source,source-test,source-modis]'`
+or `conda install -c conda-forge pyhdf` if macOS pip cannot resolve a wheel.
+HDF4 is a distinct format from the HDF5 used for GPM and SMAP.
+
+## Discovery notebook
+
+Open `gradientdescentfarmers/source_builder/discovery.ipynb` and run the
+geolocation check first. Download is disabled until RUN_LIVE is explicitly
+set to True. Start with only one MOD13Q1 granule, check SDS names, raw band
+values, h/v tile, and QA before requesting the other products.
 
 ## Pilot
 
