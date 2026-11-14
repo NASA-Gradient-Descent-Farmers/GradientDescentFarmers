@@ -66,16 +66,9 @@ class FarmProfileBuilder:
         funcs=dict(DEFAULT_FUNCTIONS)
         # Optional dependencies are imported only when explicitly enabled.
         from .earthdata import get_gpm, get_smap
-        from .earth_engine import get_grace, get_cmip, get_landcover, get_ee_modis
+        from .earth_engine import get_grace, get_cmip, get_landcover
         funcs.update({"gpm_imerg_v07":get_gpm,"smap_l4":get_smap,"grace_fo_mascon":get_grace,
                       "nex_gddp_cmip6":get_cmip,"modis_landcover":get_landcover})
-        if self.settings.modis_provider == "earth_engine":
-            for key, product in (
-                ("modis_mod13q1", "MOD13Q1"),
-                ("modis_mod11a2", "MOD11A2"),
-                ("modis_mod16a2gf", "MOD16A2GF"),
-            ):
-                funcs[key] = lambda ctx, product=product: get_ee_modis(ctx, product)
         if providers:
             unknown=set(providers)-set(SOURCE_TABLES)
             if unknown: raise ValueError(f"unknown injected provider(s): {sorted(unknown)}")
@@ -116,8 +109,7 @@ class FarmProfileBuilder:
         for source in SOURCE_TABLES:
             enabled=self.settings.enabled(source,self.farmer.mode)
             base=_metadata_defaults(source)
-            provider_name = ("Google Earth Engine MODIS 061" if source.startswith("modis_mod") and self.settings.modis_provider=="earth_engine" else base["provider"])
-            record=SourceRecord(source=source,provider=provider_name,enabled=enabled,
+            record=SourceRecord(source=source,provider=base["provider"],enabled=enabled,
                                 status=SourceStatus.NOT_REQUESTED if not enabled else SourceStatus.MISSING,
                                 alternative_providers=base["alternatives"])
             if not enabled:
