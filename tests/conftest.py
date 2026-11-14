@@ -10,6 +10,7 @@ def farmer():
     root=Path(__file__).resolve().parents[1]
     data=json.loads((root / "resources" / "guanajuato_reference.json").read_text(encoding="utf-8"))
     # Synthetic history ONLY for testing schemas, NOT Guanajuato farm observations.
+    data["fields"][0]["area_ha"] = 1.5  # Synthetic test field only; Guanajuato reference remains 1.0-ha placeholder
     data["crop_history"] = [{
         "field_id": "reference_plot_demo",
         "season_id": "synthetic_milpa_2024",
