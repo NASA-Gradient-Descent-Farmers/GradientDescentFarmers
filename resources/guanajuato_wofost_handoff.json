@@ -1,0 +1,10 @@
+{
+  "source": {
+    "farmer_input_file": "resources/guanajuato_reference.json",
+    "settings_file": "resources/guanajuato_wofost_handoff_settings.json",
+    "output_root": "data/wofost_handoff_guanajuato",
+    "cache_root": "data/cache"
+  },
+  "model": {},
+  "optimizer": {}
+}
