@@ -11,12 +11,13 @@ const t = (path: string, vars?: Record<string, string | number>) => translate(DI
 const fmt = makeFormat('es')
 const env: Env = { data, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
 
+const GTO: ChatState = { ...EMPTY_CHAT, location: 'guanajuato' }
 const flat = (bubbles: BotBubble[]) => bubbles.map((b) => b.text).join('\n')
 const LEAKS = /\b(farmer|whatsapp|rotations|crops|assistant)\.[a-zA-Z_]+|\{\w+\}|\bundefined\b|\bNaN\b|\[object/
 
 /** Several messages in a row, as a person would send them: each reply starts from the state the last one left. */
 async function talk(...messages: string[]) {
-  let state: ChatState = EMPTY_CHAT
+  let state: ChatState = GTO
   const turns: { said: string; bubbles: BotBubble[] }[] = []
   for (const said of messages) {
     const turn = await reply(said, state, env)
@@ -84,7 +85,8 @@ describe('a realistic conversation', () => {
     const answer = flat(turns[4].bubbles)
     expect(answer).toContain(t(`rotations.${state.last!.result.strategy.rotation}`))
     expect(answer).toContain(t('farmer.rec.notGuarantee'))
-    expect(answer).toContain(t('farmer.rec.confidence.low'))
+    expect(answer).toContain(t('farmer.rec.confidence.veryLow'))
+    expect(answer).toContain(t('whatsapp.experimental'))
     expect(answer).not.toMatch(LEAKS)
     expect(state.pending).toBeNull()
   })
@@ -125,8 +127,9 @@ describe('a realistic conversation', () => {
   it('starts over after a reset: nothing is remembered', async () => {
     const { state } = await talk('¿Qué me conviene sembrar después del maíz?')
     expect(state.situation.previous).toBe('maize')
-    const turn = await reply('¿Qué me conviene sembrar?', EMPTY_CHAT, env)
+    const turn = await reply('¿Qué me conviene sembrar?', GTO, env)
     expect(turn.state.pending).toBe('previous')
+    expect(turn.state.location).toBe('guanajuato')
   })
 })
 
@@ -134,7 +137,7 @@ describe('honesty: no invented figures', () => {
   const situation = { previous: 'maize' as const, hectares: 2, water: 'rain' as const, goal: 'earn' as const }
 
   it('quotes the planner\'s money figures, rounded, and nothing else', async () => {
-    const turn = await reply('¿Cuánto podría ganar?', { ...EMPTY_CHAT, situation }, env)
+    const turn = await reply('¿Cuánto podría ganar?', { ...GTO, situation }, env)
     const rec = turn.state.last!
     const text = flat(turn.bubbles)
     const net = rec.result.strategy.values.net_mxn_ha
@@ -145,7 +148,7 @@ describe('honesty: no invented figures', () => {
   })
 
   it('states the risk shares from the stored risk results', async () => {
-    const turn = await reply('¿Y si llueve poco?', { ...EMPTY_CHAT, situation }, env)
+    const turn = await reply('¿Y si llueve poco?', { ...GTO, situation }, env)
     const rec = turn.state.last!
     const rows = rec.risk!.rows
     const dry = rows.find((row) => row.scenario === 'rain80')!
@@ -156,27 +159,28 @@ describe('honesty: no invented figures', () => {
 
   it('never says the confidence is above low, and always says it is an estimate', async () => {
     for (const question of ['¿Qué me conviene sembrar?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Y si llueve poco?', '¿Cuánto podría ganar?']) {
-      const text = flat((await reply(question, { ...EMPTY_CHAT, situation }, env)).bubbles)
-      expect(text, question).toContain(t('farmer.rec.confidence.low'))
+      const text = flat((await reply(question, { ...GTO, situation }, env)).bubbles)
+      expect(text, question).toContain(t('farmer.rec.confidence.veryLow'))
+      expect(text, question).toContain(t('whatsapp.experimental'))
       expect(text, question).toContain(t('farmer.rec.notGuarantee'))
-      expect(text, question).not.toMatch(/\b(alta|media)\b/i)
+      expect(text, question).not.toMatch(/\b(alta|media)\b|: baja\./i)
     }
   })
 
   it('answers with the same numbers the app\'s own planner gives', async () => {
-    const turn = await reply('¿Cuánto podría ganar?', { ...EMPTY_CHAT, situation }, env)
+    const turn = await reply('¿Cuánto podría ganar?', { ...GTO, situation }, env)
     const direct = await recommend({ data, point: { lat: data.meta.site.latitude, lon: data.meta.site.longitude }, place: null, situation, zone: turn.state.last!.zone })
     expect(turn.state.last!.result.strategy).toEqual(direct.result.strategy)
   })
 
   it('declines what the models do not cover', async () => {
-    const turn = await reply('¿Cómo controlo la plaga del frijol?', EMPTY_CHAT, env)
+    const turn = await reply('¿Cómo controlo la plaga del frijol?', GTO, env)
     expect(flat(turn.bubbles)).toBe(t('farmer.chat.unknown'))
   })
 
   it('reports a failure instead of inventing an answer', async () => {
     const failing: Env = { ...env, run: () => Promise.reject(new Error('sin datos')) }
-    const turn = await reply('¿Qué me conviene sembrar?', { ...EMPTY_CHAT, situation }, failing)
+    const turn = await reply('¿Qué me conviene sembrar?', { ...GTO, situation }, failing)
     expect(flat(turn.bubbles)).toBe(t('farmer.chat.error', { message: 'sin datos' }))
   })
 })
@@ -185,7 +189,7 @@ describe('the first messages', () => {
   it('say it is a simulation and that the parcel is an example', () => {
     const text = flat(greeting(t))
     expect(text).toContain('simulación')
-    expect(text).toContain('parcela de ejemplo')
+    expect(text).toContain('ubicaciones de referencia')
     expect(FIELDS).toHaveLength(4)
   })
 })

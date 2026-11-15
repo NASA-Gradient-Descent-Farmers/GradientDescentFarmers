@@ -7,6 +7,7 @@ import { converse, type Hooks } from './session.ts'
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
+const GTO = { ...EMPTY_CHAT, location: 'guanajuato' as const }
 const env: Env = { data, t, fmt, distance: (km) => String(km) }
 
 function recorder(alive = () => true) {
@@ -27,15 +28,15 @@ function recorder(alive = () => true) {
 describe('converse', () => {
   it('shows the typing indicator, then each bubble after its own pause, then stops typing', async () => {
     const { log, shown, hooks } = recorder()
-    const state = await converse('¿Qué tan seguros son estos datos?', EMPTY_CHAT, env, hooks, 0)
-    expect(shown.length).toBe(3)
-    expect(log).toEqual(['typing', 'bubble', 'typing', 'bubble', 'typing', 'bubble', 'idle'])
-    expect(state).toEqual(EMPTY_CHAT)
+    const state = await converse('¿Qué tan seguros son estos datos?', GTO, env, hooks, 0)
+    expect(shown.length).toBe(4)
+    expect(log).toEqual(['typing', 'bubble', 'typing', 'bubble', 'typing', 'bubble', 'typing', 'bubble', 'idle'])
+    expect(state).toEqual(GTO)
   })
 
   it('returns the state the next message continues from', async () => {
     const { hooks } = recorder()
-    const state = await converse('¿Qué me conviene sembrar?', EMPTY_CHAT, env, hooks, 0)
+    const state = await converse('¿Qué me conviene sembrar?', GTO, env, hooks, 0)
     expect(state.pending).toBe('previous')
   })
 
@@ -47,8 +48,8 @@ describe('converse', () => {
       alive = false
       await wait(ms)
     }
-    const state = await converse('¿Qué me conviene sembrar?', EMPTY_CHAT, env, hooks, 0)
+    const state = await converse('¿Qué me conviene sembrar?', GTO, env, hooks, 0)
     expect(shown).toEqual([])
-    expect(state).toBe(EMPTY_CHAT)
+    expect(state).toBe(GTO)
   })
 })

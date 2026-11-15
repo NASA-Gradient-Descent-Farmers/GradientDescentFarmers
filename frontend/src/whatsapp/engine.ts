@@ -11,6 +11,8 @@ import { confidenceOf, DRY_SCENARIOS, nextCrop, recommend, roundMoney, type Reco
 import { FIELDS, GOALS, PREVIOUS, validHectares, type Field, type Goal, type Previous, type Situation } from '../farmer/state.ts'
 import type { Format } from '../lib/format.ts'
 import { WATER, type Water } from '../lib/farm.ts'
+import { DEMO_LOCATIONS, demoLocation, type DemoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
+import { distanceKm } from '../lib/geo.ts'
 import type { DashboardData } from '../lib/types.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
@@ -22,13 +24,15 @@ export type Focus = 'plant' | 'money' | 'rain' | 'harvest' | 'compare'
 export interface ChatState {
   situation: Situation
   /** The question the farmer is being asked, whose answer the next message is read as. */
-  pending: Field | null
+  pending: Field | 'location' | null
   /** What they originally asked, answered once the questions are done. */
   focus: Focus | null
   last: Recommendation | null
+  /** The demonstration location chosen, used for every answer until another is chosen. */
+  location: DemoLocationId | null
 }
 
-export const EMPTY_CHAT: ChatState = { situation: {}, pending: null, focus: null, last: null }
+export const EMPTY_CHAT: ChatState = { situation: {}, pending: null, focus: null, last: null, location: null }
 
 export interface QuickReply {
   label: string
@@ -51,10 +55,21 @@ export interface Env {
 }
 
 /**
- * The demo parcel is the place the crop model was fitted to (El Batán, Texcoco), so it is inside the validated zone by
- * definition. The simulator does not pretend to know where a real farmer is: it says so in its first message.
+ * Where the parcel sits against the model's one fitted place is unknown for a demo point, so the zone is "unknown": the
+ * confidence is the lowest the app has ("muy baja") and the risk line says the model was not checked here. The app's
+ * "outside" refusal is not applied: the demo shows the bundled results, labelled experimental, on purpose.
  */
-export const DEMO_ZONE: Zone = { status: 'inside', key: 'inside', km: 0 }
+export function demoZone(location: DemoLocation, data: DashboardData): Zone {
+  return { status: 'unknown', key: null, km: distanceKm({ lat: location.latitude, lon: location.longitude }, { lat: data.meta.site.latitude, lon: data.meta.site.longitude }) }
+}
+
+// ---- reading a location ----
+
+/** The demonstration location a message names ("en Sonora", "guanajuato"), or null. */
+export function readLocation(text: string): DemoLocation | null {
+  const q = fold(text)
+  return DEMO_LOCATIONS.find((place) => new RegExp(`\\b${fold(place.name)}\\b`).test(q)) ?? null
+}
 
 // ---- reading a typed answer ----
 
@@ -126,6 +141,21 @@ const upperFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string,
 const bold = (text: string) => `*${text}*`
 
 export const greeting = (t: T): BotBubble[] => [{ text: t('whatsapp.welcome') }, { text: t('whatsapp.demoParcel') }]
+
+const coords = (place: DemoLocation) => `${place.latitude}, ${place.longitude}`
+
+function locationAsk(t: T): BotBubble {
+  return { text: t('whatsapp.askLocation'), options: DEMO_LOCATIONS.map((place) => ({ label: place.name })) }
+}
+
+/** Confirms the location, and says what exists for it: experimental data, or none. */
+function locationBubbles(place: DemoLocation, t: T): BotBubble[] {
+  const head = t('whatsapp.locationSet', { name: place.name, coords: coords(place) })
+  const note = place.results === 'experimental' ? t('whatsapp.experimental') : t('whatsapp.unavailable', { name: place.name })
+  return [{ text: `${head}\n${t('whatsapp.referencePoint')}` }, { text: note }]
+}
+
+const unavailableBubble = (place: DemoLocation, t: T): BotBubble => ({ text: t('whatsapp.unavailable', { name: place.name }) })
 
 function askBubble(field: Field, lead: boolean, t: T): BotBubble {
   const question = t(`farmer.parcel.steps.${field}.q`)
@@ -243,7 +273,7 @@ export function recommendationBubbles(rec: Recommendation, focus: Focus, env: En
         ...(failed('baseline') !== undefined ? [failedLine('baseline', 'farmer.rec.risks.dryBase', 'farmer.rec.risks.dryBaseNone')] : []),
         ...DRY_SCENARIOS.filter((scenario) => failed(scenario) !== undefined).map((scenario) => failedLine(scenario, 'farmer.rec.risks.dry', 'farmer.rec.risks.dryNone')),
         ...(situation.water && situation.water !== 'rain' ? [t('farmer.rec.risks.irrigation')] : []),
-        t('farmer.rec.risks.zone', { km: distance(rec.zone.km) }),
+        rec.zone.status === 'inside' ? t('farmer.rec.risks.zone', { km: distance(rec.zone.km) }) : t('farmer.rec.risks.zoneNear'),
       ]),
     ].join('\n'),
   }
@@ -302,12 +332,47 @@ export interface Turn {
   bubbles: BotBubble[]
 }
 
+/** Topics that need a location: everything about the models' results. */
+const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text))
+
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
 export async function reply(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
+  const named = readLocation(text)
+
+  // choosing (or changing) the location: what was answered for another place is dropped, never carried over
+  if (named) {
+    const changed = named.id !== state.location
+    const chosen: ChatState = { ...state, location: named.id, last: changed ? null : state.last }
+    const confirm = changed ? locationBubbles(named, t) : []
+    if (named.results === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
+    // a question left waiting for a location is answered now
+    if (state.pending === 'location' && state.focus) {
+      const turn = await continueWith({ ...chosen, pending: null }, state.focus, env)
+      return { state: turn.state, bubbles: [...confirm, ...turn.bubbles] }
+    }
+    // the same message may carry the question ("¿qué sembrar en Sonora?")
+    if (needsLocation(text)) {
+      const turn = await answer(text, { ...chosen, pending: null, focus: null }, env)
+      return { state: turn.state, bubbles: [...confirm, ...turn.bubbles] }
+    }
+    return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : locationBubbles(named, t).slice(0, 1) }
+  }
+
+  if (state.location === null && (needsLocation(text) || state.pending === 'location')) {
+    return { state: { ...state, pending: 'location', focus: focusOf(text) ?? state.focus ?? 'plant' }, bubbles: [locationAsk(t)] }
+  }
+  return answer(text, state, env)
+}
+
+/** A message with a location already chosen. */
+async function answer(text: string, state: ChatState, env: Env): Promise<Turn> {
+  const { t } = env
+  const place = demoLocation(state.location!)
+  if (place.results === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
 
   // an answer to the question just asked
-  if (state.pending) {
+  if (state.pending && state.pending !== 'location') {
     const value = readAnswer(state.pending, text)
     if (value !== undefined) return afterAnswer({ ...state, situation: { ...state.situation, [state.pending]: value } }, env)
     // not an answer: a new question moves on; anything else is asked again, kindly
@@ -317,7 +382,7 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
   }
 
   const focus = focusOf(text)
-  const context: Context = { hasParcel: true, situation: state.situation, zone: DEMO_ZONE, last: state.last }
+  const context: Context = { hasParcel: true, situation: state.situation, zone: null, last: state.last }
   // the assistant decides what is missing; the two simulator topics are gated as a planting question
   const planned = planReply(focus === 'harvest' ? `${text} sembrar` : text, context)
   const situation = { ...state.situation, ...planned.patch }
@@ -325,11 +390,20 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
 
   if (planned.plan.kind === 'recommend') return recommendNow({ ...base, focus: focus ?? 'plant' }, env)
   const bodies = planned.plan.bodies
+  // what is said about the model's evidence or doses comes from the same experimental results
+  const experimental = bodies.some((body) => body.kind === 'trust' || body.kind === 'fertilizer') ? [{ text: t('whatsapp.experimental') }] : []
   const asked = bodies.find((body) => body.kind === 'ask')
   return {
     state: asked && asked.kind === 'ask' && asked.field !== 'parcel' ? { ...base, pending: asked.field, focus: focus ?? 'plant' } : base,
-    bubbles: bodies.flatMap((body) => bodyBubbles(body, env)),
+    bubbles: [...experimental, ...bodies.flatMap((body) => bodyBubbles(body, env))],
   }
+}
+
+/** A planting-type question whose location has just been chosen: ask what is missing, or answer. */
+function continueWith(state: ChatState, focus: Focus, env: Env): Promise<Turn> | Turn {
+  const next = FIELDS.find((field) => state.situation[field] === undefined)
+  if (next) return { state: { ...state, pending: next, focus }, bubbles: [askBubble(next, true, env.t)] }
+  return recommendNow({ ...state, focus }, env)
 }
 
 function afterAnswer(state: ChatState, env: Env): Promise<Turn> | Turn {
@@ -341,10 +415,17 @@ function afterAnswer(state: ChatState, env: Env): Promise<Turn> | Turn {
 async function recommendNow(state: ChatState, env: Env): Promise<Turn> {
   const { data, t } = env
   const focus = state.focus ?? 'plant'
-  const point = { lat: data.meta.site.latitude, lon: data.meta.site.longitude }
+  const place = demoLocation(state.location!)
   try {
-    const rec = await (env.run ?? recommend)({ data, point, place: data.meta.site.name, situation: state.situation, zone: DEMO_ZONE, now: env.now?.() })
-    return { state: { ...state, focus: null, last: rec }, bubbles: recommendationBubbles(rec, focus, env) }
+    const rec = await (env.run ?? recommend)({
+      data,
+      point: { lat: place.latitude, lon: place.longitude },
+      place: place.name,
+      situation: state.situation,
+      zone: demoZone(place, data),
+      now: env.now?.(),
+    })
+    return { state: { ...state, focus: null, last: rec }, bubbles: [{ text: t('whatsapp.experimental') }, ...recommendationBubbles(rec, focus, env)] }
   } catch (error) {
     return { state: { ...state, focus: null }, bubbles: [{ text: t('farmer.chat.error', { message: error instanceof Error ? error.message : String(error) }) }] }
   }

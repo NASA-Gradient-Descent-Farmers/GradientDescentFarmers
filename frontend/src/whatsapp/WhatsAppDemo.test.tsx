@@ -38,6 +38,14 @@ describe('the simulator screen', () => {
   })
 })
 
+describe('the location selector', () => {
+  it('offers exactly the three locations, none chosen at first', () => {
+    for (const name of ['Guanajuato', 'Sinaloa', 'Sonora']) expect(html).toMatch(new RegExp(`aria-pressed="false"[^>]*>${name}<`))
+    expect((html.match(/class="wa-place"/g) ?? []).length).toBe(3)
+    expect(text).toContain('Elige una ubicación')
+  })
+})
+
 describe('richText', () => {
   it('turns *bold* into bold and leaves everything else alone', () => {
     expect(renderToStaticMarkup(<>{richText('Hola *mundo* y 2 * 3 *no*')}</>)).toBe('Hola <strong>mundo</strong> y 2 * 3 <strong>no</strong>')

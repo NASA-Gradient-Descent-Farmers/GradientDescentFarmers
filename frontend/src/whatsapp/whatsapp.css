@@ -44,3 +44,11 @@
 .wa-send:disabled { background: #c9c9c5; cursor: default; }
 .wa-reset:focus-visible, .wa-chip:focus-visible, .wa-send:focus-visible, .wa-composer input:focus-visible, .wa-site:focus-visible { outline: 3px solid #111; outline-offset: 2px; }
 .wa-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wa-places { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; background: #fff; border-bottom: 1px solid #f0dccd; }
+.wa-place { min-height: 44px; padding: 0 16px; border: 1.5px solid #111; border-radius: 22px; background: #fff; color: #111; font: inherit; font-size: 16px; cursor: pointer; }
+.wa-place[aria-pressed='true'] { background: #111; color: #fff; }
+.wa-place:disabled { opacity: 0.5; cursor: default; }
+.wa-place:focus-visible { outline: 3px solid #111; outline-offset: 2px; }
+.wa-place-status { flex-basis: 100%; margin: 0; font-size: 13px; color: #55554f; }
+.wa-place-status.none { color: #7a1a12; font-weight: 600; }

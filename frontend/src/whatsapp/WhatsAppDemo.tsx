@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { I18nProvider, useI18n } from '../i18n/index.tsx'
 import { loadData } from '../lib/data.ts'
+import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
 import { richText } from './format.tsx'
@@ -59,6 +60,7 @@ export function WhatsAppChat({ data, home, typingMs = TYPING_MS }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)
+  const [location, setLocation] = useState<DemoLocationId | null>(null)
   const chat = useRef<ChatState>(EMPTY_CHAT)
   const busy = useRef(false)
   const generation = useRef(0)
@@ -74,6 +76,7 @@ export function WhatsAppChat({ data, home, typingMs = TYPING_MS }: ChatProps) {
     const mine = ++generation.current
     chat.current = EMPTY_CHAT
     busy.current = true
+    setLocation(null)
     setMessages([])
     setTyping(true)
     try {
@@ -107,6 +110,7 @@ export function WhatsAppChat({ data, home, typingMs = TYPING_MS }: ChatProps) {
       add('user', { text })
       try {
         chat.current = await converse(text, chat.current, env, { typing: (on) => mine === generation.current && setTyping(on), show: (bubble) => add('bot', bubble), wait: sleep, alive: () => mine === generation.current }, typingMs)
+        if (mine === generation.current) setLocation(chat.current.location)
       } finally {
         if (mine === generation.current) busy.current = false
       }
@@ -118,6 +122,7 @@ export function WhatsAppChat({ data, home, typingMs = TYPING_MS }: ChatProps) {
     endRef.current?.scrollIntoView({ block: 'end', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }, [messages.length, typing])
 
+  const picked = location ? demoLocation(location) : null
   const last = messages[messages.length - 1]
   const quick = !typing && last?.from === 'bot' ? last.options : undefined
   const submit = (e: FormEvent) => {
@@ -148,6 +153,17 @@ export function WhatsAppChat({ data, home, typingMs = TYPING_MS }: ChatProps) {
           <a href={home} className="wa-site">
             {t('whatsapp.openSite')} →
           </a>
+        </div>
+
+        <div className="wa-places" role="group" aria-label={t('whatsapp.locationLabel')}>
+          {DEMO_LOCATIONS.map((place) => (
+            <button key={place.id} type="button" className="wa-place" aria-pressed={location === place.id} disabled={typing} onClick={() => void send(place.name)}>
+              {place.name}
+            </button>
+          ))}
+          <p className={`wa-place-status${picked?.results === null ? ' none' : ''}`}>
+            {picked ? `${picked.latitude}, ${picked.longitude} · ${t(picked.results ? 'whatsapp.statusExperimental' : 'whatsapp.statusUnavailable')}` : t('whatsapp.noLocation')}
+          </p>
         </div>
 
         <div className="wa-thread" role="log" aria-live="polite" aria-label={t('whatsapp.log')}>

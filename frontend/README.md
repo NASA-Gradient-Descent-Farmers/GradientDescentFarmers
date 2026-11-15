@@ -181,7 +181,7 @@ Charts in Técnico use the same orange, black and white (rotation = marker shape
 A WhatsApp-style chat that shows how YolIA could answer a farmer by text message. It is a **simulation**: nothing is sent to
 WhatsApp, Twilio or any API, and it needs no key, internet or language model. It reuses the farmer assistant's rules
 (`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
-the only new code is in `src/whatsapp/`. The demo parcel is the place the model was fitted to (El Batán, Texcoco).
+the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). Only Guanajuato answers, with the bundled model results (computed at El Batán, Texcoco) labelled experimental demonstration data; Sinaloa and Sonora show "Data unavailable" and never reuse another location's results.
 
 - Open `/demo/whatsapp` with `npm run dev`, or `#/demo/whatsapp` on a static host (the built app uses relative asset paths).
 - Tests: `npm test` (`src/whatsapp/*.test.ts*`).
