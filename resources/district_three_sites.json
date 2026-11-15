@@ -1,0 +1,16 @@
+{
+  "source": {
+    "sites": [
+      {"name": "guanajuato_valle_de_santiago", "latitude": 20.4243195, "longitude": -101.1466639},
+      {"name": "sinaloa_ahome", "latitude": 25.763611, "longitude": -108.861389},
+      {"name": "sonora_valle_del_yaqui", "latitude": 27.332202, "longitude": -110.162783}
+    ],
+    "output_root": "data/processed/districts",
+    "cache_root": "data/cache/districts",
+    "sources": {"siap": true, "power": true, "chirps": true, "grace": true, "ndvi": true, "smap": true, "gldas": true, "igbp": true},
+    "settings": {
+      "district_membership": "shared",
+      "et0_wind": "power"
+    }
+  }
+}
