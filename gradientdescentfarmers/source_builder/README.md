@@ -33,6 +33,7 @@ auditoría y publicación explícita en GCS → equipo de modelos
 | `core/audit.py`, `handoff.py`, `wofost_source_check.py` | Auditoría de archivos y requisitos de entrega |
 | `core/feasibility.py` | Prerrequisitos por escenario y evidencia externa |
 | `core/jobs.py`, `storage.py` | Cola SQLite local y almacenamiento GCS opcional |
+| `cloud/` | HTTP privado, worker persistente en VM y publicación automática auditada en GCS |
 
 ## Fuentes disponibles
 
@@ -237,6 +238,14 @@ adaptar la evaluación a los settings elegidos. Los reportes publicados se
 conservan sin reescribirlos.
 
 ## GCP: publicación posterior a la adquisición
+
+El runner HTTP en una VM de `gdfarming` publica automáticamente en
+`gs://gdfarming-farm-data`. Recibe los tres documentos JSON, responde con un
+`job_id` y ejecuta adquisición, auditoría y subida desde un worker persistente.
+Ver [despliegue, HTTP y operación de la VM](docs/GCP_VM_DEPLOYMENT.md).
+SIAP y DENUE no están habilitados en este despliegue.
+Para integrar el formulario y el trigger desde la UI, ver el
+[contrato para Isaac: payload, backend, progreso y errores](docs/README.md#contrato-para-isaac-y-la-ui).
 
 **`--run` exporta localmente; no activa una subida a GCP.** Para la entrega de
 Guanajuato se ejecutaron después dos scripts operativos locales:

@@ -11,6 +11,7 @@ README se versiona en Git; las descargas y datasets se excluyen.
 | `cache/soilgrids/` | Raster TIFF de suelo | Caché de adquisición |
 | `cache/earthdata/` | Gránulos originales MODIS, GPM y SMAP | Reanudar descargas; ocupa ~12.7 GiB en este ejemplo |
 | `guanajuato_resume/` | Logs, scripts de la sesión, diagnósticos, resumen final y mensaje WOFOST | Entender cómo se reanudó y publicó la entrega |
+| `gcp_deploy/` | Paquetes de código, SHA y recibos locales del despliegue en la VM | Reproducir el despliegue; ver `source_builder/docs/GCP_VM_DEPLOYMENT.md` |
 | `archive/` | Respaldo de 9 runs anteriores, inventario y `RESTORE.md` | Consultar o restaurar el histórico |
 | `integrated_guanajuato_audit.json` | Auditoría local del sitio | Revisar el resultado ambiental |
 | `worldbank_only.json` | Configuración local histórica de recuperación de World Bank | Referencia; no interviene en el run integral |

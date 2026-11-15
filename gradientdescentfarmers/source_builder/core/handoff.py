@@ -127,14 +127,18 @@ def check_modis(frame: pd.DataFrame | None, step: int,
     }
 
 
-def assess_run(run_dir: Path) -> dict:
+def assess_run(run_dir: Path, *,
+               weather_start: date = date(2024, 1, 1),
+               weather_end: date = date(2025, 12, 31),
+               modis_start: date = date(2024, 1, 1),
+               modis_end: date = date(2025, 12, 31)) -> dict:
     root = Path(run_dir)
     profile = json.loads((root / "farm_profile.json").read_text(encoding="utf-8"))
     integrity = audit_profile(root, expected_farm_id=profile["farmer_inputs"]["farm_id"])
     statuses = {key: value.get("status") for key, value in profile["source_status"].items()}
-    weather = check_weather(_load_table(root, profile, "weather_daily"))
+    weather = check_weather(_load_table(root, profile, "weather_daily"), weather_start, weather_end)
     modis = {
-        src: check_modis(_load_table(root, profile, name), days, qa)
+        src: check_modis(_load_table(root, profile, name), days, qa, modis_start, modis_end)
         for src, (name, days, qa) in MODIS.items()
     }
     rain = _load_table(root, profile, "gpm_daily")
@@ -175,7 +179,7 @@ def assess_run(run_dir: Path) -> dict:
         "notes": [
             "Source availability and PCSE simulation readiness are distinct gates",
             "GPM covers only the requested UTC day; SMAP covers a short snapshot",
-            "No observed farm acreage or crop variety; the 1ha schema field is synthetic",
+            "Farm acreage, crop variety and yields are not independently verified",
             "Crop, site, soil and management parameters require explicit evidence",
         ],
     }
