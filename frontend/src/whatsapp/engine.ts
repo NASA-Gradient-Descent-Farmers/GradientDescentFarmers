@@ -406,9 +406,9 @@ function topicOf(text: string): RotationTopic | null {
 }
 
 /** A location with rotation results: the question is answered from them, with nothing left to ask. */
-async function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env): Promise<Turn> {
+async function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env, text = ''): Promise<Turn> {
   // with the district engine on, "what to plant" is answered by one summary of both engines (the WOFOST details are a button away)
-  if (env.district && (topic === 'plant' || topic === 'compare')) return summaryTurn({ ...state, pending: null, focus: null }, place, env, 'summary', '')
+  if (env.district && (topic === 'plant' || topic === 'compare')) return summaryTurn({ ...state, pending: null, focus: null }, place, env, 'summary', text)
   const turn: Turn = { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, { ...env, observed: env.environment?.[place.id] ?? null }), showsResults: true }
   return env.district ? withFollowUps(turn, await districtFor(state, place, env), env, []) : turn
 }
@@ -609,7 +609,7 @@ async function answer(text: string, state: ChatState, env: Env): Promise<Turn> {
   if (kind === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
   if (kind === 'rotations') {
     const topic = topicOf(text)
-    if (topic) return rotationTurn(state, topic, place, env)
+    if (topic) return rotationTurn(state, topic, place, env, text)
     // a question the rules cannot place (and that answers nothing pending): the language model may answer it from the facts
     if (!answersPending && classify(text) === 'unknown') {
       const free = await freeQuestion(text, { ...state, pending: null, focus: null }, place, env)

@@ -30,16 +30,21 @@ function stub(...replies: Response[]) {
 }
 
 describe('handleNarrate', () => {
-  it('asks Claude with a forced tool call and returns its message and allowed follow-ups', async () => {
+  it('asks Claude with the respond tool and returns its message and allowed follow-ups', async () => {
     const { calls, fetcher } = stub(toolReply('Tu trigo vale $46,780 por ha. La simulación sugiere trigo → soya.', ['why', 'money', 'risks']))
     const result = await handleNarrate(request, { apiKey: 'k', fetcher })
     expect(result).toEqual({ status: 200, body: { reply: 'Tu trigo vale $46,780 por ha. La simulación sugiere trigo → soya.', followUps: ['why', 'risks'], model: 'claude-sonnet-5-5' } })
     expect(calls[0].url).toBe('https://api.anthropic.com/v1/messages')
     expect(calls[0].headers['x-api-key']).toBe('k')
-    expect(calls[0].body).toMatchObject({ model: 'claude-sonnet-5-5', tool_choice: { type: 'tool', name: 'responder' } })
+    expect(calls[0].body).toMatchObject({ model: 'claude-sonnet-5-5', tool_choice: { type: 'auto' } })
     const prompt = (calls[0].body.messages as { content: string }[])[0].content
     expect(prompt).toContain('HECHOS — Simulación de suelo y cultivo (WOFOST)')
     expect(prompt).toContain('$46,780')
+  })
+
+  it('takes plain text as the message when the model does not call the tool', async () => {
+    const { fetcher } = stub(new Response(JSON.stringify({ content: [{ type: 'text', text: 'Tu trigo vale $46,780 por ha.' }] }), { status: 200 }))
+    expect(await handleNarrate(request, { apiKey: 'k', fetcher })).toMatchObject({ status: 200, body: { reply: 'Tu trigo vale $46,780 por ha.', followUps: [] } })
   })
 
   it('retries once when a number is not in the facts, and refuses a second invented number', async () => {

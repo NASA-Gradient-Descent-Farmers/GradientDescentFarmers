@@ -141,7 +141,7 @@ and questions for a technician.
 
 The summary and free questions the rules cannot place can be phrased by Claude. The browser posts the fact lines of both
 engines to `/api/yolia-chat`; the server (`netlify/functions/yolia-chat.mts` on Netlify, a Vite middleware in `npm run dev`
-and `npm run preview`) calls the Anthropic Messages API with a forced tool call (message + 2-4 follow-up ids from a fixed list)
+and `npm run preview`) calls the Anthropic Messages API with a "respond" tool (message + 2-4 follow-up ids from a fixed list; plain text is accepted as the message)
 and **checks every number in the reply against the facts**; one retry, then the chat falls back to its written summary. The
 prompt says which tool each idea comes from, states uncertainty, forbids new figures, crops, prices or doses, and leaves the
 decision to the farmer and a local technician. The banner says an AI writes the summaries only when the endpoint answers.

@@ -63,17 +63,23 @@ async function callClaude(request: NarrateRequest, env: Required<Pick<HandlerEnv
       body: JSON.stringify({
         model: env.model,
         max_tokens: 900,
-        temperature: 0.3,
         system: systemPrompt(request.language),
         tools: [RESPOND_TOOL],
-        tool_choice: { type: 'tool', name: RESPOND_TOOL.name },
+        // some current models refuse a forced tool call, so the tool is offered and the prompt asks for it; plain text is
+        // accepted as the message when the model answers without it
+        tool_choice: { type: 'auto' },
         messages,
       }),
     })
     const body = (await response.json()) as { content?: unknown[]; error?: { message?: string } }
     if (!response.ok) throw new Error(body.error?.message ?? `Anthropic API HTTP ${response.status}`)
     const use = (body.content ?? []).find((block): block is ToolUse => (block as ToolUse)?.type === 'tool_use' && (block as ToolUse).name === RESPOND_TOOL.name)
-    const text = typeof use?.input.mensaje === 'string' ? use.input.mensaje.trim() : ''
+    const plain = (body.content ?? [])
+      .filter((block): block is { type: 'text'; text: string } => (block as { type?: string })?.type === 'text' && typeof (block as { text?: unknown }).text === 'string')
+      .map((block) => block.text)
+      .join('\n')
+      .trim()
+    const text = typeof use?.input.mensaje === 'string' ? use.input.mensaje.trim() : use ? '' : plain
     if (!text) throw new Error('The model returned no message')
     const allowed = new Set(request.followUps.map((f) => f.id))
     const followUps = (Array.isArray(use?.input.siguientes) ? use.input.siguientes : []).filter((id): id is FollowUp => typeof id === 'string' && allowed.has(id as FollowUp)).slice(0, 4)
