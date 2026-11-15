@@ -13,7 +13,9 @@ import type { Format } from '../lib/format.ts'
 import { WATER, type Water } from '../lib/farm.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import { distanceKm } from '../lib/geo.ts'
+import type { RotationsByLocation } from '../lib/rotations.ts'
 import type { DashboardData } from '../lib/types.ts'
+import { locatedNote, rotationBubbles, type RotationTopic } from './rotationAnswers.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
@@ -49,6 +51,8 @@ export interface Env {
   t: T
   fmt: Format
   distance: (km: number) => string
+  /** The rotation results loaded for the locations that have them; a location missing here has none. */
+  rotations?: RotationsByLocation
   /** Injected so tests can run without the planner. */
   run?: typeof recommend
   now?: () => number
@@ -150,10 +154,21 @@ function locationAsk(t: T): BotBubble {
   return { text: t('whatsapp.askLocation'), options: DEMO_LOCATIONS.map((place) => ({ label: place.name })) }
 }
 
-/** Confirms the location, and says what exists for it: experimental data, or none. */
-function locationBubbles(place: DemoLocation, t: T): BotBubble[] {
+/**
+ * What exists for a location right now: the bundled experimental results, the rotation results (only when they were
+ * loaded), or nothing. Nothing is never filled in with another location's results.
+ */
+export function resultsKind(place: DemoLocation, env: Pick<Env, 'rotations'>): 'experimental' | 'rotations' | null {
+  if (place.results === 'rotations') return env.rotations?.[place.id] ? 'rotations' : null
+  return place.results
+}
+
+/** Confirms the location, and says what exists for it: rotation results, experimental data, or none. */
+function locationBubbles(place: DemoLocation, env: Env): BotBubble[] {
+  const { t } = env
   const head = t('whatsapp.locationSet', { name: place.name, coords: coords(place) })
-  const note = place.results === 'experimental' ? t('whatsapp.experimental') : t('whatsapp.unavailable', { name: place.name })
+  const kind = resultsKind(place, env)
+  const note = kind === 'rotations' ? locatedNote(place.name, env.rotations![place.id]!, env) : kind === 'experimental' ? t('whatsapp.experimental') : t('whatsapp.unavailable', { name: place.name })
   return [{ text: `${head}\n${t('whatsapp.referencePoint')}` }, { text: note }]
 }
 
@@ -332,10 +347,25 @@ export function recommendationBubbles(rec: Recommendation, focus: Focus, env: En
 export interface Turn {
   state: ChatState
   bubbles: BotBubble[]
+  /** True when the bubbles carry a set of results, so a channel can add its link to the website. */
+  showsResults?: true
 }
 
 /** Topics that need a location: everything about the models' results. */
 export const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text))
+
+/** What a question about the results is about, in the rotation answers' terms, or null. */
+function topicOf(text: string): RotationTopic | null {
+  const focus = focusOf(text)
+  if (focus) return focus
+  const intent = classify(text)
+  return intent === 'trust' || intent === 'fertilizer' ? intent : null
+}
+
+/** A location with rotation results: the question is answered from them, with nothing left to ask. */
+function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env): Turn {
+  return { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, env), showsResults: true }
+}
 
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
 export async function reply(text: string, state: ChatState, env: Env): Promise<Turn> {
@@ -346,19 +376,20 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
   if (named) {
     const changed = named.id !== state.location
     const chosen: ChatState = { ...state, location: named.id, last: changed ? null : state.last }
-    const confirm = changed ? locationBubbles(named, t) : []
-    if (named.results === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
+    const confirm = changed ? locationBubbles(named, env) : []
+    const kind = resultsKind(named, env)
+    if (kind === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
     // a question left waiting for a location is answered now
     if (state.pending === 'location' && state.focus) {
-      const turn = await continueWith({ ...chosen, pending: null }, state.focus, env)
-      return { state: turn.state, bubbles: [...confirm, ...turn.bubbles] }
+      const turn = kind === 'rotations' ? rotationTurn(chosen, state.focus, named, env) : await continueWith({ ...chosen, pending: null }, state.focus, env)
+      return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
     }
     // the same message may carry the question ("¿qué sembrar en Sonora?")
     if (needsLocation(text)) {
       const turn = await answer(text, { ...chosen, pending: null, focus: null }, env)
-      return { state: turn.state, bubbles: [...confirm, ...turn.bubbles] }
+      return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
     }
-    return { state: { ...chosen, pending: null, focus: null }, bubbles: [...(confirm.length ? confirm : locationBubbles(named, t).slice(0, 1)), { text: t('whatsapp.nextStep') }] }
+    return { state: { ...chosen, pending: null, focus: null }, bubbles: [...(confirm.length ? confirm : locationBubbles(named, env).slice(0, 1)), { text: t('whatsapp.nextStep') }] }
   }
 
   if (state.location === null && (needsLocation(text) || state.pending === 'location')) {
@@ -371,7 +402,12 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
 async function answer(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
   const place = demoLocation(state.location!)
-  if (place.results === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
+  const kind = resultsKind(place, env)
+  if (kind === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
+  if (kind === 'rotations') {
+    const topic = topicOf(text)
+    if (topic) return rotationTurn(state, topic, place, env)
+  }
 
   // an answer to the question just asked
   if (state.pending && state.pending !== 'location') {

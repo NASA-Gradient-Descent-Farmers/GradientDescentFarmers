@@ -19,7 +19,12 @@ phone ──WhatsApp──▶ Twilio ──HTTPS POST /whatsapp──▶ tunnel 
 - **Guanajuato** answers use the bundled model results, which were computed at El Batán, Texcoco, and are **not
   calibrated for Guanajuato**. Every such answer is labelled *"Datos experimentales de demostración"*. No answer is
   ever presented as validated.
-- **Sinaloa and Sonora** have no model results: the bot says *"Datos no disponibles"* and never reuses Guanajuato's.
+- **Sinaloa and Sonora** answer from the rotations service's published runs (`mexico_norte_01` and `mexico_norte_02`,
+  see `gradientdescentfarmers/rotations_service/README.md`), read from `frontend/public/data/rotations/`. They are
+  exploratory scenarios: a crop model on 2024–2025 weather with historical SIAP prices, low confidence, not validated in
+  the field. Income is always *gross per hectare* over the whole plan, never profit, and "sin datos" is never zero. If a
+  location's file is missing or fails its check the bot says *"Datos no disponibles"* for it and never reuses another
+  location's results. To refresh them, see *Updating the rotation results* in `frontend/README.md`.
 - Every figure comes from the stored model results; nothing is estimated or written by hand.
 - Send `menu` at any time to start over. Photos and voice notes are not read.
 
@@ -87,7 +92,8 @@ Message the Sandbox number from your phone, for example:
 | `¿Qué me conviene sembrar?` | Asks what you planted, one question at a time (answer with the number or in words) |
 | `1`, `3 hectáreas`, `solo lluvia`, `1` | Recommendation from the stored model results, with its reliability and the website link |
 | `¿Y si llueve poco?` / `¿Cuánto podría ganar?` | Answers from the same results, without asking again |
-| `Sonora` then `¿Qué me conviene sembrar?` | *Datos no disponibles para Sonora* |
+| `Sonora` then `¿Qué me conviene sembrar?` | The rotation options for Sonora (with and without irrigation), gross income per hectare, the confidence caveats and the website link |
+| `¿Cuánto podría cosechar?` / `¿Qué pasa si llueve poco?` | Simulated grain per crop and season; irrigated against rain-only income |
 
 Check `GET http://localhost:3000/health` returns `ok`. If WhatsApp gets no reply, look at the server terminal: a
 `rejected a request with a missing or invalid Twilio signature` line means `PUBLIC_WEBHOOK_URL` or the Auth Token

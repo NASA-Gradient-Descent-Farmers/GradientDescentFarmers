@@ -1,0 +1,371 @@
+{
+ "version": 1,
+ "farmId": "mexico_norte_02",
+ "sourceRunId": "9849d2f76f944625",
+ "rotationRunId": "5abb561d6ead496b",
+ "generatedAt": "2026-11-15 08:33:58.659207+00:00",
+ "status": "exploratory_options",
+ "basis": "Relative campaign plan tested against historical weather; no future weather fabricated",
+ "municipality": "Bácum",
+ "confidence": {
+  "overall": "low",
+  "labelEs": "Exploratorio: sin calibración local",
+  "reasonsEs": [
+   "Variedades de referencia sin calibración ni validación independiente en estas parcelas.",
+   "Clima histórico 2024–2025: los resultados no son un pronóstico meteorológico o de cosecha.",
+   "Profundidad efectiva, drenaje, agua inicial y manejo de riego incluyen supuestos.",
+   "No se simulan salinidad, nutrientes, plagas ni cambios medidos del carbono del suelo.",
+   "Se excluyen campañas sin madurez con este calendario y parámetros; no demuestra que el cultivo sea inviable en la región."
+  ],
+  "fieldValidated": false,
+  "probabilityOfSuccess": null
+ },
+ "weatherYears": [
+  2024,
+  2025
+ ],
+ "best": {
+  "irrigated": "57a177efe93407fc",
+  "rainfed": "355eddf135f3511e"
+ },
+ "options": [
+  {
+   "id": "57a177efe93407fc",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: maíz (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 72.51945907810808,
+   "irrigationM3Ha": 9329.03210949495,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 111620 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 9329 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 111619.56127559769,
+    "p10": 105862.6972746106,
+    "p90": 128112.47574939855
+   },
+   "campaigns": [
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 8.098563777830165,
+     "grossMxnHa": 53270.45559671751
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.427712697929005,
+     "grossMxnHa": 61934.61194251516
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  },
+  {
+   "id": "6b808db1dd00d202",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: maíz (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
+   "priorityScore": 70.71415187238186,
+   "irrigationM3Ha": 15075.779934113783,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 167898 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 15076 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 83/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 167897.80353390335,
+    "p10": 152911.15306474062,
+    "p90": 191238.04633650844
+   },
+   "campaigns": [
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 8.098563777830165,
+     "grossMxnHa": 53270.45559671751
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.427712697929005,
+     "grossMxnHa": 61934.61194251516
+    },
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 8.555829476726863,
+     "grossMxnHa": 56278.24225830567
+    }
+   ]
+  },
+  {
+   "id": "a327afaf0880cbc7",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 69.01713957670871,
+   "irrigationM3Ha": 8781.342973041516,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 81033 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 8781 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 81032.83493213098,
+    "p10": 80195.10646204537,
+    "p90": 92224.52929820892
+   },
+   "campaigns": [
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 4.185061448541672,
+     "grossMxnHa": 22551.27824169587
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.427712697929005,
+     "grossMxnHa": 61934.61194251516
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  },
+  {
+   "id": "e6316c75d9c0262f",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: barbecho (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
+   "priorityScore": 69.91745459201911,
+   "irrigationM3Ha": 10447.335442708605,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 112860 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 10447 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 112859.55722080704,
+    "p10": 106826.58407467396,
+    "p90": 129486.458776868
+   },
+   "campaigns": [
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.407842369678525,
+     "grossMxnHa": 61575.57920616377
+    },
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 8.338499902806076,
+     "grossMxnHa": 54848.69922635554
+    }
+   ]
+  },
+  {
+   "id": "c79d0eb8090fe809",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: maíz (jun–oct) → año 1: garbanzo (nov–may) → año 2: sorgo (jun–oct)",
+   "priorityScore": 65.76981741981488,
+   "irrigationM3Ha": 14058.63190727543,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 135948 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 14059 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 83/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 135947.7439952508,
+    "p10": 126272.7712805785,
+    "p90": 153856.68801040077
+   },
+   "campaigns": [
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 8.098563777830165,
+     "grossMxnHa": 53270.45559671751
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.427712697929005,
+     "grossMxnHa": 61934.61194251516
+    },
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 4.514819005906666,
+     "grossMxnHa": 24328.182719653123
+    }
+   ]
+  },
+  {
+   "id": "355eddf135f3511e",
+   "regime": "rainfed",
+   "descriptionEs": "año 1: barbecho (jun–oct) → año 1: garbanzo (nov–may) → año 2: sorgo (jun–oct)",
+   "priorityScore": 75,
+   "irrigationM3Ha": 0,
+   "failedHarvests": 1,
+   "requiresIrrigationConfirmation": false,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 2135 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 0 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico.",
+    "1 campañas con cosecha simulada inferior a 50 kg/ha: escenario de alto riesgo, no plan operativo validado."
+   ],
+   "gross": {
+    "median": 2135.4514678308533,
+    "p10": 2061.036573297401,
+    "p90": 2320.320466385793
+   },
+   "campaigns": [
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 0.11538296832607936,
+     "grossMxnHa": 2084.830322088814
+    },
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 0,
+     "grossMxnHa": 0
+    }
+   ]
+  },
+  {
+   "id": "09e2972050287f69",
+   "regime": "rainfed",
+   "descriptionEs": "año 1: barbecho (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
+   "priorityScore": 25,
+   "irrigationM3Ha": 0,
+   "failedHarvests": 1,
+   "requiresIrrigationConfirmation": false,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 2085 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 0 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico.",
+    "1 campañas con cosecha simulada inferior a 50 kg/ha: escenario de alto riesgo, no plan operativo validado."
+   ],
+   "gross": {
+    "median": 2084.830322088814,
+    "p10": 1998.8171442452842,
+    "p90": 2301.142201698236
+   },
+   "campaigns": [
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 0.11538296832607936,
+     "grossMxnHa": 2084.830322088814
+    },
+    {
+     "cropEs": "Maíz",
+     "fallow": false,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 0,
+     "grossMxnHa": 0
+    }
+   ]
+  }
+ ]
+}

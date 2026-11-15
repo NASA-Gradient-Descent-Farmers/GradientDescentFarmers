@@ -3,7 +3,7 @@
 
 import { createServer, type IncomingMessage, type Server } from 'node:http'
 import twilio from 'twilio'
-import type { DashboardData } from '../../frontend/src/lib/types.ts'
+import type { Results } from './data.ts'
 import type { Config } from './config.ts'
 import { handleIncoming } from './handler.ts'
 import { SessionStore } from './sessions.ts'
@@ -34,7 +34,7 @@ function readBody(request: IncomingMessage): Promise<string> {
   })
 }
 
-export function createWebhook(config: Config, data: DashboardData, sessions = new SessionStore(config.sessionMinutes)): Server {
+export function createWebhook(config: Config, { data, rotations }: Results, sessions = new SessionStore(config.sessionMinutes)): Server {
   return createServer(async (request, response) => {
     const send = (status: number, body: string, type = 'text/plain; charset=utf-8') => {
       response.writeHead(status, { 'Content-Type': type })
@@ -55,7 +55,7 @@ export function createWebhook(config: Config, data: DashboardData, sessions = ne
       }
       if (!params.From || params.Body === undefined) return send(400, 'missing From or Body')
 
-      const messages = await handleIncoming({ from: params.From, body: params.Body, media: Number(params.NumMedia ?? 0) || 0 }, { data, sessions, siteUrl: config.siteUrl })
+      const messages = await handleIncoming({ from: params.From, body: params.Body, media: Number(params.NumMedia ?? 0) || 0 }, { data, rotations, sessions, siteUrl: config.siteUrl })
       console.log(`reply to ${maskSender(params.From)}: ${messages.length} message(s)`)
       const twiml = new twilio.twiml.MessagingResponse()
       for (const message of messages) twiml.message(message)

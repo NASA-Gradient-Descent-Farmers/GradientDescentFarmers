@@ -6,6 +6,7 @@
 import { fold } from '../../frontend/src/farmer/places.ts'
 import { DICTIONARIES, translate } from '../../frontend/src/i18n/translate.ts'
 import { makeFormat } from '../../frontend/src/lib/format.ts'
+import type { RotationsByLocation } from '../../frontend/src/lib/rotations.ts'
 import type { DashboardData } from '../../frontend/src/lib/types.ts'
 import { EMPTY_CHAT, focusOf, greeting, needsLocation, readLocation, reply, type BotBubble, type Env } from '../../frontend/src/whatsapp/engine.ts'
 import type { SessionStore } from './sessions.ts'
@@ -33,14 +34,16 @@ export interface Incoming {
 
 export interface HandlerDeps {
   data: DashboardData
+  /** Rotation results for the locations that have them; a location without an entry answers "data unavailable". */
+  rotations: RotationsByLocation
   sessions: SessionStore
   siteUrl: string
 }
 
-export function makeEnv(data: DashboardData): Env {
+export function makeEnv(data: DashboardData, rotations: RotationsByLocation = {}): Env {
   const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
   const fmt = makeFormat('es')
-  return { data, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
+  return { data, rotations, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
 }
 
 /** Splits text into messages no longer than `max`, breaking between paragraphs where it can. */
@@ -77,8 +80,8 @@ function render(bubbles: BotBubble[]): { text: string; options: string[] } {
 
 /** The messages to send back for one incoming message. Never throws: a failure becomes an apology. */
 export async function handleIncoming(message: Incoming, deps: HandlerDeps): Promise<string[]> {
-  const { data, sessions, siteUrl } = deps
-  const env = makeEnv(data)
+  const { data, rotations, sessions, siteUrl } = deps
+  const env = makeEnv(data, rotations)
   const sender = message.from
   const text = message.body.trim()
   try {
@@ -103,7 +106,7 @@ export async function handleIncoming(message: Incoming, deps: HandlerDeps): Prom
 
     const messages = chunk(out)
     // the website link goes with each new set of results, and with a location that has none
-    const newResult = turn.state.last !== null && turn.state.last !== state.last
+    const newResult = (turn.state.last !== null && turn.state.last !== state.last) || turn.showsResults === true
     const noData = turn.state.location !== null && out.includes('Datos no disponibles')
     if (newResult || noData) messages.push(copy.site(siteUrl))
     else if (!known) messages.push(copy.restartHint)

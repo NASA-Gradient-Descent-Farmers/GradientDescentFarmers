@@ -21,8 +21,8 @@ describe('the shared configuration', () => {
     ])
   })
 
-  it('only Guanajuato has model results, and they are experimental', () => {
-    expect(DEMO_LOCATIONS.map((place) => place.results)).toEqual(['experimental', null, null])
+  it('Guanajuato has the experimental model results; Sinaloa and Sonora have published rotation results', () => {
+    expect(DEMO_LOCATIONS.map((place) => place.results)).toEqual(['experimental', 'rotations', 'rotations'])
   })
 })
 
@@ -82,7 +82,8 @@ describe('Guanajuato: experimental demonstration data', () => {
   })
 })
 
-describe.each(['sinaloa', 'sonora'] as const)('%s: data unavailable', (id) => {
+// the rotation results of these two are tested in rotations.test.ts; here none is loaded, so they must say so
+describe.each(['sinaloa', 'sonora'] as const)('%s: rotation results not loaded, data unavailable', (id) => {
   const place = demoLocation(id)
   const unavailable = t('whatsapp.unavailable', { name: place.name })
 

@@ -181,7 +181,18 @@ Charts in Técnico use the same orange, black and white (rotation = marker shape
 A WhatsApp-style chat that shows how YolIA could answer a farmer by text message. It is a **simulation**: nothing is sent to
 WhatsApp, Twilio or any API, and it needs no key, internet or language model. It reuses the farmer assistant's rules
 (`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
-the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). Only Guanajuato answers, with the bundled model results (computed at El Batán, Texcoco) labelled experimental demonstration data; Sinaloa and Sonora show "Data unavailable" and never reuse another location's results.
+the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). Guanajuato answers with the bundled model results (computed at El Batán, Texcoco), labelled experimental demonstration data. Sinaloa and Sonora answer from the rotation results the rotations service published for those two points (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence). If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
+
+### Updating the rotation results
+
+The rotations service (`gradientdescentfarmers/rotations_service`) writes `rotations.json` to a private bucket. Download the run you want (needs access to the `gdfarming` project), then slim it into the file the app and the WhatsApp server read:
+
+```bash
+gcloud storage cp gs://gdfarming-farm-rotations/farm_rotations/<farm_id>/source_runs/<source_run_id>/runs/<rotation_run_id>/rotations.json .
+node scripts/slim-rotations.mjs <sinaloa|sonora|guanajuato> ./rotations.json
+```
+
+The script copies the figures as they are and drops server paths and hashes. `src/lib/rotations.ts` checks the file when it is loaded. Current runs: `mexico_norte_01` (Sinaloa, run `be357172bae941c1`) and `mexico_norte_02` (Sonora, run `5abb561d6ead496b`). A new location needs `results: 'rotations'` in `src/lib/demoLocations.ts`.
 
 - Open `/demo/whatsapp` with `npm run dev`, or `#/demo/whatsapp` on a static host (the built app uses relative asset paths).
 - Tests: `npm test` (`src/whatsapp/*.test.ts*`).
