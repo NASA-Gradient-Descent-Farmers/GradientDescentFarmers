@@ -95,7 +95,7 @@ function Workspace({ user }: { user: Account }) {
   let page
   if (route === 'home') {
     page = data ? (
-      <FarmerHome data={data} pin={pin} onPin={changePin} site={site} coverage={coverage} />
+      <FarmerHome pin={pin} onPin={changePin} site={site} />
     ) : (
       <div className="fa fa-solo">
         <TopBar />

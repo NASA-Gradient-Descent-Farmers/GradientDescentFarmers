@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { useI18n } from '../../i18n/index.tsx'
 import type { Rotations } from '../../lib/rotations.ts'
-import { bestOption, type RotationOption } from '../../lib/rotations.ts'
+import { bestOption, pickForGoal, type RotationGoal, type RotationOption } from '../../lib/rotations.ts'
+import type { Situation } from '../state.ts'
 import type { Zone } from '../../lib/environment.ts'
 import { DataTable } from './DataTable.tsx'
 import { Disclosure } from './Disclosure.tsx'
@@ -29,12 +31,13 @@ function useFigures() {
   return { t, fmt, span, income }
 }
 
-function OptionCard({ regime, option }: { regime: (typeof REGIMES)[number]; option: RotationOption }) {
+function OptionCard({ regime, option, goal, hectares }: { regime: (typeof REGIMES)[number]; option: RotationOption; goal: RotationGoal | null; hectares: number | null }) {
   const { t, fmt, span, income } = useFigures()
+  const total = hectares !== null && option.gross?.median != null ? Math.round((option.gross.median * hectares) / 1000) * 1000 : null
   return (
     <article className="near-option">
       <h2>{t(`whatsapp.rotations.regime.${regime}`)}</h2>
-      <p className="near-kicker">{t('near.recommended')}</p>
+      <p className="near-kicker">{goal ? t('near.forGoal', { goal: t(`farmer.rec.goals.${goal}`) }) : t('near.recommended')}</p>
       <ol className="near-seasons">
         {option.campaigns.map((campaign, i) => (
           <li key={i}>
@@ -55,6 +58,7 @@ function OptionCard({ regime, option }: { regime: (typeof REGIMES)[number]; opti
         ))}
       </ol>
       <p>{income(option)}</p>
+      {total !== null && hectares !== null && <p>{t('near.forHectares', { ha: fmt.number(hectares, Number.isInteger(hectares) ? 0 : 1), total: fmt.number(total, 0) })}</p>}
       {regime === 'irrigated' && option.irrigationM3Ha !== null && <p>{t('whatsapp.rotations.water', { amount: fmt.number(Math.round(option.irrigationM3Ha / 100) * 100) })}</p>}
       {option.failedHarvests > 0 && <p className="callout is-warn">{t('whatsapp.rotations.failed', { n: option.failedHarvests })}</p>}
       {option.requiresIrrigationConfirmation && <p className="callout is-warn">{t('whatsapp.rotations.confirmIrrigation')}</p>}
@@ -125,10 +129,14 @@ function RunDetails({ rotations }: { rotations: Rotations }) {
  * that zone, per hectare, so they say so first and do not use the parcel questions. Nothing here is computed: every figure
  * is the file's, rounded for display.
  */
-export function RotationPlant({ zone, rotations, onAsk }: { zone: Zone; rotations: Rotations; onAsk: () => void }) {
+export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { zone: Zone; rotations: Rotations; situation?: Situation; notice?: ReactNode; onAsk: () => void }) {
   const { t } = useI18n()
   const { name } = zone
   const { income } = useFigures()
+  const goal = situation?.goal ?? null
+  const hectares = situation?.hectares ?? null
+  // the regime the farmer says they have comes first; both are always shown
+  const order: (typeof REGIMES)[number][] = situation?.water === 'rain' ? ['rainfed', 'irrigated'] : ['irrigated', 'rainfed']
   const years = (() => {
     const first = Math.min(...rotations.weatherYears)
     const last = Math.max(...rotations.weatherYears)
@@ -138,13 +146,14 @@ export function RotationPlant({ zone, rotations, onAsk }: { zone: Zone; rotation
     <div className="page">
       <h1 className="page-title">{t('farmer.plant.title')}</h1>
       <p className="page-question">{t('near.heading', { place: name })}</p>
+      {notice}
 
       <p className="callout is-warn">{t('whatsapp.rotations.label', { years })}</p>
       <p className="muted">{t('near.scope', { place: name })}</p>
 
-      {REGIMES.map((regime) => {
-        const option = bestOption(rotations, regime) ?? rotations.options.find((candidate) => candidate.regime === regime)
-        return option ? <OptionCard key={regime} regime={regime} option={option} /> : null
+      {order.map((regime) => {
+        const option = (goal ? pickForGoal(rotations, regime, goal) : bestOption(rotations, regime)) ?? rotations.options.find((candidate) => candidate.regime === regime)
+        return option ? <OptionCard key={regime} regime={regime} option={option} goal={goal} hectares={hectares} /> : null
       })}
 
       <Disclosure title={t('near.allOptions', { n: rotations.options.length })}>

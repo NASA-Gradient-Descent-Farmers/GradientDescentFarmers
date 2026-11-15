@@ -56,6 +56,8 @@ const slim = {
     descriptionEs: option.description_es,
     priorityScore: number(option.priority_score),
     irrigationM3Ha: number(option.irrigation_gross_m3_ha),
+    evapotranspirationMm: number(option.evapotranspiration_mm),
+    soilScore: number(option.indicators?.soil_proxy_score),
     failedHarvests: option.failed_harvests,
     requiresIrrigationConfirmation: option.requires_irrigation_confirmation === true,
     highlightsEs: option.highlights_es,
@@ -76,7 +78,9 @@ const slim = {
 
 const soilModel = siblingJson('soil_parameters.json')
 const rejections = siblingJson('simulation_rejections.json')
-const request = siblingJson('request.json')
+// the settings the run actually used (defaults filled in); the request file only holds what was asked for
+const provenance = siblingJson('provenance.json')
+const request = provenance?.effective_model_settings ? { model: provenance.effective_model_settings } : siblingJson('request.json')
 const varieties = siblingJson('crop_parameter_manifest.json')
 const financial = siblingJson('financial_provenance.json')
 if (sibling('economic_reference.csv') || soilModel || rejections || request || varieties || financial) {

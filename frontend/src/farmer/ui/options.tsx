@@ -1,13 +1,13 @@
 import { WATER, type Water } from '../../lib/farm.ts'
 import { GOALS, PREVIOUS, type Goal, type Previous } from '../state.ts'
 import type { Option } from './BigChoice.tsx'
-import { BarleyIcon, BeanIcon, DropIcon, EarnIcon, FallowIcon, MaizeIcon, OtherCropIcon, RainCloudIcon, SafeIcon, SomeWaterIcon, SoilIcon } from './glyphs.tsx'
+import { BarleyIcon, BeanIcon, DropIcon, EarnIcon, FallowIcon, MaizeIcon, OtherCropIcon, RainCloudIcon, SomeWaterIcon, SoilIcon } from './glyphs.tsx'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
 const PREVIOUS_ICON = { maize: <MaizeIcon />, barley: <BarleyIcon />, fababean: <BeanIcon />, other: <OtherCropIcon />, none: <FallowIcon /> }
 const WATER_ICON = { rain: <RainCloudIcon />, some: <SomeWaterIcon />, regular: <DropIcon /> }
-const GOAL_ICON = { earn: <EarnIcon />, safe: <SafeIcon />, soil: <SoilIcon /> }
+const GOAL_ICON = { earn: <EarnIcon />, water: <DropIcon />, soil: <SoilIcon /> }
 
 /** The answers to each question as large, labelled options. The same lists serve "Mi parcela" and the questions asked in the chat. */
 export const previousOptions = (t: T): Option<Previous>[] => PREVIOUS.map((value) => ({ value, label: t(`farmer.parcel.previous.${value}`), icon: PREVIOUS_ICON[value] }))

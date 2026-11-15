@@ -16,10 +16,7 @@ phone ──WhatsApp──▶ Twilio ──HTTPS POST /whatsapp──▶ tunnel 
 - **Locations** (defined once in `frontend/src/lib/demoLocations.ts`): Guanajuato (20.4243195, -101.1466639), Sinaloa
   (25.7636111, -108.8613889) and Sonora (27.332202, -110.162783). Name one in a message, or answer with 1, 2 or 3.
   They are demonstration reference points, not verified parcels.
-- **Guanajuato** answers use the bundled model results, which were computed at El Batán, Texcoco, and are **not
-  calibrated for Guanajuato**. Every such answer is labelled *"Datos experimentales de demostración"*. No answer is
-  ever presented as validated.
-- **Sinaloa and Sonora** answer from the rotations service's published runs (`mexico_norte_01` and `mexico_norte_02`,
+- **Guanajuato, Sinaloa and Sonora** answer from the rotations service's runs (`guanajuato_valle_demo`, `mexico_norte_01` and `mexico_norte_02`,
   see `gradientdescentfarmers/rotations_service/README.md`), read from `frontend/public/data/rotations/`. They are
   exploratory scenarios: a crop model on 2024–2025 weather with historical SIAP prices, low confidence, not validated in
   the field. Income is always *gross per hectare* over the whole plan, never profit, and "sin datos" is never zero. If a
@@ -92,10 +89,9 @@ Message the Sandbox number from your phone, for example:
 | You | YolIA |
 | --- | --- |
 | `Hola` | Welcome, and the three locations as a numbered list |
-| `1` | Location: Guanajuato (coordinates), marked as experimental demonstration data |
-| `¿Qué me conviene sembrar?` | Asks what you planted, one question at a time (answer with the number or in words) |
-| `1`, `3 hectáreas`, `solo lluvia`, `1` | Recommendation from the stored model results, with its reliability and the website link |
-| `¿Y si llueve poco?` / `¿Cuánto podría ganar?` | Answers from the same results, without asking again |
+| `1` | Location: Guanajuato (coordinates), and that rotation results and data exist for it |
+| `¿Qué me conviene sembrar?` | The best irrigated and rain-only options from that place's rotation run, with gross income and the website link |
+| `¿Y si llueve poco?` / `¿Cuánto podría ganar?` | Answers from the same run, without asking anything first |
 | `Sonora` then `¿Qué me conviene sembrar?` | The rotation options for Sonora (with and without irrigation), gross income per hectare, the confidence caveats and the website link |
 | `¿Cuánto podría cosechar?` / `¿Qué pasa si llueve poco?` | Simulated grain per crop and season; irrigated against rain-only income |
 

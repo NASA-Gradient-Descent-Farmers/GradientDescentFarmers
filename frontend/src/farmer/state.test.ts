@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { data } from '../assistant/testdata.ts'
-import { EMPTY, farmInputs, isComplete, missing, parcelAt, parseState, PRIORITY_OF, validHectares } from './state.ts'
+import { EMPTY, farmInputs, GOALS, isComplete, missing, parcelAt, parseState, PRIORITY_OF, validHectares } from './state.ts'
 
 describe('parseState', () => {
   it('keeps what checks out and drops the rest', () => {
@@ -41,12 +41,20 @@ describe('parcelAt', () => {
   })
 })
 
+describe('the goal that replaced "reduce risk"', () => {
+  it('is "water", and an answer saved as "safe" is read as it', () => {
+    expect(GOALS).toEqual(['earn', 'water', 'soil'])
+    const saved = JSON.stringify({ parcel: null, situation: { previous: 'maize', hectares: 2, water: 'rain', goal: 'safe' } })
+    expect(parseState(saved).situation.goal).toBe('water')
+  })
+})
+
 describe('farmInputs', () => {
   it('maps the answers onto what the planner takes, and invents nothing', () => {
-    const farm = farmInputs({ previous: 'barley', hectares: 3, water: 'some', goal: 'safe' }, data.meta)
+    const farm = farmInputs({ previous: 'barley', hectares: 3, water: 'some', goal: 'water' }, data.meta)
     expect(farm).toMatchObject({ areaHa: 3, water: 'some', priority: 'steady', wanted: [], budget: null, planting: null })
     expect(farm.rotations).toEqual(data.meta.rotation_order)
-    expect(PRIORITY_OF).toEqual({ earn: 'income', safe: 'steady', soil: 'soil' })
+    expect(PRIORITY_OF).toEqual({ earn: 'income', water: 'steady', soil: 'soil' })
     expect(farmInputs({}, data.meta)).toMatchObject({ areaHa: null, water: null, priority: null })
   })
 })

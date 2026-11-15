@@ -1,29 +1,31 @@
 import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
-import { nearZone } from '../../lib/environment.ts'
-import type { Parcel } from '../state.ts'
+import { zoneFor } from '../../lib/environment.ts'
+import type { FarmerState, Parcel } from '../state.ts'
 import { EnvironmentPanel } from './EnvironmentPanel.tsx'
 import { RotationPlant } from './RotationPlant.tsx'
 import { ZoneNotice } from './ZoneNotice.tsx'
 
 interface Props {
+  state: FarmerState
   parcel: Parcel | null
   onGoParcel: () => void
   onAsk: () => void
 }
 
 /**
- * Qué sembrar: what the data service has published for the place the parcel is near. A parcel close to Sonora or Sinaloa gets
- * the rotation options and the place's data; one close to Guanajuato gets the place's data and is told the rotation model has
- * not been run there; anywhere else it says there is no data yet and where the nearest is. It never fills the gap with
- * results computed for another place.
+ * Qué sembrar: what the data service published for the place the parcel is in or nearest to, ordered by what the farmer says
+ * matters and scaled to their hectares. A place with a rotation run shows its options and its data; one with only an
+ * environmental package shows that. The notice says which place the results are from.
  */
-export function PlantPage({ parcel, onGoParcel, onAsk }: Props) {
+export function PlantPage({ state, parcel, onGoParcel, onAsk }: Props) {
   const { t } = useI18n()
   const published = useZoneData()
-  const zone = parcel && published ? nearZone(parcel.point, published) : null
+  const zone = parcel && published ? zoneFor(parcel.point, published) : null
 
-  if (zone?.rotations) return <RotationPlant zone={zone} rotations={zone.rotations} onAsk={onAsk} />
+  if (zone?.rotations) {
+    return <RotationPlant zone={zone} rotations={zone.rotations} situation={state.situation} notice={<ZoneNotice point={parcel!.point} />} onAsk={onAsk} />
+  }
 
   return (
     <div className="page">
@@ -40,29 +42,16 @@ export function PlantPage({ parcel, onGoParcel, onAsk }: Props) {
         </div>
       )}
 
-      {parcel && !published && (
+      {parcel && !zone && (
         <p className="loading" role="status">
           <span className="spinner" aria-hidden="true" />
           {t('farmer.plant.loading')}
         </p>
       )}
 
-      {parcel && published && !zone && (
+      {zone && (
         <>
-          <ZoneNotice point={parcel.point} />
-          <div className="empty-card">
-            <h2>{t('near.noDataCard.title')}</h2>
-            <p>{t('near.noDataCard.body')}</p>
-            <button type="button" className="btn primary big block" onClick={onGoParcel}>
-              {t('farmer.common.change')}
-            </button>
-          </div>
-        </>
-      )}
-
-      {zone && !zone.rotations && (
-        <>
-          <p className="callout is-warn">{t('near.noRotations', { place: zone.name })}</p>
+          <ZoneNotice point={parcel!.point} />
           <EnvironmentPanel zone={zone} />
           <button type="button" className="btn secondary" onClick={onAsk}>
             {t('farmer.rec.actions.ask')}

@@ -25,6 +25,10 @@ export interface RotationOption {
   descriptionEs: string
   priorityScore: number | null
   irrigationM3Ha: number | null
+  /** Water the crops used over the plan (rain plus irrigation), mm. */
+  evapotranspirationMm: number | null
+  /** The run's soil-health proxy, 0-100: a heuristic, not a measurement. */
+  soilScore: number | null
   failedHarvests: number
   requiresIrrigationConfirmation: boolean
   highlightsEs: string[]
@@ -97,6 +101,8 @@ function parseOption(raw: unknown, index: number): RotationOption {
     descriptionEs: text(raw.descriptionEs, `${where}.descriptionEs`),
     priorityScore: maybe(raw.priorityScore, `${where}.priorityScore`),
     irrigationM3Ha: maybe(raw.irrigationM3Ha, `${where}.irrigationM3Ha`),
+    evapotranspirationMm: maybe(raw.evapotranspirationMm ?? null, `${where}.evapotranspirationMm`),
+    soilScore: maybe(raw.soilScore ?? null, `${where}.soilScore`),
     failedHarvests: finite(raw.failedHarvests, `${where}.failedHarvests`),
     requiresIrrigationConfirmation: raw.requiresIrrigationConfirmation === true,
     highlightsEs: list(raw.highlightsEs, `${where}.highlightsEs`).map((line, i) => text(line, `${where}.highlightsEs[${i}]`)),
@@ -163,6 +169,40 @@ export function parseRotations(raw: unknown): Rotations {
 export function bestOption(rotations: Rotations, regime: Regime): RotationOption | null {
   const id = rotations.best[regime]
   return rotations.options.find((option) => option.id === id) ?? null
+}
+
+/** What the farmer says matters most; `earn` is income, `water` is using water well, `soil` is looking after the soil. */
+export type RotationGoal = 'earn' | 'water' | 'soil'
+
+/** Gross income per cubic metre of water the plan uses (1 mm over a hectare is 10 m³). Null without income or water data. */
+export function waterProductivity(option: RotationOption): number | null {
+  const income = option.gross?.median
+  if (income == null || option.evapotranspirationMm == null || option.evapotranspirationMm <= 0) return null
+  return income / (option.evapotranspirationMm * 10)
+}
+
+/**
+ * The option that best fits what the farmer says matters, among the options of one water regime, ranked by the run's own
+ * figures: earn is the highest gross income; soil is the best soil score; water is the least irrigation water when the regime
+ * irrigates (options with a failed harvest set aside), and the most income per m³ of water used when it does not. Income
+ * breaks ties. Null when the regime has no option.
+ */
+export function pickForGoal(rotations: Rotations, regime: Regime, goal: RotationGoal): RotationOption | null {
+  const candidates = rotations.options.filter((option) => option.regime === regime)
+  const income = (option: RotationOption) => option.gross?.median ?? -Infinity
+  const irrigates = candidates.some((option) => (option.irrigationM3Ha ?? 0) > 0)
+  const key = (option: RotationOption): [number, number] => {
+    if (goal === 'water' && irrigates) return [option.failedHarvests > 0 || option.irrigationM3Ha == null ? -Infinity : -option.irrigationM3Ha, income(option)]
+    if (goal === 'water') return [waterProductivity(option) ?? -Infinity, income(option)]
+    if (goal === 'soil') return [option.soilScore ?? -Infinity, income(option)]
+    return [income(option), option.priorityScore ?? -Infinity]
+  }
+  return candidates.reduce<RotationOption | null>((best, option) => {
+    if (best === null) return option
+    const [a1, a2] = key(option)
+    const [b1, b2] = key(best)
+    return a1 > b1 || (a1 === b1 && a2 > b2) ? option : best
+  }, null)
 }
 
 /** The option with the highest median gross income in a regime, ignoring priorities; null without income data. */

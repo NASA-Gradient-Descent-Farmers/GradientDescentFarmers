@@ -21,7 +21,7 @@ describe('recommend', () => {
   })
 
   it('turns what matters most into the planner setting', async () => {
-    expect((await run({ ...base, goal: 'safe' })).result.preset).toBe('steady')
+    expect((await run({ ...base, goal: 'water' })).result.preset).toBe('steady')
     expect((await run({ ...base, goal: 'soil' })).result.preset).toBe('sustainability')
   })
 

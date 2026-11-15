@@ -1,24 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAccount } from '../../account/AccountContext.ts'
 import { TopBar } from '../../components/TopBar.tsx'
-import type { CoverageInfo } from '../../hooks/useCoverage.ts'
 import { useI18n } from '../../i18n/index.tsx'
 import type { LatLon } from '../../lib/geo.ts'
-import type { DashboardData } from '../../lib/types.ts'
-import { zoneOf } from '../recommend.ts'
 import { isComplete, loadState, parcelAt, saveState, type FarmerState, type Parcel, type Situation } from '../state.ts'
 import { AskPage } from './AskPage.tsx'
 import { PinIcon } from './glyphs.tsx'
 import { ParcelPage } from './ParcelPage.tsx'
 
 interface Props {
-  data: DashboardData
   pin: LatLon | null
   /** Sets the pin the whole app shares. */
   onPin: (point: LatLon) => void
   /** The one site the crop model was fitted to. */
   site: LatLon
-  coverage: CoverageInfo | null
 }
 
 /**
@@ -26,7 +21,7 @@ interface Props {
  * below it. The first time (no parcel or answers yet) it starts with the short guided questions of Mi parcela, then brings the
  * person here and asks the recommendation for them. The fuller pages (recommendation, saved list) live in Técnico.
  */
-export function FarmerHome({ data, pin, onPin, site, coverage }: Props) {
+export function FarmerHome({ pin, onPin, site }: Props) {
   const { t, fmt } = useI18n()
   const { user } = useAccount()
   const name = user?.name ?? ''
@@ -36,7 +31,6 @@ export function FarmerHome({ data, pin, onPin, site, coverage }: Props) {
   const [view, setView] = useState<'setup' | 'home'>(ready ? 'home' : 'setup')
   const [firstTime] = useState(() => state.parcel === null && Object.keys(state.situation).length === 0)
   const [seed, setSeed] = useState<{ text: string; nonce: number } | null>(null)
-  const zone = useMemo(() => (coverage ? zoneOf(coverage.verdict, coverage.distanceKm) : null), [coverage])
   const main = useRef<HTMLElement>(null)
 
   useEffect(() => saveState(state), [state])
@@ -103,10 +97,8 @@ export function FarmerHome({ data, pin, onPin, site, coverage }: Props) {
               </button>
             </section>
             <AskPage
-              data={data}
               state={state}
               parcel={parcel}
-              zone={zone}
               heading={t('farmer.home.hello', { name })}
               lede={t('farmer.home.lede')}
               onSituation={patchSituation}

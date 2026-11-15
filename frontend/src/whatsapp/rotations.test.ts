@@ -12,7 +12,8 @@ import { demoLocation } from '../lib/demoLocations.ts'
 const file = (id: string): unknown => JSON.parse(readFileSync(new URL(`../../public/data/rotations/${id}.json`, import.meta.url), 'utf8'))
 const sinaloa = parseRotations(file('sinaloa'))
 const sonora = parseRotations(file('sonora'))
-const rotations: RotationsByLocation = { sinaloa, sonora }
+const guanajuato = parseRotations(file('guanajuato'))
+const rotations: RotationsByLocation = { guanajuato, sinaloa, sonora }
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
@@ -138,7 +139,7 @@ describe.each([
 
   it('does not make up fertilizer doses', async () => {
     const text = flat((await reply('¿Cuánto abono necesito?', start, env)).bubbles)
-    expect(text).toContain('no calcula dosis de fertilizante')
+    expect(text).toContain('probar en un pedazo de tu parcela')
   })
 
   it('answers a question asked in the same message as the location, and one that waited for a location', async () => {
@@ -162,7 +163,7 @@ describe('results are never borrowed between locations', () => {
   })
 
   it('switching from Guanajuato drops its answer, and its experimental label is not attached to rotation answers', async () => {
-    const gto = await reply('¿Qué me conviene sembrar?', { ...EMPTY_CHAT, location: 'guanajuato', situation: { previous: 'maize', hectares: 2, water: 'rain', goal: 'earn' } }, env)
+    const gto = await reply('¿Qué me conviene sembrar?', { ...EMPTY_CHAT, location: 'guanajuato', situation: { previous: 'maize', hectares: 2, water: 'rain', goal: 'earn' } }, { ...env, kinds: { guanajuato: 'experimental' } })
     expect(gto.state.last).not.toBeNull()
     const moved = await reply('Sonora', gto.state, env)
     expect(moved.state.last).toBeNull()

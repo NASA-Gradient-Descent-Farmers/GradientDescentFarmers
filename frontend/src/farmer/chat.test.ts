@@ -36,7 +36,7 @@ describe('planReply', () => {
   it('asks for the parcel first, then the first unanswered question, as a conversation', () => {
     const noParcel = planReply('¿Qué me conviene sembrar?', ctx({ hasParcel: false, situation: {} }))
     expect(noParcel.plan).toEqual({ kind: 'say', bodies: [{ kind: 'ask', field: 'parcel', lead: true }] })
-    const noWater = planReply('¿Qué me conviene sembrar después del maíz?', ctx({ situation: { hectares: 3, goal: 'safe' } }))
+    const noWater = planReply('¿Qué me conviene sembrar después del maíz?', ctx({ situation: { hectares: 3, goal: 'water' } }))
     expect(noWater.patch).toEqual({ previous: 'maize' })
     expect(noWater.plan).toEqual({ kind: 'say', bodies: [{ kind: 'ask', field: 'water', lead: true }] })
   })

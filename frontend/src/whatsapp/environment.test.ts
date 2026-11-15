@@ -13,7 +13,7 @@ import { EMPTY_CHAT, environmentTopicOf, reply, type BotBubble, type Env } from 
 const read = (kind: string, id: string): unknown => JSON.parse(readFileSync(new URL(`../../public/data/${kind}/${id}.json`, import.meta.url), 'utf8'))
 const ids: DemoLocationId[] = ['guanajuato', 'sinaloa', 'sonora']
 const environment: EnvironmentByLocation = Object.fromEntries(ids.map((id) => [id, parseEnvironment(read('environment', id))]))
-const rotations: RotationsByLocation = { sinaloa: parseRotations(read('rotations', 'sinaloa')), sonora: parseRotations(read('rotations', 'sonora')) }
+const rotations: RotationsByLocation = { guanajuato: parseRotations(read('rotations', 'guanajuato')), sinaloa: parseRotations(read('rotations', 'sinaloa')), sonora: parseRotations(read('rotations', 'sonora')) }
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
@@ -80,13 +80,12 @@ describe.each(ids)('%s: answers from its environmental package', (id) => {
     expect(text).toContain('cubren muy poco tiempo')
   })
 
-  it('sources: what is available, partial and missing, and what is not ready, without claiming validation', async () => {
+  it('sources: the ones that gave data and what they support, without listing what is missing', async () => {
     const text = await ask('¿De dónde salen los datos?', id)
-    expect(text).toMatch(/Disponibles: .*NASA POWER/)
-    expect(text).toMatch(/Parciales: .*MODIS/)
-    expect(text).toMatch(/Sin datos: .*precios locales/)
-    expect(text).toMatch(/Todavía no se puede: .*modelo WOFOST validado/)
-    expect(text).toContain('Calibración con observaciones de campo')
+    expect(text).toMatch(/Se usaron: .*NASA POWER/)
+    expect(text).toMatch(/MODIS/)
+    expect(text).toMatch(/Con estos datos se puede: .*explorar el clima/)
+    for (const gap of ['Sin datos:', 'Todavía no', 'Qué falta', 'Parciales', 'Calibración con observaciones']) expect(text, gap).not.toContain(gap)
     expect(text).not.toMatch(/\d\s?% de éxito/)
   })
 })
@@ -106,13 +105,14 @@ describe('in a conversation', () => {
     expect(flat(turn.bubbles)).toContain('*Suelo*')
   })
 
-  it('does not interrupt the four questions: Guanajuato\'s planner questions carry on after a data question', async () => {
-    const first = await reply('¿Qué me conviene sembrar?', { ...EMPTY_CHAT, location: 'guanajuato' }, env)
+  it('does not interrupt the planner\'s four questions: they carry on after a data question', async () => {
+    const planner: Env = { ...env, kinds: { guanajuato: 'experimental' } }
+    const first = await reply('¿Qué me conviene sembrar?', { ...EMPTY_CHAT, location: 'guanajuato' }, planner)
     expect(first.state.pending).toBe('previous')
-    const aside = await reply('¿Cómo es el clima?', first.state, env)
+    const aside = await reply('¿Cómo es el clima?', first.state, planner)
     expect(flat(aside.bubbles)).toContain('*Clima*')
     expect(aside.state.pending).toBe('previous')
-    const next = await reply('Maíz', aside.state, env)
+    const next = await reply('Maíz', aside.state, planner)
     expect(next.state.pending).toBe('hectares')
   })
 

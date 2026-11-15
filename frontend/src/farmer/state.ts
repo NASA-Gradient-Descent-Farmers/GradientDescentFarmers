@@ -13,7 +13,7 @@ const STORAGE_KEY = 'yolia-farmer'
 export const PREVIOUS = ['maize', 'barley', 'fababean', 'other', 'none'] as const
 export type Previous = (typeof PREVIOUS)[number]
 
-export const GOALS = ['earn', 'safe', 'soil'] as const
+export const GOALS = ['earn', 'water', 'soil'] as const
 export type Goal = (typeof GOALS)[number]
 
 /** The questions, in the order they are asked. */
@@ -69,7 +69,9 @@ export function parseState(text: string | null): FarmerState {
     if (isOne(PREVIOUS, s.previous)) situation.previous = s.previous
     if (validHectares(s.hectares)) situation.hectares = s.hectares
     if (isOne(WATER, s.water)) situation.water = s.water
-    if (isOne(GOALS, s.goal)) situation.goal = s.goal
+    // an answer saved before "reduce risk" became "optimize water use" is kept as the new one
+    if (s.goal === 'safe') situation.goal = 'water'
+    else if (isOne(GOALS, s.goal)) situation.goal = s.goal
     const p = raw.parcel
     const parcel: Parcel | null =
       p && validPoint(p.point) && isOne(['search', 'map', 'gps'] as const, p.source)
@@ -110,7 +112,8 @@ export function parcelAt(state: FarmerState, pin: LatLon | null): Parcel | null 
   return { label: null, source: 'map', point: pin }
 }
 
-export const PRIORITY_OF: Record<Goal, Priority> = { earn: 'income', safe: 'steady', soil: 'soil' }
+/** The planner's priority closest to each goal (the planner has no water priority; the rotation results rank by water use themselves). */
+export const PRIORITY_OF: Record<Goal, Priority> = { earn: 'income', water: 'steady', soil: 'soil' }
 
 /** The inputs the planner takes from the answers. Nothing is asked about crops or budget: the planner compares every rotation. */
 export function farmInputs(situation: Situation, meta: Meta): FarmInputs {

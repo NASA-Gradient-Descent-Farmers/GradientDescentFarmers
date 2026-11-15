@@ -78,7 +78,7 @@ export const farmerEn = {
     },
     goal: {
       earn: { label: 'Earn more', hint: 'More income per hectare' },
-      safe: { label: 'Reduce risk', hint: 'So a bad year hurts less' },
+      water: { label: 'Use water well', hint: 'Get more out of every litre of water' },
       soil: { label: 'Look after my soil', hint: 'Keep the soil and lose less fertilizer' },
     },
     summary: {
@@ -103,7 +103,7 @@ export const farmerEn = {
     title: 'What is worth planting',
     notGuarantee: 'This is a model estimate. It does not guarantee a harvest or a profit.',
     forGoal: 'Based on what matters most to you: {goal}.',
-    goals: { earn: 'earning more', safe: 'reducing risk', soil: 'looking after your soil' },
+    goals: { earn: 'earning more', water: 'using water well', soil: 'looking after your soil' },
     thisSeason: 'This season you would plant: {crop}.',
     thisSeasonWhy: 'That is the order of the rotation after {previous}. It is not a model prediction.',
     noMatch: 'We could not place what you planted in this rotation. You decide which crop to start with.',
@@ -190,6 +190,8 @@ export const farmerEn = {
       rain: 'What if it rains little?',
       trust: 'How reliable is this data?',
       fertilizer: 'How much fertilizer do I need?',
+      climate: 'What is the climate like?',
+      soil: 'What is the soil like?',
     },
     inputLabel: 'Your question for YolIA',
     placeholder: 'Type your question…',

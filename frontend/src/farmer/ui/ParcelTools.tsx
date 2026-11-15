@@ -75,7 +75,7 @@ export function ParcelTools({ data, pin, onPin, site, onAsk }: Props) {
           <ParcelPage state={state} parcel={parcel} site={site} onParcel={setParcel} onSituation={patchSituation} onPlant={() => go('plant')} />
         )}
         {tab === 'plant' && (
-          <PlantPage parcel={parcel} onGoParcel={() => go('parcel')} onAsk={onAsk} />
+          <PlantPage state={state} parcel={parcel} onGoParcel={() => go('parcel')} onAsk={onAsk} />
         )}
         {tab === 'saved' && <SavedPage saved={saved} meta={data.meta} models={data.models} onRemove={remove} onGoPlant={() => go('plant')} />}
       </div>

@@ -80,7 +80,7 @@ describe('Qué sembrar for a parcel near a run', () => {
     expect(text).toContain('no miden tu parcela')
   })
 
-  it('says the results do not depend on the parcel questions', () => {
-    expect(text).toContain('no cambian con tus respuestas')
+  it('says the results are per hectare and ordered by what matters most', () => {
+    expect(text).toContain('Se ordenan según lo que más te importa')
   })
 })

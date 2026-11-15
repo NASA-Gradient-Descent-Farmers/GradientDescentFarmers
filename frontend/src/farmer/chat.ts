@@ -6,7 +6,11 @@
 import { newId } from '../assistant/history.ts'
 import { fold } from './places.ts'
 import type { Recommendation, Zone } from './recommend.ts'
-import { FIELDS, missing, type Field, type Previous, type Situation } from './state.ts'
+import type { DemoLocationId } from '../lib/demoLocations.ts'
+import type { Water } from '../lib/farm.ts'
+import type { EnvironmentTopic } from '../whatsapp/environmentAnswers.ts'
+import type { RotationTopic } from '../whatsapp/rotationAnswers.ts'
+import { FIELDS, missing, type Field, type Goal, type Previous, type Situation } from './state.ts'
 import { scopedKey } from '../account/storage.ts'
 
 export type Intent = 'plant' | 'money' | 'rain' | 'trust' | 'fertilizer' | 'hello' | 'unknown'
@@ -48,6 +52,8 @@ export type Body =
   /** A question with its answer buttons; `lead` adds the sentence that opens the questions. */
   | { kind: 'ask'; field: 'parcel' | Field; lead: boolean }
   | { kind: 'recommendation'; rec: Recommendation; focus: 'plant' | 'money' | 'rain' }
+  /** An answer built from what the data service published for the parcel's place; `km` is the distance to that place. */
+  | { kind: 'zone'; topic: RotationTopic | EnvironmentTopic; place: DemoLocationId; km: number; goal?: Goal; hectares?: number; water?: Water }
   | { kind: 'outside'; km: number }
   | { kind: 'fertilizer'; rec: Recommendation | null }
   | { kind: 'trust' }
@@ -98,7 +104,8 @@ const STORAGE_KEY = 'yolia-chat'
 export const MAX_TURNS = 40
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
-const KINDS = ['greeting', 'ask', 'recommendation', 'outside', 'fertilizer', 'trust', 'unknown', 'error'] as const
+// answers from the old Texcoco planner ('recommendation', 'outside') are not kept: they are not what the app answers with now
+const KINDS = ['greeting', 'ask', 'zone', 'fertilizer', 'trust', 'unknown', 'error'] as const
 
 function isTurn(value: unknown): value is Turn {
   if (!isObject(value) || typeof value.id !== 'string' || typeof value.at !== 'number') return false
@@ -107,7 +114,7 @@ function isTurn(value: unknown): value is Turn {
   const { kind, field } = value.body
   if (typeof kind !== 'string' || !(KINDS as readonly string[]).includes(kind)) return false
   if (kind === 'ask') return field === 'parcel' || (FIELDS as readonly unknown[]).includes(field)
-  if (kind === 'recommendation') return isObject(value.body.rec) && isObject(value.body.rec.result)
+  if (kind === 'zone') return typeof value.body.topic === 'string' && typeof value.body.place === 'string' && typeof value.body.km === 'number'
   return true
 }
 

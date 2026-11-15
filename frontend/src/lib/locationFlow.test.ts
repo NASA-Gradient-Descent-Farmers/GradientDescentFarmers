@@ -23,7 +23,7 @@ describe.each(['es', 'en'] as const)('the location flow in %s', (lang) => {
 
   it('names the three places the data covers where it says what exists', () => {
     const dict = DICTIONARIES[lang]
-    for (const path of ['near.noData.body', 'where.zonesHint', 'farmer.chat.outside']) {
+    for (const path of ['where.zonesHint', 'farmer.chat.outside']) {
       const text = at(dict, path) as string
       expect(text, path).toMatch(/Sonora/)
       expect(text, path).toMatch(/Sinaloa/)

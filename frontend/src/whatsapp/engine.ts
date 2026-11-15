@@ -5,6 +5,7 @@
 // a typed answer ("2 hectáreas", "solo de la lluvia") where the app has big buttons.
 
 import { classify, planReply, type Body, type Context } from '../farmer/chat.ts'
+import { environmentTopicOf } from '../farmer/topics.ts'
 import { evidenceFor, yearsText } from '../farmer/evidence.ts'
 import { fold } from '../farmer/places.ts'
 import { confidenceOf, DRY_SCENARIOS, nextCrop, recommend, roundMoney, type Recommendation, type Zone } from '../farmer/recommend.ts'
@@ -57,6 +58,8 @@ export interface Env {
   rotations?: RotationsByLocation
   /** The environmental packages loaded for the places that have them (climate, soil, satellite series, sources). */
   environment?: EnvironmentByLocation
+  /** For tests: what a place answers with, overriding its configuration (the planner flow has no configured place now). */
+  kinds?: Partial<Record<DemoLocationId, 'experimental' | 'rotations' | null>>
   /** Injected so tests can run without the planner. */
   run?: typeof recommend
   now?: () => number
@@ -108,7 +111,7 @@ function readWater(q: string): Water | undefined {
 
 function readGoal(q: string): Goal | undefined {
   if (/\b(ganar|gano|ganancia|ingreso|ingresos|dinero)\b/.test(q)) return 'earn'
-  if (/\b(riesgo|riesgos|seguro|seguridad|reducir)\b/.test(q)) return 'safe'
+  if (/\b(agua|riego|optimizar|ahorrar|ahorro|litro|litros|water)\b/.test(q)) return 'water'
   if (/\b(suelo|tierra|cuidar|conservar)\b/.test(q)) return 'soil'
   return undefined
 }
@@ -144,26 +147,7 @@ export function focusOf(text: string): Focus | null {
 
 // ---- reading a question about the place's data ----
 
-const SOURCES = /\b(fuente|fuentes|de donde (salen|vienen|sacan)|origen de (los )?datos|que datos|calidad de (los )?datos|nasa)\b/
-const SATELLITE = /\b(satelite|satelites|satelital|vegetacion|ndvi|evi|evapotranspiracion|humedad del suelo|temperatura de la superficie)\b/
-const SOIL = /\b(suelo|ph|arcilla|arena|textura|carbono organico|altitud|elevacion|pendiente|terreno)\b/
-const CLIMATE = /\b(clima|temperatura|calor|caluroso|frio|lluvia|lluvias|llueve|precipitacion|meses)\b/
-
-/**
- * A question about the place's own data: its climate, soil and terrain, satellite series, or where the data comes from.
- * The assistant's rain-risk ("¿y si llueve poco?"), fertilizer and planting questions keep their own answers.
- */
-export function environmentTopicOf(text: string): EnvironmentTopic | null {
-  const q = fold(text)
-  const base = classify(text)
-  if (base === 'fertilizer' || base === 'rain') return null
-  if (SOURCES.test(q)) return 'sources'
-  if (SATELLITE.test(q)) return 'satellite'
-  if (SOIL.test(q)) return 'soil'
-  if (CLIMATE.test(q)) return 'climate'
-  return null
-}
-
+export { environmentTopicOf } from '../farmer/topics.ts'
 const ENVIRONMENT_TOPICS: readonly string[] = ['climate', 'soil', 'satellite', 'sources']
 const isEnvironmentTopic = (topic: string | null): topic is EnvironmentTopic => topic !== null && ENVIRONMENT_TOPICS.includes(topic)
 
@@ -187,7 +171,8 @@ function locationAsk(t: T): BotBubble {
  * What exists for a location right now: the bundled experimental results, the rotation results (only when they were
  * loaded), or nothing. Nothing is never filled in with another location's results.
  */
-export function resultsKind(place: DemoLocation, env: Pick<Env, 'rotations'>): 'experimental' | 'rotations' | null {
+export function resultsKind(place: DemoLocation, env: Pick<Env, 'rotations' | 'kinds'>): 'experimental' | 'rotations' | null {
+  if (env.kinds && place.id in env.kinds) return env.kinds[place.id] ?? null
   if (place.results === 'rotations') return env.rotations?.[place.id] ? 'rotations' : null
   return place.results
 }
@@ -271,6 +256,7 @@ function bodyBubbles(body: Body, env: Env): BotBubble[] {
     case 'error':
       return [{ text: t('farmer.chat.error', { message: body.message }) }]
     case 'recommendation':
+    case 'zone':
       return []
   }
 }

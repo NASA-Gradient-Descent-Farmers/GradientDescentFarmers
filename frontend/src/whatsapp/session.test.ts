@@ -8,7 +8,7 @@ import { converse, type Hooks } from './session.ts'
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
 const GTO = { ...EMPTY_CHAT, location: 'guanajuato' as const }
-const env: Env = { data, t, fmt, distance: (km) => String(km) }
+const env: Env = { data, kinds: { guanajuato: 'experimental' }, t, fmt, distance: (km) => String(km) }
 
 function recorder(alive = () => true) {
   const log: string[] = []

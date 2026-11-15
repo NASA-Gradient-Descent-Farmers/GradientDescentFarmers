@@ -22,7 +22,7 @@ export interface DemoLocation {
 }
 
 export const DEMO_LOCATIONS: readonly DemoLocation[] = [
-  { id: 'guanajuato', name: 'Guanajuato', latitude: 20.4243195, longitude: -101.1466639, results: 'experimental' },
+  { id: 'guanajuato', name: 'Guanajuato', latitude: 20.4243195, longitude: -101.1466639, results: 'rotations' },
   { id: 'sinaloa', name: 'Sinaloa', latitude: 25.7636111, longitude: -108.8613889, results: 'rotations' },
   { id: 'sonora', name: 'Sonora', latitude: 27.332202, longitude: -110.162783, results: 'rotations' },
 ]

@@ -205,6 +205,15 @@ export function nearZone(point: LatLon, published: { rotations: RotationsByLocat
   return nearest
 }
 
+/**
+ * The place whose data a pin shows: the nearest one with anything published, however far. `exact` is true when the pin is
+ * inside that place's own radius; otherwise the page says which place the results are from.
+ */
+export function zoneFor(point: LatLon, published: { rotations: RotationsByLocation; environment: EnvironmentByLocation }): (Zone & { exact: boolean }) | null {
+  const zone = nearZone(point, published, Infinity)
+  return zone ? { ...zone, exact: zone.km <= INSIDE_KM } : null
+}
+
 async function getJson(url: string): Promise<unknown> {
   const response = await fetch(url)
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`)

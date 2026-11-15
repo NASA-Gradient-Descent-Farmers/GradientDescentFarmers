@@ -22,34 +22,24 @@ after(async () => {
   await closeBare()
 })
 
-const EXPERIMENTAL = 'Datos experimentales de demostración'
-
 describe('a conversation across several messages', () => {
   const me = 'whatsapp:+5215500000101'
 
-  it('keeps its context: location, then the four questions, then the answer, then follow-ups', async () => {
+  it('keeps its context: location, then questions and follow-ups that need no further questions', async () => {
+    const rotations = results.rotations.guanajuato!
     assert.match(await say(base, me, 'Hola'), /Elige Guanajuato, Sinaloa o Sonora/)
     // "1" is read as the first option offered
     const located = await say(base, me, '1')
     assert.match(located, /Ubicación: Guanajuato \(20\.4243195, -101\.1466639\)/)
-    assert.ok(located.includes(EXPERIMENTAL))
-    const asked = await say(base, me, '¿Qué me conviene sembrar?')
-    assert.match(asked, /qué sembraste/i)
-    assert.match(asked, /1\. Maíz/)
-    assert.match(await say(base, me, '1'), /hectáreas/i)
-    assert.match(await say(base, me, '3 hectáreas'), /lluvia|riego/i)
-    assert.match(await say(base, me, 'solo lluvia'), /qué te importa más/i)
-    const answer = await say(base, me, '1')
-    assert.match(answer, /Qué haría el modelo/)
-    assert.ok(answer.includes(EXPERIMENTAL))
-    assert.match(answer, /Qué tan segura es\*: Muy baja/)
-    // follow-ups reuse what was said, without asking again
+    assert.match(located, /Para Guanajuato hay resultados de rotación/)
+    assert.ok(located.includes(rotations.municipality!), located)
+    const plant = await say(base, me, '¿Qué me conviene sembrar?')
+    assert.ok(plant.includes(bestOption(rotations, 'irrigated')!.descriptionEs), plant)
+    assert.doesNotMatch(plant, /qué sembraste|Datos experimentales de demostración|Datos no disponibles/i)
+    // follow-ups use the same place without asking again
     const rain = await say(base, me, '¿Y si llueve poco?')
-    assert.match(rain, /Riesgos principales/)
-    assert.ok(rain.includes(EXPERIMENTAL))
-    assert.doesNotMatch(rain, /qué sembraste/i)
-    const money = await say(base, me, '¿Cuánto podría ganar?')
-    assert.match(money, /Para tus 3 ha/)
+    assert.match(rain, /Lo que se observó en la zona/)
+    assert.match(await say(base, me, '¿Cuánto podría ganar?'), /Ingreso bruto: ≈ [\d,]+ MXN\/ha/)
   })
 
   it('keeps each farmer\'s conversation apart', async () => {
@@ -57,8 +47,11 @@ describe('a conversation across several messages', () => {
     const b = 'whatsapp:+5215500000103'
     await say(base, a, 'Guanajuato')
     await say(base, b, 'Sonora')
-    assert.match(await say(base, a, '¿Qué me conviene sembrar?'), /qué sembraste/i)
-    assert.match(await say(base, b, '¿Qué me conviene sembrar?'), /Opciones exploratorias de rotación/)
+    const first = await say(base, a, '¿Qué me conviene sembrar?')
+    const second = await say(base, b, '¿Qué me conviene sembrar?')
+    assert.ok(first.includes(bestOption(results.rotations.guanajuato!, 'irrigated')!.descriptionEs), first)
+    assert.ok(second.includes(bestOption(results.rotations.sonora!, 'irrigated')!.descriptionEs), second)
+    assert.notEqual(first, second)
   })
 
   it('starts over with "menu"', async () => {
@@ -72,7 +65,7 @@ describe('a conversation across several messages', () => {
     const from = 'whatsapp:+5215500000105'
     await say(base, from, 'Guanajuato')
     await say(base, from, '¿Qué me conviene sembrar?')
-    assert.match(await say(base, from, 'blablá'), /No te entendí/)
+    assert.match(await say(base, from, 'blablá'), /Eso no lo puedo responder/)
   })
 })
 
@@ -93,21 +86,21 @@ describe('location recognition', () => {
 
   it('switches location mid-conversation and drops the previous results', async () => {
     const from = 'whatsapp:+5215500000110'
-    for (const text of ['Guanajuato', '¿Qué me conviene sembrar después del maíz?', '2 ha', 'solo lluvia', 'ganar más']) await say(base, from, text)
+    for (const text of ['Guanajuato', '¿Qué me conviene sembrar después del maíz?']) await say(base, from, text)
     const switched = await say(base, from, 'Sonora')
     assert.match(switched, /Ubicación: Sonora/)
     const money = await say(base, from, '¿Cuánto podría ganar?')
     assert.match(money, /Ingreso bruto/)
-    assert.doesNotMatch(money, /Para tus 2 ha|Datos experimentales de demostración/)
+    assert.ok(money.includes(String(Math.round(results.rotations.sonora!.options.find((o) => o.regime === 'irrigated')!.gross!.median! / 1000) * 1000).slice(0, 2)))
     assert.match(await say(base, from, 'Guanajuato'), /Ubicación: Guanajuato/)
   })
 })
 
-describe('rotation results for Sinaloa and Sonora', () => {
-  for (const [name, id] of [['Sinaloa', 'sinaloa'], ['Sonora', 'sonora']] as const) {
+describe('rotation results for each place', () => {
+  for (const [name, id] of [['Guanajuato', 'guanajuato'], ['Sinaloa', 'sinaloa'], ['Sonora', 'sonora']] as const) {
     const rotations = results.rotations[id]!
     it(`${name}: answers from the published rotation run, as exploratory scenarios and gross income`, async () => {
-      const from = `whatsapp:+5215500${id === 'sinaloa' ? '0401' : '0402'}`
+      const from = `whatsapp:+5215500${id === 'guanajuato' ? '0400' : id === 'sinaloa' ? '0401' : '0402'}`
       const located = await say(base, from, name)
       assert.match(located, new RegExp(`Para ${name} hay resultados de rotación`))
       assert.ok(located.includes(rotations.municipality!), located)
@@ -121,14 +114,14 @@ describe('rotation results for Sinaloa and Sonora', () => {
     })
 
     it(`${name}: harvest, rain, money and confidence questions are all answered, and none claims a success rate`, async () => {
-      const from = `whatsapp:+5215500${id === 'sinaloa' ? '0411' : '0412'}`
+      const from = `whatsapp:+5215500${id === 'guanajuato' ? '0410' : id === 'sinaloa' ? '0411' : '0412'}`
       await say(base, from, name)
       for (const [question, expected] of [
         ['¿Cuánto podría cosechar?', /Cosecha simulada/],
         ['¿Qué pasa si llueve poco?', /no simula un año seco aparte/],
         ['¿Cuánto podría ganar?', /Ingreso bruto: ≈ [\d,]+ MXN\/ha/],
         ['¿Qué tan seguros son estos datos?', /No hay un porcentaje de éxito calibrado/],
-        ['¿Cuánto abono necesito?', /no calcula dosis de fertilizante/],
+        ['¿Cuánto abono necesito?', /probar en un pedazo de tu parcela/],
       ] as const) {
         const reply = await say(base, from, question)
         assert.match(reply, expected, question)
@@ -157,9 +150,9 @@ describe('environmental data of each place (Daniel\'s source profiles)', () => {
       assert.match(await say(base, from, '¿Cómo es el suelo?'), /pH \d.*arcilla \d+ %/s)
       assert.match(await say(base, from, '¿Qué dicen los satélites?'), /NDVI entre/)
       const sources = await say(base, from, '¿De dónde salen los datos?')
-      assert.match(sources, /Disponibles: .*NASA POWER/)
-      assert.match(sources, /Todavía no se puede/)
-      assert.doesNotMatch(sources, /Datos no disponibles/)
+      assert.match(sources, /Se usaron: .*NASA POWER/)
+      assert.match(sources, /Con estos datos se puede/)
+      assert.doesNotMatch(sources, /Datos no disponibles|Todavía no|Sin datos:/)
     })
   }
 
@@ -193,16 +186,15 @@ describe('missing agricultural data', () => {
 })
 
 describe('synthetic results are never presented as validated', () => {
-  it('labels every Guanajuato answer as experimental demonstration data, and never says "validado"', async () => {
-    const from = 'whatsapp:+5215500000301'
-    const replies: string[] = []
-    for (const text of ['Guanajuato', '¿Qué me conviene sembrar después de la cebada?', '5 ha', 'riego a veces', 'reducir riesgos']) replies.push(await say(base, from, text))
-    for (const question of ['¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Y si llueve poco?', '¿Cuánto podría ganar?', '¿Qué tan seguros son estos datos?', '¿Cuánto abono necesito?']) replies.push(await say(base, from, question))
-    const withResults = replies.slice(4)
-    for (const reply of withResults) {
-      assert.ok(reply.includes(EXPERIMENTAL), reply.slice(0, 80))
-      assert.match(reply, /no están calibrados para esta ubicación/)
-      assert.doesNotMatch(reply, /validad[oa]s?\b/i)
+  it('every answer for every place says it is exploratory, and none says it is validated or gives a success rate', async () => {
+    for (const [name, index] of [['Guanajuato', 0], ['Sinaloa', 1], ['Sonora', 2]] as const) {
+      const from = `whatsapp:+5215500003${index}1`
+      await say(base, from, name)
+      for (const question of ['¿Qué me conviene sembrar?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Y si llueve poco?', '¿Cuánto podría ganar?']) {
+        const reply = await say(base, from, question)
+        assert.match(reply, /Confianza baja|no es una predicción|no es ganancia|no simula un año seco/, `${name}: ${question}`)
+        assert.doesNotMatch(reply, /\d\s?% de éxito/, `${name}: ${question}`)
+      }
     }
   })
 

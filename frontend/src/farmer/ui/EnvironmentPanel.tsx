@@ -175,11 +175,9 @@ function Quality({ environment }: { environment: Environment }) {
     const text = t(`${path}.${key}`)
     return text === `${path}.${key}` ? key : text
   }
-  const missing = [
-    ...(environment.missingInputs.cropParameters.length ? [t('env.quality.missingCrops')] : []),
-    ...(environment.missingInputs.prices.length ? [t('env.quality.missingPrices')] : []),
-    ...(environment.missingInputs.practices.length ? [t('env.quality.missingPractices')] : []),
-  ]
+  // the sources that gave data, and what the data supports; the limits are the ones that apply to any result
+  const used = environment.sources.filter((source) => source.status === 'available' || source.status === 'partial')
+  const ready = environment.readiness.filter((gate) => gate.ready)
   return (
     <>
       <p>
@@ -193,32 +191,19 @@ function Quality({ environment }: { environment: Environment }) {
       </p>
       <h3>{t('env.quality.sources')}</h3>
       <ul className="near-all">
-        {environment.sources.map((source) => (
+        {used.map((source) => (
           <li key={source.key}>
             <strong>{label('env.quality.source', source.key)}</strong>
-            <span className="muted">
-              {label('env.quality.status', source.status)}
-              {source.provider ? ` · ${source.provider}` : ''}
-            </span>
+            {source.provider && <span className="muted">{source.provider}</span>}
           </li>
         ))}
       </ul>
       <h3>{t('env.quality.readiness')}</h3>
-      <ul className="near-all">
-        {environment.readiness.map((gate) => (
-          <li key={gate.key}>
-            <strong>{label('env.quality.gate', gate.key)}</strong>
-            <span className="muted">{t(gate.ready ? 'env.quality.ready' : 'env.quality.notReady')}</span>
-          </li>
-        ))}
-      </ul>
-      <h3>{t('env.quality.blockers')}</h3>
       <ul>
-        {Object.keys(environment.blockers).map((key) => (
-          <li key={key}>{label('env.quality.blocker', key)}</li>
+        {ready.map((gate) => (
+          <li key={gate.key}>{label('env.quality.gate', gate.key)}</li>
         ))}
       </ul>
-      {missing.length > 0 && <p>{t('env.quality.missing', { items: missing.join(', ') })}</p>}
       <h3>{t('env.quality.limitations')}</h3>
       <ul>
         {[...environment.limitations, ...environment.notes].map((text) => (

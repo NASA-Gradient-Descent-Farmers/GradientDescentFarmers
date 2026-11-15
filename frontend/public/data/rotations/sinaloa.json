@@ -35,6 +35,8 @@
    "descriptionEs": "año 1: maíz (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 82.49584783686801,
    "irrigationM3Ha": 12082.442452208525,
+   "evapotranspirationMm": 1538.5016905312625,
+   "soilScore": 83.33333333333334,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": true,
    "highlightsEs": [
@@ -83,6 +85,8 @@
    "descriptionEs": "año 1: maíz (jun–oct) → año 1: barbecho (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 50.80466239072729,
    "irrigationM3Ha": 6243.662465698206,
+   "evapotranspirationMm": 1168.0552734821727,
+   "soilScore": 16.666666666666664,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": true,
    "highlightsEs": [
@@ -131,6 +135,8 @@
    "descriptionEs": "año 1: barbecho (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 77.88084491966063,
    "irrigationM3Ha": 8454.27391448021,
+   "evapotranspirationMm": 1323.8968144134742,
+   "soilScore": 79.16666666666666,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": true,
    "highlightsEs": [
@@ -179,6 +185,8 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: barbecho (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 70.31095172450274,
    "irrigationM3Ha": 0,
+   "evapotranspirationMm": 836.9754581886941,
+   "soilScore": 16.666666666666664,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -228,6 +236,8 @@
    "descriptionEs": "año 1: maíz (jun–oct) → año 1: barbecho (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 67.82075609546571,
    "irrigationM3Ha": 0,
+   "evapotranspirationMm": 836.974871227792,
+   "soilScore": 16.666666666666664,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -277,6 +287,8 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: sorgo (jun–oct)",
    "priorityScore": 56.40656979669085,
    "irrigationM3Ha": 0,
+   "evapotranspirationMm": 870.0918750475425,
+   "soilScore": 83.33333333333334,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -326,6 +338,8 @@
    "descriptionEs": "año 1: barbecho (jun–oct) → año 1: garbanzo (nov–may) → año 2: sorgo (jun–oct)",
    "priorityScore": 57.66383017207461,
    "irrigationM3Ha": 0,
+   "evapotranspirationMm": 866.7994878307729,
+   "soilScore": 79.16666666666666,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -374,6 +388,8 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: maíz (jun–oct)",
    "priorityScore": 49.86281628399447,
    "irrigationM3Ha": 0,
+   "evapotranspirationMm": 868.2484926182024,
+   "soilScore": 83.33333333333334,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [

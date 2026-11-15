@@ -86,9 +86,13 @@ The map opens on those places and draws each with the radius its data covers (25
 |---|---|---|
 | Sonora | 27.332202, -110.162783 | environmental profile and rotation run |
 | Sinaloa | 25.7636111, -108.8613889 | environmental profile and rotation run |
-| Guanajuato | 20.4243195, -101.1466639 | environmental profile only |
+| Guanajuato | 20.4243195, -101.1466639 | environmental profile and rotation run |
 
-They are defined once in `src/lib/demoLocations.ts`. Texcoco is not one of them and does not appear anywhere in picking a location. A pin within 25 km of a place gets what is published for it (`nearZone` in `src/lib/environment.ts`); a pin anywhere else is told there is no data there yet and which place is nearest (`ZoneNotice`, `nearestDemoLocation`). Nothing is filled in with results computed for another place. `src/lib/locationFlow.test.ts` fails if the text of this flow names Texcoco again.
+They are defined once in `src/lib/demoLocations.ts`. Texcoco is not one of them and does not appear anywhere in picking a location. A pin always shows the data of the place it is in or nearest to (`zoneFor` in `src/lib/environment.ts`): inside the place's own 25 km the notice names it, farther away it says "you are seeing the nearest reference area" with the distance (`ZoneNotice`). The app never says it has no data, and never fills a place with results computed for another. `src/lib/locationFlow.test.ts` fails if the text of this flow names Texcoco again.
+
+### What matters most, and the recommendation
+
+The last of the guided questions is what matters most: **earn more**, **use water well** (it replaced "reduce risk"; an old saved answer is read as the new one) or **look after the soil**. The recommendation, in "Qué sembrar" and in the assistant's answer, is built from the place's `rotations.json` (`src/lib/rotations.ts`, `pickForGoal`): the options are ranked by the run's own figures: earn is the highest gross income, soil the best soil score, water the least irrigation water (options with a failed harvest set aside) or, for rain-only options, the most income per m³ of water used. The farmer's hectares multiply the per-hectare income, and the regime they say they have comes first. The assistant (`src/farmer/ui/AskPage.tsx`, `ZoneAnswer`) uses the same sentence builders as WhatsApp (`src/whatsapp/rotationAnswers.ts`, `environmentAnswers.ts`), so the two never disagree. Nothing in the app answers from the old Texcoco planner any more (its Técnico "Planificador" tab is a separate tool).
 
 **Privacy.** The pin is stored only in this browser (`localStorage`). NASA POWER is sent the location rounded to 0.1° (about 11 km, finer than its weather cell, so nothing is lost), and the map tiles come from OpenStreetMap and NASA GIBS, which see the area being viewed. The page says this next to the map.
 
@@ -179,7 +183,7 @@ Charts in Técnico use the same orange, black and white (rotation = marker shape
 A WhatsApp-style chat that shows how YolIA could answer a farmer by text message. It is a **simulation**: nothing is sent to
 WhatsApp, Twilio or any API, and it needs no key, internet or language model. It reuses the farmer assistant's rules
 (`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
-the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). Guanajuato answers with the bundled model results (computed at El Batán, Texcoco), labelled experimental demonstration data. Sinaloa and Sonora answer from the rotation results the rotations service published for those two points (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence). If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
+the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). All three places answer from their rotation run (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence) and their environmental package. The simulator asks nothing first: pick a place and ask. If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
 
 A parcel pinned within 25 km of Sinaloa's or Sonora's run point (the app's own "inside" distance; `nearRotationSite` in `src/lib/rotations.ts`) gets those rotation results on **Qué sembrar** (`src/farmer/ui/RotationPlant.tsx`) instead of the "outside the model zone" refusal, with a notice on the parcel page. They are per hectare and do not depend on the parcel questions. Pins farther away keep the refusal: the results say nothing about them.
 
@@ -190,9 +194,9 @@ Two files per place come from the data service (`gradientdescentfarmers/source_b
 | File | What it holds | Where it shows |
 | --- | --- | --- |
 | `environment/<place>.json` (Guanajuato, Sinaloa, Sonora) | The whole FarmProfile: two years of NASA POWER weather (monthly, annual and daily), SoilGrids soil, SRTM terrain, MODIS vegetation, evapotranspiration and surface temperature, SMAP soil moisture, GPM rain, World Bank context, the status of every source, the readiness gates, blockers and limits | **Qué sembrar** for a parcel near the place (`EnvironmentPanel`), the WhatsApp chat (climate, soil, satellite and sources questions) |
-| `rotations/<place>.json` (Sinaloa, Sonora) | The rotation options, income, confidence, and how the run was set up: settings, soil model, prices used, rejected simulations | **Qué sembrar** (`RotationPlant`), the WhatsApp chat |
+| `rotations/<place>.json` (Guanajuato, Sinaloa, Sonora) | The rotation options, income, confidence, and how the run was set up: settings, soil model, prices used, rejected simulations | **Qué sembrar** (`RotationPlant`), the WhatsApp chat |
 
-A parcel within 25 km of a place (the app's own "inside" distance; `nearZone` in `src/lib/environment.ts`) gets what was published for it instead of the "outside the model zone" refusal; the map step says so too and has one-tap shortcuts to the three places. Farther pins keep the refusal. Guanajuato has an environmental package but no rotation run yet, so its planner answers stay the labelled experimental ones.
+A parcel within 25 km of a place (the app's own "inside" distance; `nearZone` in `src/lib/environment.ts`) gets what was published for it instead of the "outside the model zone" refusal; the map step says so too and has one-tap shortcuts to the three places. Farther pins keep the refusal. 
 
 To refresh them, download a run (needs access to the `gdfarming` project) and slim it:
 
@@ -205,3 +209,5 @@ node scripts/slim-rotations.mjs <sinaloa|sonora> ./rotations/rotations.json
 ```
 
 The scripts copy the figures (rounded to 2-3 decimals for size) and drop server paths and hashes. `src/lib/environment.ts` and `src/lib/rotations.ts` check each file when it is loaded; a file that is missing or invalid just leaves that place without it. Not copied: `model_evaluations.jsonl` and `pcse_weather_daily.csv` (the simulator's own per-scenario ledger and a copy of the weather already in the environment file). Current runs: Sinaloa `b50bfdf0a58240aa` / `be357172bae941c1`, Sonora `9849d2f76f944625` / `5abb561d6ead496b`, Guanajuato `67b66942681a4214`. A new place needs an entry in `src/lib/demoLocations.ts`.
+
+**Guanajuato's rotation run (`43c997719c054cf3`) was generated locally** with Daniel's own pipeline on his published Guanajuato profile (`67b66942681a4214`), because the rotations service had not run it: Python 3.11, `pip install "pcse==6.0.13" pydantic pandas "numpy<2" pyarrow==20.0.0 "shapely>=2,<3" requests`, then `python -m gradientdescentfarmers.rotations_service run --profile-dir <profile> --source-uri gs://gdfarming-farm-data/farm_profiles/guanajuato_valle_demo/runs/67b66942681a4214 --config <json with model.state_id_hint "11">`. It used the same code, crop parameters (commit `fc6eda4`) and public SIAP prices as the Sinaloa and Sonora runs (40 simulations, 4 options). It has not been published to the `gdfarming-farm-rotations` bucket; if the service later publishes its own run, replace the file with `scripts/slim-rotations.mjs`.

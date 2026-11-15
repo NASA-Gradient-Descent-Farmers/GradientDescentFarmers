@@ -54,8 +54,8 @@ describe('message splitting and logging', () => {
 })
 
 describe('loading the rotation results from disk', () => {
-  it('loads the published files for Sinaloa and Sonora, and for no other location', () => {
-    assert.deepEqual(Object.keys(loadRotationResults()).sort(), ['sinaloa', 'sonora'])
+  it('loads the published rotation file of every demonstration place', () => {
+    assert.deepEqual(Object.keys(loadRotationResults()).sort(), ['guanajuato', 'sinaloa', 'sonora'])
   })
 
   it('leaves out a file that is missing or fails the check, with a warning, instead of failing to start', (context) => {
@@ -64,7 +64,7 @@ describe('loading the rotation results from disk', () => {
     mkdirSync(join(dir, 'rotations'))
     writeFileSync(join(dir, 'rotations', 'sinaloa.json'), JSON.stringify({ version: 7 }))
     assert.deepEqual(loadRotationResults(pathToFileURL(`${dir}/`)), {})
-    assert.equal(warn.mock.callCount(), 2)
+    assert.equal(warn.mock.callCount(), 3)
   })
 })
 

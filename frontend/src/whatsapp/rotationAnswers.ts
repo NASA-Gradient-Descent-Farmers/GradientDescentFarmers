@@ -4,7 +4,7 @@
 // gross per hectare, never profit. Unknown values read "sin datos", never zero.
 
 import type { Format } from '../lib/format.ts'
-import { bestOption, topIncomeOption, type Regime, type RotationOption, type Rotations } from '../lib/rotations.ts'
+import { bestOption, pickForGoal, topIncomeOption, type Regime, type RotationGoal, type RotationOption, type Rotations } from '../lib/rotations.ts'
 import type { Environment } from '../lib/environment.ts'
 import type { BotBubble, Focus } from './engine.ts'
 import { observedRain } from './environmentAnswers.ts'
@@ -19,6 +19,12 @@ interface Ctx {
   fmt: Format
   /** The place's environmental package, when loaded: the rain question adds what was observed there. */
   observed?: Environment | null
+  /** What matters most to the farmer: the options are ranked by it. */
+  goal?: RotationGoal | null
+  /** The farmer's hectares: totals are the per-hectare figure times these. */
+  hectares?: number | null
+  /** The water the farmer says they have: that regime is shown first. */
+  water?: 'rain' | 'some' | 'regular' | null
 }
 
 const REGIMES: Regime[] = ['irrigated', 'rainfed']
@@ -40,6 +46,14 @@ const money = (value: number | null, ctx: Ctx) => (value === null ? noData(ctx) 
 const monthOf = (monthDay: string) => Number(monthDay.slice(0, 2)) - 1
 const span = (sowing: string, end: string, { fmt }: Ctx) => `${fmt.monthShort(monthOf(sowing))}–${fmt.monthShort(monthOf(end))}`
 
+/** For the farmer's hectares: the per-hectare income times them, rounded like the rest. Empty without hectares or income. */
+function totalLine(option: RotationOption, ctx: Ctx): string {
+  const { hectares } = ctx
+  const median = option.gross?.median
+  if (hectares == null || median == null) return ''
+  return `\n${ctx.t('whatsapp.rotations.forHectares', { ha: ctx.fmt.number(hectares, Number.isInteger(hectares) ? 0 : 1), total: money(median * hectares, ctx) })}`
+}
+
 function incomeLine(option: RotationOption, ctx: Ctx): string {
   const { gross } = option
   const low = gross?.p10 != null ? money(gross.p10, ctx) : null
@@ -52,15 +66,18 @@ function incomeLine(option: RotationOption, ctx: Ctx): string {
 /** One option as a bubble: its plan, income, water, and the warnings that go with it. */
 function optionBubble(head: string, option: RotationOption, ctx: Ctx): BotBubble {
   const { t, fmt } = ctx
-  const lines = [bold(head), option.descriptionEs, incomeLine(option, ctx)]
+  const lines = [bold(head), option.descriptionEs, incomeLine(option, ctx) + totalLine(option, ctx)]
   if (option.regime === 'irrigated' && option.irrigationM3Ha !== null) lines.push(t('whatsapp.rotations.water', { amount: fmt.number(Math.round(option.irrigationM3Ha / 100) * 100) }))
   if (option.failedHarvests > 0) lines.push(t('whatsapp.rotations.failed', { n: option.failedHarvests }))
   if (option.requiresIrrigationConfirmation) lines.push(t('whatsapp.rotations.confirmIrrigation'))
   return { text: lines.join('\n') }
 }
 
-/** The option to show for a regime: the one the service's priorities ranked first, else the highest income. */
-const chosen = (rotations: Rotations, regime: Regime) => bestOption(rotations, regime) ?? topIncomeOption(rotations, regime)
+/** The option to show for a regime: the best for the farmer's goal when they gave one, else the service's own pick, else the highest income. */
+const chosen = (rotations: Rotations, regime: Regime, ctx?: Ctx) => (ctx?.goal ? pickForGoal(rotations, regime, ctx.goal) : null) ?? bestOption(rotations, regime) ?? topIncomeOption(rotations, regime)
+
+/** The regime the farmer says they have comes first; both are always shown. */
+const regimesFor = (ctx: Ctx): Regime[] => (ctx.water === 'rain' ? ['rainfed', 'irrigated'] : REGIMES)
 
 const label = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.label', { years: years(rotations) }) })
 const caution = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.caution', { years: years(rotations) }) })
@@ -68,10 +85,11 @@ const regimeName = (regime: Regime, { t }: Ctx) => t(`whatsapp.rotations.regime.
 
 function planting(rotations: Rotations, ctx: Ctx, compare: boolean): BotBubble[] {
   const bubbles: BotBubble[] = [label(rotations, ctx)]
-  for (const regime of REGIMES) {
-    const option = chosen(rotations, regime)
+  for (const regime of regimesFor(ctx)) {
+    const option = chosen(rotations, regime, ctx)
     if (!option) continue
-    bubbles.push(optionBubble(ctx.t('whatsapp.rotations.bestHead', { regime: regimeName(regime, ctx) }), option, ctx))
+    const head = ctx.goal ? ctx.t('whatsapp.rotations.goalHead', { regime: regimeName(regime, ctx), goal: ctx.t(`farmer.rec.goals.${ctx.goal}`) }) : ctx.t('whatsapp.rotations.bestHead', { regime: regimeName(regime, ctx) })
+    bubbles.push(optionBubble(head, option, ctx))
     // "which crop is best" also names the highest-income option when the priorities picked another
     const top = compare ? topIncomeOption(rotations, regime) : null
     if (top && top.id !== option.id) bubbles.push(optionBubble(ctx.t('whatsapp.rotations.topHead', { regime: regimeName(regime, ctx) }), top, ctx))
@@ -83,8 +101,8 @@ function planting(rotations: Rotations, ctx: Ctx, compare: boolean): BotBubble[]
 function harvest(rotations: Rotations, ctx: Ctx): BotBubble[] {
   const { t, fmt } = ctx
   const bubbles: BotBubble[] = [{ text: t('whatsapp.rotations.harvestHead', { years: years(rotations) }) }]
-  for (const regime of REGIMES) {
-    const option = chosen(rotations, regime)
+  for (const regime of regimesFor(ctx)) {
+    const option = chosen(rotations, regime, ctx)
     if (!option) continue
     const lines = option.campaigns
       .filter((campaign) => !campaign.fallow)
@@ -100,9 +118,9 @@ function harvest(rotations: Rotations, ctx: Ctx): BotBubble[] {
 
 function earnings(rotations: Rotations, ctx: Ctx): BotBubble[] {
   const bubbles: BotBubble[] = [label(rotations, ctx)]
-  for (const regime of REGIMES) {
-    const option = chosen(rotations, regime)
-    if (option) bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${incomeLine(option, ctx)}` })
+  for (const regime of regimesFor(ctx)) {
+    const option = chosen(rotations, regime, ctx)
+    if (option) bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${incomeLine(option, ctx)}${totalLine(option, ctx)}` })
   }
   bubbles.push(caution(rotations, ctx))
   return bubbles
@@ -110,8 +128,8 @@ function earnings(rotations: Rotations, ctx: Ctx): BotBubble[] {
 
 function rain(rotations: Rotations, ctx: Ctx): BotBubble[] {
   const { t } = ctx
-  const irrigated = chosen(rotations, 'irrigated')
-  const rainfed = chosen(rotations, 'rainfed')
+  const irrigated = chosen(rotations, 'irrigated', ctx)
+  const rainfed = chosen(rotations, 'rainfed', ctx)
   const bubbles: BotBubble[] = [{ text: t('whatsapp.rotations.rainHead', { years: years(rotations) }) }]
   const observed = ctx.observed ? observedRain(ctx.observed, ctx) : null
   if (observed) bubbles.push(observed)

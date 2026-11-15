@@ -79,7 +79,7 @@ export const farmerEs = {
     },
     goal: {
       earn: { label: 'Ganar más', hint: 'Más ingreso por hectárea' },
-      safe: { label: 'Reducir riesgos', hint: 'Que un mal año duela menos' },
+      water: { label: 'Optimizar el uso de agua', hint: 'Sacar más de cada litro de agua' },
       soil: { label: 'Cuidar mi suelo', hint: 'Conservar el suelo y perder menos abono' },
     },
     summary: {
@@ -104,7 +104,7 @@ export const farmerEs = {
     title: 'Lo que te conviene sembrar',
     notGuarantee: 'Es una estimación del modelo. No garantiza ni cosecha ni ganancia.',
     forGoal: 'Según lo que más te importa: {goal}.',
-    goals: { earn: 'ganar más', safe: 'reducir riesgos', soil: 'cuidar tu suelo' },
+    goals: { earn: 'ganar más', water: 'optimizar el uso de agua', soil: 'cuidar tu suelo' },
     thisSeason: 'Esta temporada te tocaría sembrar: {crop}.',
     thisSeasonWhy: 'Es el orden de la rotación después de {previous}. No es una predicción del modelo.',
     noMatch: 'No pudimos ubicar lo que sembraste en esta rotación. Tú decides con cuál cultivo empezar.',
@@ -191,6 +191,8 @@ export const farmerEs = {
       rain: '¿Y si llueve poco?',
       trust: '¿Qué tan seguros son estos datos?',
       fertilizer: '¿Cuánto abono necesito?',
+      climate: '¿Cómo es el clima?',
+      soil: '¿Cómo es el suelo?',
     },
     inputLabel: 'Tu pregunta para YolIA',
     placeholder: 'Escribe tu pregunta…',

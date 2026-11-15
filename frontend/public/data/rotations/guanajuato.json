@@ -1,0 +1,819 @@
+{
+ "version": 1,
+ "farmId": "guanajuato_valle_demo",
+ "sourceRunId": "67b66942681a4214",
+ "rotationRunId": "43c997719c054cf3",
+ "generatedAt": "2026-11-15 17:24:29.284362+00:00",
+ "status": "exploratory_options",
+ "basis": "Relative campaign plan tested against historical weather; no future weather fabricated",
+ "municipality": "Valle de Santiago",
+ "confidence": {
+  "overall": "low",
+  "labelEs": "Exploratorio: sin calibración local",
+  "reasonsEs": [
+   "Variedades de referencia sin calibración ni validación independiente en estas parcelas.",
+   "Clima histórico 2024–2025: los resultados no son un pronóstico meteorológico o de cosecha.",
+   "Profundidad efectiva, drenaje, agua inicial y manejo de riego incluyen supuestos.",
+   "No se simulan salinidad, nutrientes, plagas ni cambios medidos del carbono del suelo.",
+   "Se excluyen campañas sin madurez con este calendario y parámetros; no demuestra que el cultivo sea inviable en la región."
+  ],
+  "fieldValidated": false,
+  "probabilityOfSuccess": null
+ },
+ "weatherYears": [
+  2024,
+  2025
+ ],
+ "best": {
+  "irrigated": "ae83769632fc6d7b",
+  "rainfed": "67447fde8f57742c"
+ },
+ "options": [
+  {
+   "id": "ae83769632fc6d7b",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 85.00000000000001,
+   "irrigationM3Ha": 6499.487751206576,
+   "evapotranspirationMm": 1535.5376281624249,
+   "soilScore": 79.16666666666666,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 84706 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 6499 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 84705.69986822488,
+    "p10": 81652.38735529355,
+    "p90": 103919.55539300233
+   },
+   "campaigns": [
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 9.167337499127665,
+     "grossMxnHa": 52717.07175553072
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 3.971934339672185,
+     "grossMxnHa": 36522.865797195096
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  },
+  {
+   "id": "ee67683297c9d1ae",
+   "regime": "irrigated",
+   "descriptionEs": "año 1: sorgo (jun–oct) → año 1: trigo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 15,
+   "irrigationM3Ha": 9535.678914408501,
+   "evapotranspirationMm": 1696.057728591411,
+   "soilScore": 16.666666666666664,
+   "failedHarvests": 0,
+   "requiresIrrigationConfirmation": true,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 76818 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 9536 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 17/100; es un indicador heurístico."
+   ],
+   "gross": {
+    "median": 76818.19054825393,
+    "p10": 67533.4422656026,
+    "p90": 102074.66848112064
+   },
+   "campaigns": [
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 9.167337499127665,
+     "grossMxnHa": 52717.07175553072
+    },
+    {
+     "cropEs": "Trigo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 4.015432279170202,
+     "grossMxnHa": 26264.85479032716
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  },
+  {
+   "id": "67447fde8f57742c",
+   "regime": "rainfed",
+   "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 85.00000000000001,
+   "irrigationM3Ha": 0,
+   "evapotranspirationMm": 1134.9744366893137,
+   "soilScore": 79.16666666666666,
+   "failedHarvests": 1,
+   "requiresIrrigationConfirmation": false,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 53080 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 0 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 79/100; es un indicador heurístico.",
+    "1 campañas con cosecha simulada inferior a 50 kg/ha: escenario de alto riesgo, no plan operativo validado."
+   ],
+   "gross": {
+    "median": 53080.19536924475,
+    "p10": 42713.23804524468,
+    "p90": 67053.81526494001
+   },
+   "campaigns": [
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 9.19700366284712,
+     "grossMxnHa": 52987.79562651761
+    },
+    {
+     "cropEs": "Garbanzo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 0.012912736728580102,
+     "grossMxnHa": 106.34630793553225
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  },
+  {
+   "id": "4341d7929cdf3b72",
+   "regime": "rainfed",
+   "descriptionEs": "año 1: sorgo (jun–oct) → año 1: trigo (nov–may) → año 2: barbecho (jun–oct)",
+   "priorityScore": 15,
+   "irrigationM3Ha": 0,
+   "evapotranspirationMm": 1132.7636452960226,
+   "soilScore": 16.666666666666664,
+   "failedHarvests": 1,
+   "requiresIrrigationConfirmation": false,
+   "highlightsEs": [
+    "Ingreso bruto de escenario: 52988 MXN/ha; no es utilidad neta garantizada.",
+    "Riego aplicado de escenario: 0 m³/ha en el horizonte.",
+    "Índice de diversidad/suelo: 17/100; es un indicador heurístico.",
+    "1 campañas con cosecha simulada inferior a 50 kg/ha: escenario de alto riesgo, no plan operativo validado."
+   ],
+   "gross": {
+    "median": 52987.79562651761,
+    "p10": 42602.20663900195,
+    "p90": 66947.29297213128
+   },
+   "campaigns": [
+    {
+     "cropEs": "Sorgo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": 9.19700366284712,
+     "grossMxnHa": 52987.79562651761
+    },
+    {
+     "cropEs": "Trigo",
+     "fallow": false,
+     "planningYear": 1,
+     "sowing": "11-15",
+     "end": "05-31",
+     "grainTHa": 0,
+     "grossMxnHa": 0
+    },
+    {
+     "cropEs": "Barbecho",
+     "fallow": true,
+     "planningYear": 2,
+     "sowing": "06-15",
+     "end": "10-31",
+     "grainTHa": null,
+     "grossMxnHa": null
+    }
+   ]
+  }
+ ],
+ "details": {
+  "prices": [
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 5991,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 7299,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 7596,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 5404,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 4939,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 6002,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 8671,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 8592,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 6541,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 5361,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 5761,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 7107,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 7394,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 4839,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 4495,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 7156,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 7712,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 8608,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 8236,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 8840,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 5993,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 7491,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 7824,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 5360,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 4907,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 6002,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 8671,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 8592,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 6541,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 5361,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 5751,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 7145,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 7499,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 5023,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 4671,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 7131,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 9069,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 9258,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 9195,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 10545,
+    "scope": "state",
+    "state": "Guanajuato",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   }
+  ],
+  "soilModel": {
+   "method": "SoilGrids wv0033/wv1500 water retention; saturation from bulk density",
+   "fieldValidated": false,
+   "assumptions": [
+    "0–30 cm texture extrapolated to assumed rootable depth",
+    "Rootable depth, drainage, initial water and particle density are not measured",
+    "Salinity, groundwater, compaction and nutrients are not calibrated"
+   ],
+   "inputs": {
+    "bulk_density_g_cm3": 1.4283333333333332,
+    "clay_fraction": 0.46950000000000003,
+    "organic_matter_pct": 2.3762466666666664,
+    "sand_fraction": 0.36916666666666664
+   },
+   "parameters": {
+    "CRAIRC": 0.06,
+    "KSUB": 2,
+    "RDMSOL": 100,
+    "SM0": 0.4610062893081761,
+    "SMFCF": 0.3635,
+    "SMW": 0.21316666666666667,
+    "SOPE": 2
+   }
+  },
+  "rejected": {
+   "modelFailures": 0,
+   "optimizationRejected": [
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ]
+   ]
+  },
+  "runSettings": {
+   "crops": [
+    "wheat",
+    "chickpea",
+    "maize",
+    "sorghum"
+   ],
+   "horizonYears": 2,
+   "waterRegimes": [
+    "rainfed",
+    "irrigated"
+   ],
+   "irrigationEfficiency": 0.75,
+   "rootableDepthCm": 100,
+   "initialAvailableWaterFraction": 0.6,
+   "priceYears": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "cropVarieties": {
+   "fieldValidated": false,
+   "varieties": {
+    "chickpea": "Chickpea_VanHeemst_1988",
+    "maize": "Maize_VanHeemst_1988",
+    "sorghum": "Sorghum_VanHeemst_1988",
+    "wheat": "Winter_wheat_107"
+   }
+  },
+  "priceSource": {
+   "dataset": "https://datamx.io/dataset/produccion-agricola-en-mexico-1980-2024",
+   "note": "Public redistribution of SIAP; direct official server unavailable in the initial acquisition",
+   "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  }
+ }
+}

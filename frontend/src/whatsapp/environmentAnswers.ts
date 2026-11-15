@@ -18,7 +18,6 @@ interface Ctx {
 }
 
 const bold = (text: string) => `*${text}*`
-const bullets = (lines: string[]) => lines.map((line) => `• ${line}`).join('\n')
 
 const none = ({ t }: Ctx) => t('whatsapp.env.noData')
 const num = (value: number | null | undefined, digits: number, ctx: Ctx) => (value === null || value === undefined ? none(ctx) : ctx.fmt.number(value, digits))
@@ -92,17 +91,8 @@ function satellite(place: string, environment: Environment, ctx: Ctx): BotBubble
 
 function sources(place: string, environment: Environment, ctx: Ctx): BotBubble[] {
   const { t } = ctx
-  const names = (status: string) => environment.sources.filter((source) => source.status === status).map((source) => lowerFirstUnlessAcronym(label('env.quality.source', source.key, t)))
-  const available = names('available')
-  const partial = names('partial')
-  const missing = names('missing')
-  const notReady = environment.readiness.filter((gate) => !gate.ready).map((gate) => lowerFirstUnlessAcronym(label('env.quality.gate', gate.key, t)))
-  const lines = [bold(t('env.quality.sources'))]
-  if (available.length) lines.push(t('whatsapp.env.sourcesAvailable', { list: available.join(', ') }))
-  if (partial.length) lines.push(t('whatsapp.env.sourcesPartial', { list: partial.join(', ') }))
-  if (missing.length) lines.push(t('whatsapp.env.sourcesMissing', { list: missing.join(', ') }))
-  const gates = [bold(t('env.quality.readiness')), t('whatsapp.env.notReady', { list: notReady.join(', ') })]
-  const blockers = [bold(t('env.quality.blockers')), bullets(Object.keys(environment.blockers).map((key) => label('env.quality.blocker', key, t)))]
+  const used = environment.sources.filter((source) => source.status === 'available' || source.status === 'partial').map((source) => lowerFirstUnlessAcronym(label('env.quality.source', source.key, t)))
+  const supports = environment.readiness.filter((gate) => gate.ready).map((gate) => lowerFirstUnlessAcronym(label('env.quality.gate', gate.key, t)))
   const build = t('env.quality.build', {
     state: label('env.quality.buildState', environment.buildState, t),
     integrity: t(environment.integrityOk ? 'env.quality.ok' : 'env.quality.notOk'),
@@ -110,7 +100,7 @@ function sources(place: string, environment: Environment, ctx: Ctx): BotBubble[]
     run: environment.runId,
     date: environment.createdUtc.slice(0, 10),
   })
-  return [head(place, environment, ctx), { text: lines.join('\n') }, { text: gates.join('\n') }, { text: blockers.join('\n') }, { text: build }]
+  return [head(place, environment, ctx), { text: [bold(t('env.quality.sources')), t('whatsapp.env.sourcesUsed', { list: used.join(', ') })].join('\n') }, { text: [bold(t('env.quality.readiness')), t('whatsapp.env.supports', { list: supports.join(', ') })].join('\n') }, { text: build }]
 }
 
 /** The bubbles that answer one topic about a place's data. */

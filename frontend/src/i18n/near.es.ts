@@ -9,19 +9,16 @@ export const nearEs = {
   },
   noticeEnvironment: {
     title: 'Hay datos de la NASA para esta zona',
-    body: 'Tu parcela está a {km} km de {place}, donde se reunieron datos de clima, suelo y satélite. Todavía no se corrió el modelo de rotaciones aquí.',
+    body: 'Tu parcela está a {km} km de {place}, donde se reunieron datos de clima, suelo y satélite.',
   },
-  noData: {
-    title: 'Todavía no hay datos para esta zona',
-    body: 'YolIA tiene datos publicados para Sonora, Sinaloa y Guanajuato. El punto más cercano es {place}, a {km} km de tu parcela. Elige uno de esos puntos en el mapa para ver sus opciones.',
-  },
-  noRotations: 'Para {place} todavía no se corrió el modelo de rotaciones: solo hay datos de clima, suelo y satélite.',
-  noDataCard: {
-    title: 'Elige una de las zonas con datos',
-    body: 'Sonora, Sinaloa o Guanajuato. Toca el punto en el mapa o usa los accesos de «Mi parcela».',
+  nearest: {
+    title: 'Estás viendo la zona de referencia más cercana',
+    body: 'Tu pin está a {km} km de {place}. Los resultados que ves son de ese punto, que es el más cercano a tu parcela.',
   },
   heading: 'Opciones de rotación cerca de {place}',
-  scope: 'Estos resultados son por hectárea y para la zona de {place}; no cambian con tus respuestas sobre la parcela.',
+  scope: 'Resultados por hectárea para la zona de {place}. Se ordenan según lo que más te importa.',
+  forGoal: 'Lo que mejor encaja con lo que te importa: {goal}',
+  forHectares: 'Para tus {ha} ha: ≈ {total} MXN en todo el plan (el ingreso por hectárea multiplicado por tus hectáreas).',
   recommended: 'La que mejor encaja con las prioridades del modelo',
   year: 'año {year}',
   fallow: 'Sin sembrar (barbecho)',

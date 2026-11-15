@@ -8,7 +8,7 @@ import { EMPTY_CHAT, greeting, readLocation, reply, type BotBubble, type ChatSta
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
-const env: Env = { data, t, fmt, distance: (km) => fmt.number(km) }
+const env: Env = { data, kinds: { guanajuato: 'experimental' }, t, fmt, distance: (km) => fmt.number(km) }
 const flat = (bubbles: BotBubble[]) => bubbles.map((b) => b.text).join('\n')
 const FULL = { previous: 'maize' as const, hectares: 2, water: 'rain' as const, goal: 'earn' as const }
 
@@ -21,8 +21,8 @@ describe('the shared configuration', () => {
     ])
   })
 
-  it('Guanajuato has the experimental model results; Sinaloa and Sonora have published rotation results', () => {
-    expect(DEMO_LOCATIONS.map((place) => place.results)).toEqual(['experimental', 'rotations', 'rotations'])
+  it('all three places have published rotation results', () => {
+    expect(DEMO_LOCATIONS.map((place) => place.results)).toEqual(['rotations', 'rotations', 'rotations'])
   })
 })
 

@@ -9,7 +9,7 @@ import { EMPTY_CHAT, focusOf, greeting, readAnswer, reply, type BotBubble, type 
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
-const env: Env = { data, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
+const env: Env = { data, kinds: { guanajuato: 'experimental' }, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
 
 const GTO: ChatState = { ...EMPTY_CHAT, location: 'guanajuato' }
 const flat = (bubbles: BotBubble[]) => bubbles.map((b) => b.text).join('\n')
@@ -49,7 +49,7 @@ describe('readAnswer', () => {
   it('reads every answer button back to the answer it stands for', () => {
     for (const value of ['maize', 'barley', 'fababean', 'other', 'none']) expect(readAnswer('previous', t(`farmer.parcel.previous.${value}`))).toBe(value)
     for (const value of ['rain', 'some', 'regular']) expect(readAnswer('water', t(`farmer.parcel.water.${value}.label`))).toBe(value)
-    for (const value of ['earn', 'safe', 'soil']) expect(readAnswer('goal', t(`farmer.parcel.goal.${value}.label`))).toBe(value)
+    for (const value of ['earn', 'water', 'soil']) expect(readAnswer('goal', t(`farmer.parcel.goal.${value}.label`))).toBe(value)
     for (const n of [1, 2, 5, 10]) expect(readAnswer('hectares', t('farmer.parcel.hectares.quick', { n }))).toBe(n)
   })
 
@@ -92,7 +92,7 @@ describe('a realistic conversation', () => {
   })
 
   it('keeps answering consecutive messages, and does not ask again what it already knows', async () => {
-    const { turns, state } = await talk('Maíz', '¿Qué me conviene sembrar después del maíz?', '3 ha', 'temporal', 'reducir riesgos', '¿Qué pasa si llueve poco?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Qué tan seguros son estos datos?', '¿Cuánto abono necesito?', '¿Cómo controlo la plaga del frijol?')
+    const { turns, state } = await talk('Maíz', '¿Qué me conviene sembrar después del maíz?', '3 ha', 'temporal', 'optimizar el uso de agua', '¿Qué pasa si llueve poco?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Qué tan seguros son estos datos?', '¿Cuánto abono necesito?', '¿Cómo controlo la plaga del frijol?')
     expect(turns).toHaveLength(11)
     for (const turn of turns) {
       expect(turn.bubbles.length, turn.said).toBeGreaterThan(0)

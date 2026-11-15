@@ -132,3 +132,12 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* The assistant's answers from a place's data: the line breaks of each paragraph are kept */
+.zone-text {
+  white-space: pre-line;
+  line-height: 1.55;
+}
+.fa-msg .zone-text + .zone-text {
+  margin-top: 10px;
+}

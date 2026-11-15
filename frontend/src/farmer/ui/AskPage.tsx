@@ -1,29 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
-import type { DashboardData } from '../../lib/types.ts'
+import { zoneFor } from '../../lib/environment.ts'
 import { botTurn, loadChat, nextAsk, planReply, storeChat, userTurn, type Body, type Turn } from '../chat.ts'
-import { evidenceFor, yearsText } from '../evidence.ts'
-import { recommend, type Recommendation, type Zone } from '../recommend.ts'
 import { createRecognizer, speechSupported, type Recognizer } from '../speech.ts'
 import type { Field, FarmerState, Parcel, Situation } from '../state.ts'
+import { environmentTopicOf } from '../topics.ts'
 import { BigChoice } from './BigChoice.tsx'
 import { MicIcon, SendIcon } from './glyphs.tsx'
 import { HectaresField } from './HectaresField.tsx'
 import { goalOptions, previousOptions, waterOptions } from './options.tsx'
-import { RecommendationCard } from './RecommendationCard.tsx'
-import { Tag } from './Tag.tsx'
+import { ZoneAnswer } from './ZoneAnswer.tsx'
 
-const SUGGESTIONS = ['plant', 'money', 'rain', 'trust', 'fertilizer'] as const
-const UNKNOWN_ZONE: Zone = { status: 'unknown', key: null, km: 0 }
+const SUGGESTIONS = ['plant', 'money', 'rain', 'trust', 'climate', 'soil'] as const
 
 const lowerFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string, letter: string) => mark + letter.toLowerCase())
 const upperFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string, letter: string) => mark + letter.toUpperCase())
 
 interface Props {
-  data: DashboardData
   state: FarmerState
   parcel: Parcel | null
-  zone: Zone | null
   /** The page's title and the line under it. */
   heading: string
   lede: string
@@ -35,19 +31,18 @@ interface Props {
 }
 
 /**
- * Preguntar a YolIA: a conversation that answers from the models and nothing else. A question about planting first asks, one
- * by one with large buttons, for whatever is still missing; then the planner runs and the answer comes as the same card as in
- * "Qué sembrar". What the models do not cover is declined, not invented. The reply is chosen in chat.ts from plain rules (there
- * is no language model here yet), so every sentence is written text and every number is a model's.
+ * Preguntar a YolIA: a conversation that answers from the data the service published for the parcel's place (its rotation run
+ * and environmental package) and nothing else. A question about planting first asks, one by one with large buttons, for whatever
+ * is still missing; then the answer is built from the place's rotation options, ranked by what matters to the farmer and scaled
+ * to their hectares. The reply is chosen in chat.ts from plain rules (there is no language model here yet), so every sentence is
+ * written text and every number is the data's.
  */
-export function AskPage({ data, state, parcel, zone, heading, lede, onSituation, onGoParcel, seed, onSeedUsed }: Props) {
+export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel, seed, onSeedUsed }: Props) {
   const { t, lang } = useI18n()
   const [turns, setTurns] = useState<Turn[]>(loadChat)
   const [draft, setDraft] = useState('')
-  const [busy, setBusy] = useState(false)
   const [listening, setListening] = useState(false)
   const [voiceFailed, setVoiceFailed] = useState(false)
-  const busyRef = useRef(false)
   const focusRef = useRef<'plant' | 'money' | 'rain'>('plant')
   const endRef = useRef<HTMLDivElement>(null)
   const threadRef = useRef<HTMLDivElement>(null)
@@ -60,45 +55,48 @@ export function AskPage({ data, state, parcel, zone, heading, lede, onSituation,
 
   const append = useCallback((...items: Turn[]) => setTurns((previous) => [...previous, ...items]), [])
 
-  const lastRec = useMemo(() => {
-    for (let i = turns.length - 1; i >= 0; i--) {
-      const turn = turns[i]
-      if (turn.role === 'bot' && turn.body.kind === 'recommendation') return turn.body.rec
-    }
-    return null
-  }, [turns])
+  const published = useZoneData()
 
-  const runPlanner = useCallback(
-    async (focus: 'plant' | 'money' | 'rain', situation: Situation) => {
-      if (!parcel) return
-      busyRef.current = true
-      setBusy(true)
-      try {
-        const rec = await recommend({ data, point: parcel.point, place: parcel.label, situation, zone: zone ?? UNKNOWN_ZONE })
-        append(botTurn({ kind: 'recommendation', rec, focus }))
-      } catch (error) {
-        append(botTurn({ kind: 'error', message: error instanceof Error ? error.message : String(error) }))
-      } finally {
-        busyRef.current = false
-        setBusy(false)
+  /** The answer to a question, from the place the parcel is in or nearest to. */
+  const answerFromZone = useCallback(
+    (topic: Extract<Body, { kind: 'zone' }>['topic'], situation: Situation) => {
+      const zone = parcel && published ? zoneFor(parcel.point, published) : null
+      if (!zone) {
+        append(botTurn({ kind: 'error', message: t('farmer.plant.loading') }))
+        return
       }
+      append(botTurn({ kind: 'zone', topic, place: zone.id, km: zone.km, goal: situation.goal, hectares: situation.hectares, water: situation.water }))
     },
-    [append, data, parcel, zone],
+    [append, parcel, published, t],
   )
 
   const send = useCallback(
     async (raw: string) => {
       const text = raw.trim()
-      if (!text || busyRef.current) return
+      if (!text) return
       setDraft('')
-      const { patch, focus, plan } = planReply(text, { hasParcel: parcel !== null, situation: state.situation, zone, last: lastRec })
+      const { patch, focus, plan } = planReply(text, { hasParcel: parcel !== null, situation: state.situation, zone: null, last: null })
       if (Object.keys(patch).length > 0) onSituation(patch)
       if (focus) focusRef.current = focus
       append(userTurn(text))
-      if (plan.kind === 'say') append(...plan.bodies.map((body) => botTurn(body)))
-      else await runPlanner(plan.focus, { ...state.situation, ...patch })
+      // a question about the place's own data (its climate, soil, satellite series, sources)
+      const dataTopic = environmentTopicOf(text)
+      if (dataTopic) {
+        if (parcel) answerFromZone(dataTopic, state.situation)
+        else append(botTurn({ kind: 'ask', field: 'parcel', lead: true }))
+        return
+      }
+      if (plan.kind === 'say') {
+        // the answers about reliability and fertilizer come from the place's data too, so they need the parcel
+        for (const body of plan.bodies) {
+          if (body.kind === 'trust' || body.kind === 'fertilizer') {
+            if (parcel) answerFromZone(body.kind, state.situation)
+            else append(botTurn({ kind: 'ask', field: 'parcel', lead: true }))
+          } else append(botTurn(body))
+        }
+      } else answerFromZone(plan.focus, { ...state.situation, ...patch })
     },
-    [append, lastRec, onSituation, parcel, runPlanner, state.situation, zone],
+    [answerFromZone, append, onSituation, parcel, state.situation],
   )
 
   // a question handed over from another page is asked once, as if typed
@@ -117,8 +115,7 @@ export function AskPage({ data, state, parcel, zone, heading, lede, onSituation,
     append(userTurn(label))
     const ask = nextAsk(parcel !== null, situation)
     if (ask) append(botTurn({ kind: 'ask', field: ask, lead: false }))
-    else if (zone?.status === 'outside') append(botTurn({ kind: 'outside', km: zone.km }))
-    else void runPlanner(focusRef.current, situation)
+    else answerFromZone(focusRef.current, situation)
   }
 
   const submit = (e: FormEvent) => {
@@ -156,19 +153,15 @@ export function AskPage({ data, state, parcel, zone, heading, lede, onSituation,
   // each new message scrolls into view from its start (a tall recommendation is read from the top); not on arrival
   const seenTurns = useRef(turns.length)
   useEffect(() => {
-    if (turns.length === seenTurns.current && !busy) return
+    if (turns.length === seenTurns.current) return
     seenTurns.current = turns.length
     const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-    if (busy) {
-      endRef.current?.scrollIntoView({ block: 'end', behavior })
-      return
-    }
     const messages = threadRef.current?.querySelectorAll('.fa-msg')
     messages?.[messages.length - 1]?.scrollIntoView({ block: 'start', behavior })
-  }, [turns.length, busy])
+  }, [turns.length])
 
   const last = turns[turns.length - 1]
-  const askingNow = !busy && last?.role === 'bot' && last.body.kind === 'ask'
+  const askingNow = last?.role === 'bot' && last.body.kind === 'ask'
 
   return (
     <div className="page chat-page">
@@ -200,22 +193,15 @@ export function AskPage({ data, state, parcel, zone, heading, lede, onSituation,
               key={turn.id}
               body={turn.body}
               active={index === turns.length - 1 && askingNow}
-              data={data}
               onAnswer={answer}
               onGoParcel={onGoParcel}
             />
           ),
         )}
-        {busy && (
-          <p className="loading" role="status">
-            <span className="spinner" aria-hidden="true" />
-            {t('farmer.chat.thinking')}
-          </p>
-        )}
         <div ref={endRef} className="thread-end" />
       </div>
 
-      {!busy && !askingNow && (
+      {!askingNow && (
         <div className="suggest">
           <p className="help">{t('farmer.chat.suggested')}</p>
           <div className="chips">
@@ -247,7 +233,7 @@ export function AskPage({ data, state, parcel, zone, heading, lede, onSituation,
             <MicIcon />
           </button>
         )}
-        <button type="submit" className="btn primary chat-send" disabled={busy || draft.trim() === ''}>
+        <button type="submit" className="btn primary chat-send" disabled={draft.trim() === ''}>
           <SendIcon />
           {t('farmer.chat.send')}
         </button>
@@ -265,20 +251,13 @@ interface BotProps {
   body: Body
   /** The latest message, still waiting for its answer: only then are the answer buttons shown. */
   active: boolean
-  data: DashboardData
   onAnswer: (field: Field, value: Situation[Field], label: string) => void
   onGoParcel: () => void
 }
 
-function BotMessage({ body, active, data, onAnswer, onGoParcel }: BotProps) {
-  const { t, fmt, distance } = useI18n()
+function BotMessage({ body, active, onAnswer, onGoParcel }: BotProps) {
+  const { t } = useI18n()
   const [hectares, setHectares] = useState<number | undefined>()
-  const cropList = (rec: Recommendation) =>
-    Object.entries(rec.result.strategy.doses)
-      .filter(([, kg]) => kg > 0)
-      .map(([crop, kg]) => ({ crop, kg }))
-  const evidence = evidenceFor(data.models)
-
   let content
   switch (body.kind) {
     case 'greeting':
@@ -315,64 +294,8 @@ function BotMessage({ body, active, data, onAnswer, onGoParcel }: BotProps) {
       )
       break
     }
-    case 'recommendation':
-      content = (
-        <>
-          <p>{t(`farmer.chat.recommendation.${body.focus}`)}</p>
-          <RecommendationCard rec={body.rec} meta={data.meta} models={data.models} level={3} variant="brief" />
-        </>
-      )
-      break
-    case 'outside':
-      content = <p>{t('farmer.chat.outside', { km: distance(body.km) })}</p>
-      break
-    case 'fertilizer': {
-      const doses = body.rec ? cropList(body.rec) : []
-      content = (
-        <>
-          <Tag kind="general" />
-          <p>{t('farmer.chat.fertilizer.general')}</p>
-          <p>{t('farmer.chat.fertilizer.advice')}</p>
-          {body.rec && (
-            <>
-              <Tag kind="estimate" />
-              <p>
-                {doses.length === 0
-                  ? t('farmer.chat.fertilizer.none')
-                  : doses.map(({ crop, kg }) => t('farmer.chat.fertilizer.yours', { kg: fmt.number(kg), crops: t(`crops.${crop}`).toLowerCase() })).join(' ')}
-              </p>
-            </>
-          )}
-        </>
-      )
-      break
-    }
-    case 'trust':
-      content = (
-        <>
-          <Tag kind="general" />
-          <p>{t('farmer.chat.trust.intro')}</p>
-          <ul className="evidence">
-            {evidence.level && (
-              <li>
-                <Tag kind="fact" />
-                {t('farmer.rec.confidence.evidenceLevel', { sim: fmt.number(evidence.level.sim, 1), obs: fmt.number(evidence.level.obs, 1), years: yearsText(evidence.level.years) })}
-              </li>
-            )}
-            {evidence.holdoutWorse && (
-              <li>
-                <Tag kind="fact" />
-                {t('farmer.rec.confidence.evidenceYears', { holdout: yearsText(evidence.holdoutWorse) })}
-              </li>
-            )}
-            <li>
-              <Tag kind="general" />
-              {t('farmer.rec.confidence.evidenceSource')}
-            </li>
-          </ul>
-          <p>{t('farmer.chat.trust.outro')}</p>
-        </>
-      )
+    case 'zone':
+      content = <ZoneAnswer body={body} />
       break
     case 'unknown':
       content = (
@@ -382,10 +305,13 @@ function BotMessage({ body, active, data, onAnswer, onGoParcel }: BotProps) {
     case 'error':
       content = <p className="callout is-error">{t('farmer.chat.error', { message: body.message })}</p>
       break
+    default:
+      // answers of the old planner, which are no longer produced or kept
+      content = null
   }
 
   return (
-    <div className={`fa-msg from-bot${body.kind === 'recommendation' ? ' wide' : ''}`}>
+    <div className={`fa-msg from-bot${body.kind === 'zone' ? ' wide' : ''}`}>
       <p className="who">{t('farmer.chat.bot')}</p>
       {content}
     </div>
