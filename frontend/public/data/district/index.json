@@ -1,0 +1,276 @@
+{
+ "lugares": {
+  "guanajuato": {
+   "municipio": "Valle de Santiago",
+   "estado": "Guanajuato",
+   "regimenes": {
+    "riego": [
+     {
+      "id": "maiz",
+      "rotacion": "maíz",
+      "etiqueta": "Maíz cada año (primavera-verano)",
+      "archivo": "guanajuato/riego__maiz.json",
+      "secuencia": "Año 1: maíz (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 2
+     },
+     {
+      "id": "maiz_trigo",
+      "rotacion": "maíz/trigo",
+      "etiqueta": "Maíz en verano y trigo en invierno",
+      "archivo": "guanajuato/riego__maiz_trigo.json",
+      "secuencia": "Año 1: maíz y después trigo (otoño-invierno) (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 2
+     },
+     {
+      "id": "maiz_cebada",
+      "rotacion": "maíz/cebada",
+      "etiqueta": "Maíz en verano y cebada en invierno",
+      "archivo": "guanajuato/riego__maiz_cebada.json",
+      "secuencia": "Año 1: maíz y después cebada (otoño-invierno) (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 2
+     },
+     {
+      "id": "sorgo_cebada",
+      "rotacion": "sorgo/cebada",
+      "etiqueta": "Sorgo en verano y cebada en invierno",
+      "archivo": "guanajuato/riego__sorgo_cebada.json",
+      "secuencia": "Año 1: sorgo y después cebada (otoño-invierno) (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 2
+     },
+     {
+      "id": "sorgo",
+      "rotacion": "sorgo",
+      "etiqueta": "Sorgo cada año (primavera-verano)",
+      "archivo": "guanajuato/riego__sorgo.json",
+      "secuencia": "Año 1: sorgo (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 2
+     }
+    ],
+    "temporal": [
+     {
+      "id": "maiz",
+      "rotacion": "maíz",
+      "etiqueta": "Maíz de temporal cada año",
+      "archivo": "guanajuato/temporal__maiz.json",
+      "secuencia": "Año 1: maíz (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 3
+     },
+     {
+      "id": "sorgo",
+      "rotacion": "sorgo",
+      "etiqueta": "Sorgo de temporal cada año",
+      "archivo": "guanajuato/temporal__sorgo.json",
+      "secuencia": "Año 1: sorgo (cada año)",
+      "distrito": "Cortazar",
+      "alternativas": 3
+     },
+     {
+      "id": "maiz_frijol",
+      "rotacion": "maíz - frijol",
+      "etiqueta": "Maíz un año y frijol el siguiente",
+      "archivo": "guanajuato/temporal__maiz_frijol.json",
+      "secuencia": "Año 1: maíz → Año 2: frijol",
+      "distrito": "Cortazar",
+      "alternativas": 3
+     }
+    ]
+   },
+   "errores": []
+  },
+  "sinaloa": {
+   "municipio": "Ahome",
+   "estado": "Sinaloa",
+   "regimenes": {
+    "riego": [
+     {
+      "id": "maiz",
+      "rotacion": "maíz",
+      "etiqueta": "Maíz cada año (otoño-invierno)",
+      "archivo": "sinaloa/riego__maiz.json",
+      "secuencia": "Año 1: maíz (otoño-invierno) (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     },
+     {
+      "id": "sorgo_maiz",
+      "rotacion": "sorgo/maíz",
+      "etiqueta": "Sorgo en verano y maíz en invierno",
+      "archivo": "sinaloa/riego__sorgo_maiz.json",
+      "secuencia": "Año 1: sorgo y después maíz (otoño-invierno) (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 2
+     },
+     {
+      "id": "frijol",
+      "rotacion": "frijol",
+      "etiqueta": "Frijol cada año (otoño-invierno)",
+      "archivo": "sinaloa/riego__frijol.json",
+      "secuencia": "Año 1: frijol (otoño-invierno) (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     },
+     {
+      "id": "trigo",
+      "rotacion": "trigo",
+      "etiqueta": "Trigo cada año (otoño-invierno)",
+      "archivo": "sinaloa/riego__trigo.json",
+      "secuencia": "Año 1: trigo (otoño-invierno) (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     }
+    ],
+    "temporal": [
+     {
+      "id": "ajonjoli",
+      "rotacion": "ajonjolí",
+      "etiqueta": "Ajonjolí de temporal cada año",
+      "archivo": "sinaloa/temporal__ajonjoli.json",
+      "secuencia": "Año 1: ajonjolí (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     },
+     {
+      "id": "sorgo",
+      "rotacion": "sorgo",
+      "etiqueta": "Sorgo de temporal cada año",
+      "archivo": "sinaloa/temporal__sorgo.json",
+      "secuencia": "Año 1: sorgo (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     },
+     {
+      "id": "cacahuate",
+      "rotacion": "cacahuate",
+      "etiqueta": "Cacahuate de temporal cada año",
+      "archivo": "sinaloa/temporal__cacahuate.json",
+      "secuencia": "Año 1: cacahuate (cada año)",
+      "distrito": "Los Mochis",
+      "alternativas": 3
+     }
+    ]
+   },
+   "errores": []
+  },
+  "sonora": {
+   "municipio": "Bácum",
+   "estado": "Sonora",
+   "regimenes": {
+    "riego": [
+     {
+      "id": "trigo",
+      "rotacion": "trigo",
+      "etiqueta": "Trigo cada año (otoño-invierno)",
+      "archivo": "sonora/riego__trigo.json",
+      "secuencia": "Año 1: trigo (otoño-invierno) (cada año)",
+      "distrito": "Cajeme",
+      "alternativas": 3
+     },
+     {
+      "id": "soya_trigo",
+      "rotacion": "soya/trigo",
+      "etiqueta": "Soya en verano y trigo en invierno",
+      "archivo": "sonora/riego__soya_trigo.json",
+      "secuencia": "Año 1: soya y después trigo (otoño-invierno) (cada año)",
+      "distrito": "Cajeme",
+      "alternativas": 2
+     },
+     {
+      "id": "maiz",
+      "rotacion": "maíz",
+      "etiqueta": "Maíz cada año",
+      "archivo": "sonora/riego__maiz.json",
+      "secuencia": "Año 1: maíz (otoño-invierno) (cada año)",
+      "distrito": "Cajeme",
+      "alternativas": 3
+     },
+     {
+      "id": "trigo_maiz",
+      "rotacion": "trigo - maíz",
+      "etiqueta": "Trigo un año y maíz el siguiente",
+      "archivo": "sonora/riego__trigo_maiz.json",
+      "secuencia": "Año 1: trigo (otoño-invierno) → Año 2: maíz (otoño-invierno)",
+      "distrito": "Cajeme",
+      "alternativas": 3
+     }
+    ],
+    "temporal": [
+     {
+      "id": "sorgo",
+      "rotacion": "sorgo",
+      "etiqueta": "Sorgo de temporal cada año",
+      "archivo": "sonora/temporal__sorgo.json",
+      "secuencia": "Año 1: sorgo (cada año)",
+      "distrito": "Cajeme",
+      "alternativas": 2
+     }
+    ]
+   },
+   "errores": []
+  }
+ },
+ "version": 1,
+ "generado": "2026-11-15T18:49:12+00:00",
+ "motor": "gradientdescentfarmers.model_builder.rotations (comparar_rotaciones)",
+ "panel": {
+  "panel": "district_panel_national",
+  "run_id": "20261115T071028Z_d16825a6",
+  "sources": {
+   "inegi_boundaries": "available",
+   "siap": "available",
+   "power": "available",
+   "chirps": "available",
+   "grace": "available",
+   "ndvi": "available",
+   "smap": "available",
+   "gldas": "available",
+   "igbp": "available"
+  }
+ },
+ "prioridades": [
+  {
+   "id": "agua",
+   "etiqueta": "ahorrar o aprovechar el agua"
+  },
+  {
+   "id": "erosion",
+   "etiqueta": "proteger el suelo de la erosión"
+  },
+  {
+   "id": "forraje",
+   "etiqueta": "forraje para animales"
+  },
+  {
+   "id": "ingreso",
+   "etiqueta": "ingreso"
+  },
+  {
+   "id": "plagas",
+   "etiqueta": "romper ciclos de plagas y enfermedades"
+  },
+  {
+   "id": "riesgo",
+   "etiqueta": "menos riesgo de perder la cosecha"
+  },
+  {
+   "id": "suelo",
+   "etiqueta": "fertilidad y materia orgánica del suelo"
+  }
+ ],
+ "max_prioridades": 2,
+ "supuestos": {
+  "residuo": "dejar",
+  "tiene_animales": false,
+  "pendiente": "ligera",
+  "suelo": null,
+  "mes_siembra": null,
+  "mes_cosecha": null,
+  "costos": null,
+  "rendimiento_propio": null
+ }
+}

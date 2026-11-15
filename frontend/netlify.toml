@@ -1,9 +1,14 @@
 # Netlify settings for the web app. In the Netlify UI: base directory "frontend", build command "npm run build",
-# publish directory "dist". Nothing here is a secret, and the app needs no environment variables.
+# publish directory "dist". Nothing here is a secret. The app needs no environment variables; the WhatsApp demo's language
+# model is optional and needs ANTHROPIC_API_KEY (and optionally YOLIA_LLM_MODEL) set in Netlify's environment variables.
 
 [build]
   command = "npm run build"
   publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [build.environment]
   # Vite 8 needs Node 20.19+ or 22.12+; frontend/package.json "engines" says >=22.12.

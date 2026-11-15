@@ -6,9 +6,11 @@ import type { Body } from '../chat.ts'
 import { environmentBubbles, type EnvironmentTopic } from '../../whatsapp/environmentAnswers.ts'
 import { richText } from '../../whatsapp/format.tsx'
 import { rotationBubbles, type RotationTopic } from '../../whatsapp/rotationAnswers.ts'
+import { DistrictSection } from './DistrictSection.tsx'
 import '../../near.css'
 
 const ENVIRONMENT: readonly string[] = ['climate', 'soil', 'satellite', 'sources']
+const PLANTING: readonly string[] = ['plant', 'compare']
 
 /**
  * An answer of the in-app assistant, built from what the data service published for the parcel's place: the rotation run
@@ -46,6 +48,8 @@ export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind
           {richText(bubble.text)}
         </p>
       ))}
+      {/* a planting question also gets the district engine's short answer, as a second, separate tool */}
+      {PLANTING.includes(body.topic) && <DistrictSection placeId={body.place} app={{ water: body.water, goal: body.goal }} mode="agricultor" />}
     </>
   )
 }

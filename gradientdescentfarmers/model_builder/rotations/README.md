@@ -42,6 +42,31 @@ These are state-level recommendations, not observations: a technician should con
 
 Where no calendar row or farmer answer exists, the crop calendar falls back to the default sowing date (around 21 November for irrigated autumn–winter crops) and FAO-56 stage lengths shortened in warm places. The calendar table above replaces that for its rows; the rest still need local calendars.
 
+## In the YolIA web app (`web_export.py`, `serve.py`)
+
+The web app is static, so the engine's answers for its three demo places are precomputed:
+
+```bash
+python -m gradientdescentfarmers.model_builder.rotations.web_export      # ~5 min, writes frontend/public/data/district/
+git add -f frontend/public/data/district                                 # the root .gitignore excludes */**/data/
+```
+
+Grid per place (Valle de Santiago / DDR Cortazar, Ahome / DDR Los Mochis, Bácum / DDR Cajeme, where the district panel's
+point-in-polygon step puts the demo points): water regime x the district's main current rotations (`PLACES`) x the farmer's
+priorities (none, one, or two of the seven). Every other input keeps the engine's default; the app says which ones a
+precomputed answer did not use. Each `(place, water, rotation)` file stores every rotation once and, per priority set, the
+order and scores (`pack` / `unpack`).
+
+For the inputs the grid does not vary (slope, soil, stover, animals, sowing and harvest month), run the engine over HTTP and
+build or serve the app with `VITE_DISTRICT_API=http://localhost:8765`:
+
+```bash
+python -m gradientdescentfarmers.model_builder.rotations.serve --port 8765   # POST /compare, GET /health (demo: no auth)
+```
+
+If it is unreachable the app falls back to the precomputed answer and says so. Note: the Sinaloa WOFOST run names the
+municipality Juan José Ríos (created in 2021); the district panel's boundaries and SIAP file that point under Ahome.
+
 ## Tests
 
 ```bash

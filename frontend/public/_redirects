@@ -1,3 +1,5 @@
 # Netlify: the app is one page that decides what to show from the address, so any path that is not a real file
 # (such as /demo/whatsapp) gets index.html. Real files (assets, data/*.json, favicon) are served as they are.
+# The chat's language model (netlify/functions/yolia-chat.mts); must come before the catch-all.
+/api/yolia-chat    /.netlify/functions/yolia-chat    200
 /*    /index.html   200

@@ -1,0 +1,79 @@
+/* The SIAP district engine's section ("Según el historial de tu distrito"), under the WOFOST results. Same design system:
+   orange for what can be acted on, black outlines, warnings with words. */
+.dist-section {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 8px;
+  padding-top: 20px;
+  border-top: 3px solid var(--black);
+}
+.dist-section h2 {
+  margin: 0;
+  font-size: 24px;
+}
+.dist-section p {
+  margin: 0;
+  line-height: 1.5;
+}
+.dist-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dist-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid var(--black);
+  border-radius: 999px;
+}
+.dist-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-l);
+}
+.dist-form h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.dist-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.dist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.dist-grid select {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 10px;
+  font: inherit;
+  border: 2px solid var(--black);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+.dist-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  font-weight: 700;
+}
+.dist-check input {
+  width: 22px;
+  height: 22px;
+}
+.dist-card h3 {
+  margin: 6px 0 0;
+  font-size: 17px;
+}
+.dist-card.is-best {
+  border-color: var(--orange-600);
+  border-width: 3px;
+}

@@ -4,6 +4,8 @@ import { loadData } from '../lib/data.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import { loadEnvironment, type EnvironmentByLocation } from '../lib/environment.ts'
 import { loadRotations, type RotationsByLocation } from '../lib/rotations.ts'
+import { liveApi, loadDistrictIndex, type DistrictIndex } from '../lib/district.ts'
+import { llmEnabled, makeNarrator, probeNarrator, type Narrator } from '../llm/client.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
 import { richText } from './format.tsx'
@@ -27,7 +29,7 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 
 /** /demo/whatsapp: loads the stored model results (from this app's own files) and shows the chat. */
 export default function WhatsAppDemo() {
-  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation } | null>(null)
+  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation; district: DistrictIndex | null; narrate: Narrator | null } | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
     document.title = 'YolIA · WhatsApp (simulación)'
@@ -35,14 +37,16 @@ export default function WhatsAppDemo() {
     // a rotation file that is missing only leaves that location on "data unavailable"; the model results are required
     const withRotations = DEMO_LOCATIONS.filter((place) => place.results === 'rotations').map((place) => place.id)
     // a file that is missing only leaves that location without it; the model results are required
-    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base)]).then(
-      ([data, rotations, environment]) => setLoaded({ data, rotations, environment }),
+    // the district engine's answers are optional too: without them the chat answers from the WOFOST runs only, as before
+    // the language model is used (and the banner says so) only when its endpoint is there and has a key
+    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base), loadDistrictIndex(base), llmEnabled() ? probeNarrator(base) : Promise.resolve(false)]).then(
+      ([data, rotations, environment, district, llm]) => setLoaded({ data, rotations, environment, district, narrate: llm ? makeNarrator(base) : null }),
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
   }, [])
   return (
     <I18nProvider initial="es">
-      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} home={appRoot(window.location)} /> : <Loading error={error} />}
+      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} district={loaded.district} narrate={loaded.narrate} home={appRoot(window.location)} /> : <Loading error={error} />}
     </I18nProvider>
   )
 }
@@ -63,14 +67,22 @@ interface ChatProps {
   rotations?: RotationsByLocation
   /** Environmental packages for the places that have them; a place without one cannot answer about its climate or soil. */
   environment?: EnvironmentByLocation
+  /** The SIAP district engine's precomputed answers; without them the chat answers from the WOFOST runs only. */
+  district?: DistrictIndex | null
+  /** The language model that phrases the summaries (llm/client.ts); null keeps the written templates. */
+  narrate?: Narrator | null
   /** The YolIA site this chat links to. */
   home: string
   typingMs?: number
 }
 
-export function WhatsAppChat({ data, rotations, environment, home, typingMs = TYPING_MS }: ChatProps) {
-  const { t, fmt, distance } = useI18n()
-  const env = useMemo<Env>(() => ({ data, rotations, environment, t, fmt, distance }), [data, rotations, environment, t, fmt, distance])
+export function WhatsAppChat({ data, rotations, environment, district, narrate, home, typingMs = TYPING_MS }: ChatProps) {
+  const { t, fmt, distance, lang } = useI18n()
+  const base = home
+  const env = useMemo<Env>(
+    () => ({ data, rotations, environment, t, fmt, distance, lang, narrate: narrate ?? null, ...(district ? { district: { index: district, base, api: liveApi() } } : {}) }),
+    [data, rotations, environment, t, fmt, distance, lang, narrate, district, base],
+  )
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)
@@ -167,7 +179,7 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
         </header>
 
         <div className="wa-banner" role="note">
-          <strong>{t('whatsapp.badge')}</strong> {t('whatsapp.banner')}{' '}
+          <strong>{t('whatsapp.badge')}</strong> {t(narrate ? 'whatsapp.bannerLlm' : 'whatsapp.banner')}{' '}
           <a href={home} className="wa-site">
             {t('whatsapp.openSite')} →
           </a>
