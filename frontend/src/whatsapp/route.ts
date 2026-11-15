@@ -2,6 +2,8 @@
 // on a plain static host, at #/demo/whatsapp. The app has no router: main.tsx asks here whether to show it.
 
 export const DEMO_PATH = '/demo/whatsapp'
+/** The link to the simulator from the app's own pages: the hash form works on any host, and main.tsx follows it. */
+export const DEMO_HREF = `#${DEMO_PATH}`
 
 interface Where {
   pathname: string

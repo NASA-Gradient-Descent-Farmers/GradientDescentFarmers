@@ -13,7 +13,7 @@ import type { Version } from '../lib/version.ts'
  * The front page: "¡Hola! Bienvenido a YolIA." and a way in. Accounts are simulated (a name, no password): pick one of the
  * accounts on this phone, or create one and choose how it will use YolIA.
  */
-export function SignInScreen() {
+export function SignInScreen({ onBack }: { onBack?: () => void }) {
   const { t } = useI18n()
   const { accounts, signIn, signUp, remove } = useAccount()
   const [name, setName] = useState('')
@@ -71,6 +71,11 @@ export function SignInScreen() {
     <div className="calm">
       <TopBar />
       <main className="calm-main signin">
+        {onBack && (
+          <button type="button" className="btn ghost signin-back" onClick={onBack}>
+            {t('landing.back')}
+          </button>
+        )}
         <h1 className="statement">
           <strong>
             {t('welcome.hello')} <Brand />.

@@ -18,6 +18,7 @@ import type { DashboardData } from './lib/types.ts'
 import { PlannerScreen, type PlannerStart } from './screens/PlannerScreen.tsx'
 import { FarmerHome } from './farmer/ui/FarmerHome.tsx'
 import { ParcelTools } from './farmer/ui/ParcelTools.tsx'
+import { HomeScreen } from './screens/HomeScreen.tsx'
 import { SignInScreen } from './screens/SignInScreen.tsx'
 import { WhereScreen } from './screens/WhereScreen.tsx'
 import { AssistantPage, type Seed } from './assistant/ui/AssistantPage.tsx'
@@ -33,10 +34,15 @@ const NO_SITE: LatLon = { lat: 0, lon: 0 } // only used before the data (and so 
 // The farmer is no longer asked questions: the assistant starts from the pin alone and learns the rest from the chat.
 const NO_ANSWERS: Profile = {}
 
-/** Signed out: the front page. Signed in: the app for how this account uses it, started afresh for each account and mode. */
+/**
+ * Signed out: the home page, and from it the sign-in. Signed in: the app for how this account uses it, started afresh for
+ * each account and mode.
+ */
 export default function App() {
   const { user } = useAccount()
-  return user ? <Workspace key={`${user.id}:${user.mode}`} user={user} /> : <SignInScreen />
+  const [started, setStarted] = useState(false)
+  if (user) return <Workspace key={`${user.id}:${user.mode}`} user={user} />
+  return started ? <SignInScreen onBack={() => setStarted(false)} /> : <HomeScreen onStart={() => setStarted(true)} />
 }
 
 function Workspace({ user }: { user: Account }) {

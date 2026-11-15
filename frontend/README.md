@@ -194,5 +194,6 @@ node scripts/slim-rotations.mjs <sinaloa|sonora|guanajuato> ./rotations.json
 
 The script copies the figures as they are and drops server paths and hashes. `src/lib/rotations.ts` checks the file when it is loaded. Current runs: `mexico_norte_01` (Sinaloa, run `be357172bae941c1`) and `mexico_norte_02` (Sonora, run `5abb561d6ead496b`). A new location needs `results: 'rotations'` in `src/lib/demoLocations.ts`.
 
+- The home page (`src/screens/HomeScreen.tsx`, shown before signing in) has a WhatsApp button that opens the simulator at `#/demo/whatsapp`; `main.tsx` follows the address, so no reload is needed.
 - Open `/demo/whatsapp` with `npm run dev`, or `#/demo/whatsapp` on a static host (the built app uses relative asset paths).
 - Tests: `npm test` (`src/whatsapp/*.test.ts*`).
