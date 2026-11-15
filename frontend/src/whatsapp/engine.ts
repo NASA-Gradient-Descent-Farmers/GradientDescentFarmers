@@ -78,7 +78,7 @@ export interface Env {
    * The SIAP district engine's precomputed answers (lib/district.ts). When given, a planting question gets one summary of both
    * engines with follow-up buttons, and the WOFOST details are one tap away; without it the chat answers as before.
    */
-  district?: { index: DistrictIndex; base: string; fetcher?: typeof fetch; api?: string | null }
+  district?: { index: DistrictIndex; base: string; fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T }
   /** The language model that phrases the summary (llm/client.ts); null or failing means the written summary. */
   narrate?: Narrator | null
   lang?: 'es' | 'en'
@@ -420,7 +420,7 @@ async function districtFor(state: ChatState, place: DemoLocation, env: Env): Pro
   if (!env.district) return null
   try {
     const { water, goal, previous } = state.situation
-    return await districtAnswer(place.id, env.district.index, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api })
+    return await districtAnswer(place.id, env.district.index, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api, translate: env.district.translate })
   } catch {
     return null
   }

@@ -278,9 +278,11 @@ export async function districtAnswer(
   own: DistrictInputs,
   app: AppAnswers,
   base: string,
-  options: { fetcher?: typeof fetch; api?: string | null } = {},
+  options: { fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T } = {},
 ): Promise<DistrictAnswer | null> {
   const fetcher = options.fetcher ?? fetch
+  // the engine writes Spanish; in English the page passes its translation of the data (lib/dataI18n.ts)
+  const tr = options.translate ?? (<T,>(value: T) => value)
   const place = index.lugares[placeId]
   if (!place) return null
   const inputs = effectiveInputs(place, own, app)
@@ -310,7 +312,7 @@ export async function districtAnswer(
       })
       const body = (await response.json()) as DistrictResult & { error?: string }
       if (!response.ok || body.error) throw new Error(body.error ?? `HTTP ${response.status}`)
-      return { result: body, source: 'live', inputs, option, notUsed: [] }
+      return { result: tr(body), source: 'live', inputs, option: tr(option), notUsed: [] }
     } catch (error) {
       liveError = error instanceof Error ? error.message : String(error)
     }
@@ -318,7 +320,7 @@ export async function districtAnswer(
   const packed = await getJson<Packed>(`${base}data/district/${option.archivo}`, fetcher)
   const result = unpack(packed, priorityKey(inputs.prioridades))
   if (!result) return null
-  return { result, source: 'precomputed', inputs, option, notUsed: extra, ...(liveError ? { liveError } : {}) }
+  return { result: tr(result), source: 'precomputed', inputs, option: tr(option), notUsed: extra, ...(liveError ? { liveError } : {}) }
 }
 
 // ---- small readers used by the views and the chat ----

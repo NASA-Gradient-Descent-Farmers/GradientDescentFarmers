@@ -92,6 +92,6 @@ export const districtEs = {
     showDetails: 'Ver el detalle del distrito',
     adjust: 'Afinar con datos de mi parcela',
     ind: { ingreso: 'Valor de la cosecha', ingreso_p10: 'En un año malo', riesgo: 'Años malos', agua: 'Agua', nitrogeno: 'Balance de nitrógeno', carbono: 'Carbono al suelo', erosion: 'Lluvia sobre suelo descubierto', plagas: 'Cambio de familia (plagas)', forraje: 'Forraje', costo_equilibrio: 'Costo máximo para no perder', costo_equilibrio_8de10: 'Costo máximo (8 de 10 años)' },
-    english: 'El motor de distrito escribe en español.',
+    english: 'Traducción automática del texto en español de los motores; las cifras no cambian.',
   },
 }

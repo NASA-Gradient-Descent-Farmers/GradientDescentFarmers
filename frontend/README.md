@@ -154,6 +154,18 @@ npm run dev                                                 # the WhatsApp demo 
 On Netlify set `ANTHROPIC_API_KEY` (and optionally `YOLIA_LLM_MODEL`) in the site's environment variables. `VITE_LLM=off`
 builds a demo that never calls it. Without a key everything works with the written templates.
 
+### English for evaluators
+
+Every page has the Español / English toggle, and so does the WhatsApp demo (or open `/demo/whatsapp?lang=en`; it also follows
+the language chosen on the site). The interface text comes from the dictionaries in `src/i18n/`. The engines write their
+explanations in Spanish, so their text was translated **once, ahead of time** into `public/data/i18n/en.json` (989 strings,
+`scripts/translate-data.mjs`, Claude with a fixed agricultural glossary). A translation whose numbers differ from the original
+is dropped. In English the app swaps those strings in (`src/lib/dataI18n.ts`); identifiers, enums, place names and figures are
+never touched, and English needs no key or network at run time. The language model writes its WhatsApp summaries directly in
+the chat's language. After refreshing `public/data/district/` or `public/data/rotations/`, run
+`node scripts/translate-data.mjs` (it only translates new strings; `--check` lists what is missing). Live-engine answers that
+were never exported stay in Spanish.
+
 ## Assistant
 
 The Técnico assistant. Instead of four separate tools, the user asks in their own words and the assistant picks the project's models that the question needs, runs them, and explains what they returned. (The Agricultor assistant is the simpler one described above.)

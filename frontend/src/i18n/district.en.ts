@@ -92,6 +92,6 @@ export const districtEn = {
     showDetails: 'See the district detail',
     adjust: 'Refine with my field\'s data',
     ind: { ingreso: 'Harvest value', ingreso_p10: 'In a bad year', riesgo: 'Bad years', agua: 'Water', nitrogeno: 'Nitrogen balance', carbono: 'Carbon to soil', erosion: 'Rain on bare soil', plagas: 'Family change (pests)', forraje: 'Forage', costo_equilibrio: 'Break-even cost', costo_equilibrio_8de10: 'Break-even cost (8 of 10 years)' },
-    english: 'The district engine writes in Spanish.',
+    english: 'Machine-translated from the engines\' Spanish output; figures unchanged.',
   },
 }

@@ -7,6 +7,7 @@ import { environmentBubbles, type EnvironmentTopic } from '../../whatsapp/enviro
 import { richText } from '../../whatsapp/format.tsx'
 import { rotationBubbles, type RotationTopic } from '../../whatsapp/rotationAnswers.ts'
 import { DistrictSection } from './DistrictSection.tsx'
+import { useDataTranslation } from '../../lib/dataI18n.ts'
 import '../../near.css'
 
 const ENVIRONMENT: readonly string[] = ['climate', 'soil', 'satellite', 'sources']
@@ -28,7 +29,8 @@ export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind
   const { t, fmt, distance } = useI18n()
   const place = DEMO_LOCATIONS.find((candidate) => candidate.id === body.place)
   if (!place) return null
-  const rotations = published.rotations[body.place]
+  const translate = useDataTranslation()
+  const rotations = translate(published.rotations[body.place])
   const environment = published.environment[body.place] ?? null
   const ctx = { t, fmt, observed: environment, goal: body.goal ?? null, water: body.water ?? null }
   const bubbles = ENVIRONMENT.includes(body.topic)

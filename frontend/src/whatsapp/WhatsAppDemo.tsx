@@ -5,6 +5,8 @@ import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLo
 import { loadEnvironment, type EnvironmentByLocation } from '../lib/environment.ts'
 import { loadRotations, type RotationsByLocation } from '../lib/rotations.ts'
 import { liveApi, loadDistrictIndex, type DistrictIndex } from '../lib/district.ts'
+import { loadTranslations, translateData, type Translations } from '../lib/dataI18n.ts'
+import { LangToggle } from '../components/LangToggle.tsx'
 import { llmEnabled, makeNarrator, probeNarrator, type Narrator } from '../llm/client.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
@@ -27,9 +29,15 @@ const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare', 'climate', 'soil', '
 const clock = () => new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
+/** ?lang=en (or es) in the address picks the chat's language, e.g. /demo/whatsapp?lang=en for English-speaking reviewers. */
+function langFromAddress(): 'en' | 'es' | undefined {
+  const lang = new URLSearchParams(window.location.search).get('lang') ?? new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('lang')
+  return lang === 'en' || lang === 'es' ? lang : undefined
+}
+
 /** /demo/whatsapp: loads the stored model results (from this app's own files) and shows the chat. */
 export default function WhatsAppDemo() {
-  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation; district: DistrictIndex | null; narrate: Narrator | null } | null>(null)
+  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation; district: DistrictIndex | null; narrate: Narrator | null; translations: Translations } | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
     document.title = 'YolIA · WhatsApp (simulación)'
@@ -39,14 +47,14 @@ export default function WhatsAppDemo() {
     // a file that is missing only leaves that location without it; the model results are required
     // the district engine's answers are optional too: without them the chat answers from the WOFOST runs only, as before
     // the language model is used (and the banner says so) only when its endpoint is there and has a key
-    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base), loadDistrictIndex(base), llmEnabled() ? probeNarrator(base) : Promise.resolve(false)]).then(
-      ([data, rotations, environment, district, llm]) => setLoaded({ data, rotations, environment, district, narrate: llm ? makeNarrator(base) : null }),
+    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base), loadDistrictIndex(base), llmEnabled() ? probeNarrator(base) : Promise.resolve(false), loadTranslations(base)]).then(
+      ([data, rotations, environment, district, llm, translations]) => setLoaded({ data, rotations, environment, district, narrate: llm ? makeNarrator(base) : null, translations }),
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
   }, [])
   return (
-    <I18nProvider initial="es">
-      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} district={loaded.district} narrate={loaded.narrate} home={appRoot(window.location)} /> : <Loading error={error} />}
+    <I18nProvider initial={langFromAddress()}>
+      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} district={loaded.district} narrate={loaded.narrate} translations={loaded.translations} home={appRoot(window.location)} /> : <Loading error={error} />}
     </I18nProvider>
   )
 }
@@ -71,17 +79,27 @@ interface ChatProps {
   district?: DistrictIndex | null
   /** The language model that phrases the summaries (llm/client.ts); null keeps the written templates. */
   narrate?: Narrator | null
+  /** English for the engines' Spanish text (lib/dataI18n.ts), used when the chat is in English. */
+  translations?: Translations
   /** The YolIA site this chat links to. */
   home: string
   typingMs?: number
 }
 
-export function WhatsAppChat({ data, rotations, environment, district, narrate, home, typingMs = TYPING_MS }: ChatProps) {
+export function WhatsAppChat({ data, rotations, environment, district, narrate, translations, home, typingMs = TYPING_MS }: ChatProps) {
   const { t, fmt, distance, lang } = useI18n()
   const base = home
   const env = useMemo<Env>(
-    () => ({ data, rotations, environment, t, fmt, distance, lang, narrate: narrate ?? null, ...(district ? { district: { index: district, base, api: liveApi() } } : {}) }),
-    [data, rotations, environment, t, fmt, distance, lang, narrate, district, base],
+    () => {
+      // in English the engines' Spanish text is swapped for its translation; identifiers and figures are untouched
+      const map = lang === 'en' ? (translations ?? null) : null
+      const translate = <T,>(value: T): T => translateData(value, map)
+      return {
+        data, rotations: translate(rotations), environment, t, fmt, distance, lang, narrate: narrate ?? null,
+        ...(district ? { district: { index: translate(district), base, api: liveApi(), translate } } : {}),
+      }
+    },
+    [data, rotations, environment, t, fmt, distance, lang, narrate, district, base, translations],
   )
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
@@ -173,6 +191,7 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
             </h1>
             <p>{t('whatsapp.status')}</p>
           </div>
+          <LangToggle className="wa-lang" />
           <button type="button" className="wa-reset" onClick={() => void begin()} aria-label={t('whatsapp.resetLabel')}>
             ↺ {t('whatsapp.reset')}
           </button>

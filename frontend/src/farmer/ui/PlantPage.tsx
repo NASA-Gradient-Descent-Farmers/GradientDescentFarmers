@@ -5,6 +5,7 @@ import type { FarmerState, Parcel } from '../state.ts'
 import { EnvironmentPanel } from './EnvironmentPanel.tsx'
 import { RotationPlant } from './RotationPlant.tsx'
 import { DistrictSection } from './DistrictSection.tsx'
+import { useDataTranslation } from '../../lib/dataI18n.ts'
 import { ZoneNotice } from './ZoneNotice.tsx'
 
 interface Props {
@@ -22,6 +23,7 @@ interface Props {
 export function PlantPage({ state, parcel, onGoParcel, onAsk }: Props) {
   const { t } = useI18n()
   const published = useZoneData()
+  const translate = useDataTranslation()
   const zone = parcel && published ? zoneFor(parcel.point, published) : null
 
   // the district engine's answer goes under whatever the WOFOST part shows, as a second, separate tool
@@ -30,7 +32,7 @@ export function PlantPage({ state, parcel, onGoParcel, onAsk }: Props) {
   if (zone?.rotations) {
     return (
       <>
-        <RotationPlant zone={zone} rotations={zone.rotations} situation={state.situation} notice={<ZoneNotice point={parcel!.point} />} onAsk={onAsk} />
+        <RotationPlant zone={zone} rotations={translate(zone.rotations)} situation={state.situation} notice={<ZoneNotice point={parcel!.point} />} onAsk={onAsk} />
         <div className="page">{district}</div>
       </>
     )

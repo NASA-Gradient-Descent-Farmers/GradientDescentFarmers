@@ -189,3 +189,34 @@ describe('the facts and the number check', () => {
     expect(flat(districtBubbles('summary', answer, { t, fmt }))).toContain(income)
   })
 })
+
+describe('English for the engines\' Spanish text', () => {
+  it('translates display text and keeps identifiers, enums and figures', async () => {
+    const { translateData } = await import('../lib/dataI18n.ts')
+    const map = new Map([['Tu rotación actual: maíz', 'Your current rotation: maize'], ['maíz', 'maize'], ['alta', 'high']])
+    const value = { id: 'actual', nombre: 'Tu rotación actual: maíz', rotacion: 'maíz', evidencia: 'alta', etiqueta: 'maíz', valor: 3, lista: ['Tu rotación actual: maíz'] }
+    expect(translateData(value, map)).toEqual({ id: 'actual', nombre: 'Your current rotation: maize', rotacion: 'maíz', evidencia: 'alta', etiqueta: 'maize', valor: 3, lista: ['Your current rotation: maize'] })
+    expect(translateData(value, null)).toBe(value)
+  })
+
+  it('has a translation for every engine string, with the same figures', () => {
+    const file = new URL('data/i18n/en.json', root)
+    const strings = JSON.parse(readFileSync(file, 'utf8')).strings as Record<string, string>
+    const figures = (text: string) => [...text.matchAll(/\d+(?:[.,]\d+)*/g)].map((m) => m[0].replace(/,/g, '')).sort().join('|')
+    for (const [es, en] of Object.entries(strings)) expect(figures(en)).toBe(figures(es))
+    expect(Object.keys(strings).length).toBeGreaterThan(900)
+  })
+
+  it('answers in English end to end with the translated data', async () => {
+    const { translateData } = await import('../lib/dataI18n.ts')
+    const map = new Map(Object.entries(JSON.parse(readFileSync(new URL('data/i18n/en.json', root), 'utf8')).strings as Record<string, string>))
+    const tEn = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.en, path, vars)
+    const tr = <T,>(value: T) => translateData(value, map)
+    const env: Env = { ...base, t: tEn, rotations: tr(rotations), lang: 'en', district: { index: tr(index), base: '/', fetcher: diskFetch, api: null, translate: tr } }
+    const { bubbles } = await talk(env, 'Sonora', 'What should I plant?')
+    expect(bubbles[0].text).toMatch(/District history Cajeme \(SIAP\)/)
+    expect(bubbles[0].text).not.toMatch(/\b(tu rotación|cultivo|leguminosa|garbanzo)\b/i)
+    const why = await reply('Why that option?', (await talk(env, 'Sonora', 'What should I plant?')).state, env)
+    expect(flat(why.bubbles)).toMatch(/Why .* is proposed/)
+  })
+})

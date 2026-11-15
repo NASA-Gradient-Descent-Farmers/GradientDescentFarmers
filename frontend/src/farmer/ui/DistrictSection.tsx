@@ -23,6 +23,7 @@ import {
   type PriorityId,
   type WaterRegime,
 } from '../../lib/district.ts'
+import { useDataTranslation } from '../../lib/dataI18n.ts'
 import { districtBubbles } from '../../whatsapp/districtAnswers.ts'
 import { richText } from '../../whatsapp/format.tsx'
 import { DataTable } from './DataTable.tsx'
@@ -47,6 +48,7 @@ export function useDistrict(placeId: DemoLocationId | null, app: AppAnswers) {
   const [inputs, setInputsState] = useState<DistrictInputs>(loadInputs)
   const [answer, setAnswer] = useState<DistrictAnswer | null | undefined>(undefined)
   const { water, goal, previous } = app
+  const translate = useDataTranslation()
 
   useEffect(() => {
     let alive = true
@@ -64,20 +66,22 @@ export function useDistrict(placeId: DemoLocationId | null, app: AppAnswers) {
     }
     let alive = true
     setAnswer(undefined)
-    districtAnswer(placeId, index, inputs, { water, goal, previous }, import.meta.env.BASE_URL).then(
+    districtAnswer(placeId, index, inputs, { water, goal, previous }, import.meta.env.BASE_URL, { translate }).then(
       (next) => alive && setAnswer(next),
       () => alive && setAnswer(null),
     )
     return () => {
       alive = false
     }
-  }, [index, placeId, inputs, water, goal, previous])
+  }, [index, placeId, inputs, water, goal, previous, translate])
 
   const setInputs = (next: DistrictInputs) => {
     setInputsState(next)
     saveInputs(next)
   }
-  return { index, answer, inputs, setInputs }
+  // the index's labels (current rotations) are display text too
+  const shown = useMemo(() => (index ? translate(index) : index), [index, translate])
+  return { index: shown, answer, inputs, setInputs }
 }
 
 function Chips<T extends string>({ label, options, selected, onPick }: { label: string; options: { id: T; text: string }[]; selected: (id: T) => boolean; onPick: (id: T) => void }) {
