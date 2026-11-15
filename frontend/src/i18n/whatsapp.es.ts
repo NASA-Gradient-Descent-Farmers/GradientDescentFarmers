@@ -121,7 +121,7 @@ export const whatsappEs = {
     regimeRiego: 'Riego',
     regimeTemporal: 'Temporal',
     followUps: {
-      wofost: 'Ver el modelo de suelo y cultivo',
+      wofost: 'Ver las rotaciones del modelo de cultivo',
       district: 'Ver el historial del distrito',
       why: '¿Por qué esa opción?',
       risks: '¿Qué riesgos tiene?',

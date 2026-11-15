@@ -120,7 +120,7 @@ export const whatsappEn = {
     regimeRiego: 'Irrigated',
     regimeTemporal: 'Rainfed',
     followUps: {
-      wofost: 'See the soil and crop model',
+      wofost: 'See the crop model rotations',
       district: 'See the district history',
       why: 'Why that option?',
       risks: 'What are the risks?',

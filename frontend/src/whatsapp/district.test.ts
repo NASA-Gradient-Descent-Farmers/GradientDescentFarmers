@@ -114,12 +114,12 @@ describe('the chat with both engines', () => {
     expect(summary.text).toMatch(/Modelo de suelo y cultivo \(WOFOST\)/)
     expect(summary.text).toMatch(/Historial del distrito Cajeme \(SIAP\)/)
     expect(summary.text).toMatch(/no una garantía/)
-    expect(summary.options!.map((o) => o.label)).toEqual(['¿Por qué esa opción?', '¿Qué riesgos tiene?', 'Cambiar mi rotación actual', 'Cambiar lo que más me importa'])
+    expect(summary.options!.map((o) => o.label)).toEqual(['Ver las rotaciones del modelo de cultivo', '¿Por qué esa opción?', '¿Qué riesgos tiene?', 'Cambiar lo que más me importa'])
   })
 
   it('keeps the WOFOST answer word for word one tap away', async () => {
     const plain = await talk(base, 'Sonora', '¿Qué me conviene sembrar?')
-    const tapped = await talk(withDistrict(), 'Sonora', '¿Qué me conviene sembrar?', 'Ver el modelo de suelo y cultivo')
+    const tapped = await talk(withDistrict(), 'Sonora', '¿Qué me conviene sembrar?', 'Ver las rotaciones del modelo de cultivo')
     expect(tapped.bubbles.map((b) => b.text)).toEqual(plain.bubbles.map((b) => b.text))
     expect(tapped.bubbles.at(-1)!.options!.length).toBeGreaterThan(0)
   })
