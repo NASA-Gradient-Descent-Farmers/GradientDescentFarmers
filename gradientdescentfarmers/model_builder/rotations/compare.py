@@ -28,13 +28,17 @@ DISCLAIMER = ("Esta comparación usa datos públicos (SIAP, NASA) y supuestos de
 
 def comparar_rotaciones(lugar, rotacion_actual, estado=None, agua="temporal", prioridades=(), residuo="dejar",
                         tiene_animales=False, mes_siembra=None, pendiente="ligera", propuestas=(), n_alternativas=3,
-                        costos=None, rendimiento_propio=None, escenarios=True, suelo=None):
+                        costos=None, rendimiento_propio=None, escenarios=True, suelo=None, mes_cosecha=None):
     """Compare `rotacion_actual` with up to `n_alternativas` alternatives (plus any `propuestas`).
 
     lugar: municipality or SIAP district name; estado: state name to disambiguate.
     mes_siembra: the farmer's sowing month (1-12) for the crop of its cycle: March-August sets the
         spring-summer sowing, September-February the autumn-winter sowing. Without it each cycle uses a
         default, which is weakest for autumn-winter crops; `preguntar` then asks for it.
+    mes_cosecha: the month the farmer harvests the main crop of the current rotation (the crop of mes_siembra's
+        cycle, else of the rotation's first season). With a sowing date it sets the season length, instead of
+        FAO-56 stage lengths scaled by temperature. Where tables/calendars.csv has the district's usual sowing and
+        harvest months, those are used when the farmer gives none.
     rotacion_actual / propuestas: text like "maíz - frijol" or "maíz/garbanzo", or lists of {"pv":..., "oi":...}.
     agua: "temporal" or "riego". prioridades: subset of scoring.PRIORITIES.
     residuo: what happens to stover, one of indicators.RESIDUE. pendiente: "plana", "ligera" or "fuerte".
@@ -70,6 +74,13 @@ def comparar_rotaciones(lugar, rotacion_actual, estado=None, agua="temporal", pr
     place.costs = {candidates.crop_key(k): float(v) for k, v in (costos or {}).items() if v is not None}
     place.own_yield = {candidates.crop_key(k): float(v) for k, v in (rendimiento_propio or {}).items() if v}
     current = candidates.assign_cycles(place, candidates.parse_rotation(rotacion_actual))
+    if mes_cosecha:
+        if not 1 <= int(mes_cosecha) <= 12:
+            raise ValueError("mes_cosecha debe estar entre 1 y 12")
+        from .indicators import sowing_cycle
+        cycles = [c for y in current for c in ("pv", "oi") if y.get(c)]
+        main = sowing_cycle(mes_siembra) if mes_siembra and sowing_cycle(mes_siembra) in cycles else (cycles[0] if cycles else None)
+        place.harvest_months = {(y[main], main): int(mes_cosecha) for y in current if main and y.get(main)}
 
     options = [("actual", current)]
     options += [("propuesta", candidates.assign_cycles(place, candidates.parse_rotation(p))) for p in propuestas]
@@ -225,6 +236,13 @@ def ask_for(place, evaluation):
                     "pregunta": f"¿En qué mes siembras el {crop}?",
                     "por_que": ("La fecha de siembra de otoño-invierno se supuso; cambia el agua que pide el cultivo, "
                                 "el riesgo de helada y calor, y los meses en que se miden las tendencias del clima.")})
+    length = [d for d in dates if d["ciclo"] == "oi" and d["fuente_cosecha"] == "formula"]
+    if length:
+        crop = catalog.name(length[0]["cultivo"])
+        out.append({"dato": "mes_cosecha",
+                    "pregunta": f"¿En qué mes cosechas el {crop}?",
+                    "por_que": ("La duración del ciclo sale de valores generales del FAO-56 ajustados por temperatura, "
+                                "no de tu zona; con el mes de cosecha se calcula el agua de todo tu ciclo.")})
     return out
 
 

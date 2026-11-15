@@ -39,6 +39,23 @@ def _climate():
 NORMAL_YEARS = (2001, 2025)
 
 
+@lru_cache(maxsize=1)
+def _calendars():
+    path = catalog.DATA / "calendars.csv"
+    return pd.read_csv(path) if path.is_file() else pd.DataFrame()
+
+
+def district_calendar(state_id, ddr, water):
+    """{(crop, cycle): {"siembra", "cosecha", "fuente"}} from tables/calendars.csv for a district and water regime."""
+    t = _calendars()
+    if t.empty:
+        return {}
+    rows = t[(t["state_id"] == state_id) & (t["ddr"] == ddr) & (t["water"] == water)]
+    return {(r.crop, r.cycle): {"siembra": int(r.siembra) if pd.notna(r.siembra) else None,
+                                "cosecha": int(r.cosecha) if pd.notna(r.cosecha) else None, "fuente": r.fuente}
+            for r in rows.itertuples(index=False)}
+
+
 def _chirps(row, municipal):
     """Monthly CHIRPS rain by year for the place, or None when the panel has none."""
     try:
@@ -110,6 +127,7 @@ def place(name, state=None, water="temporal", sowing_month=None):
     return Place(state_id=int(row.state_id), ddr=int(row.ddr), state=row.state, ddr_name=row.ddr_name, observed=obs,
                  water=water, climate=clim.sort_values("month").reset_index(drop=True), siap=_siap(),
                  climate_years=yearly, climate_history=history, chirps_history=chirps,
+                 calendar=district_calendar(int(row.state_id), int(row.ddr), water),
                  municipality=row.municipality if municipal else None,
                  sowing_month=sowing_month, notes=notes, mun_id=int(row.mun_id) if municipal else None,
                  mun_ids=tuple(int(m) for m in _districts().query("state_id == @row.state_id and ddr == @row.ddr")["mun_id"]))

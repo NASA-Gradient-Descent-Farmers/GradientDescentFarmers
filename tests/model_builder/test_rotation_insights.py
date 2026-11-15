@@ -368,10 +368,12 @@ def test_winter_sowing_month_changes_water_and_trend_window_and_is_asked_for(pan
     from gradientdescentfarmers.model_builder.rotations.compare import comparar_rotaciones
 
     default = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", escenarios=False)
-    assert default["fechas_siembra"] == [{"ciclo": "oi", "cultivo": "wheat", "mes": 11, "fuente": "supuesto"}]
-    assert [p["dato"] for p in default["preguntar"]] == ["mes_siembra"]
+    first = default["fechas_siembra"][0]
+    assert (first["ciclo"], first["cultivo"], first["mes"], first["fuente"]) == ("oi", "wheat", 11, "supuesto")
+    assert [p["dato"] for p in default["preguntar"]] == ["mes_siembra", "mes_cosecha"]
     december = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=12, escenarios=False)
-    assert december["fechas_siembra"][0]["fuente"] == "agricultor" and december["preguntar"] == []
+    assert december["fechas_siembra"][0]["fuente"] == "agricultor"
+    assert [p["dato"] for p in december["preguntar"]] == ["mes_cosecha"]
     assert december["tendencias"]["detalle"][0]["meses"] != default["tendencias"]["detalle"][0]["meses"]
     water = lambda r: r["rotaciones"][0]["indicadores"]["agua"]["valor"]
     assert water(december) != water(default)
@@ -379,5 +381,49 @@ def test_winter_sowing_month_changes_water_and_trend_window_and_is_asked_for(pan
     june = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=6, escenarios=False)
     assert any("no se usó" in line for line in june["tu_lugar"]) and june["fechas_siembra"][0]["fuente"] == "supuesto"
     summer = comparar_rotaciones("Valle de Santiago", "maíz", estado="Guanajuato", mes_siembra=6, escenarios=False)
-    assert summer["fechas_siembra"][0] == {"ciclo": "pv", "cultivo": "maize", "mes": 6, "fuente": "agricultor"}
+    s0 = summer["fechas_siembra"][0]
+    assert (s0["ciclo"], s0["cultivo"], s0["mes"], s0["fuente"]) == ("pv", "maize", 6, "agricultor")
     assert summer["preguntar"] == []
+
+
+def test_harvest_month_sets_the_season_length_and_keeps_fao_proportions():
+    from gradientdescentfarmers.model_builder.rotations import indicators
+
+    place = synthetic_place(water="riego")
+    formula = indicators.season(place, "chickpea", "oi")
+    assert formula.length_source == "formula"
+    place.sowing_month, place.harvest_months = 12, {("chickpea", "oi"): 4}
+    s = indicators.season(place, "chickpea", "oi")
+    assert s.sow_source == "agricultor" and s.length_source == "agricultor"
+    assert s.length == indicators._days_between(s.sow_day, 90 + 14)              # 10 Dec to 15 Apr
+    assert indicators.MONTH_OF_DAY[s.harvest_day] + 1 == 4
+    place.harvest_months = {("chickpea", "oi"): 12}                               # 5 days: implausible, ignored
+    assert indicators.season(place, "chickpea", "oi").length_source == "formula"
+
+
+def test_district_calendar_is_used_when_the_farmer_gives_no_dates():
+    from gradientdescentfarmers.model_builder.rotations import indicators
+
+    place = synthetic_place(water="riego")
+    place.calendar = {("chickpea", "oi"): {"siembra": 11, "cosecha": 3, "fuente": "prueba"}}
+    s = indicators.season(place, "chickpea", "oi")
+    assert (s.sow_source, s.length_source) == ("calendario", "calendario")
+    assert indicators.MONTH_OF_DAY[s.sow_day] + 1 == 11 and indicators.MONTH_OF_DAY[s.harvest_day] + 1 == 3
+    place.sowing_month, place.harvest_months = 12, {("chickpea", "oi"): 5}           # the farmer overrides it
+    s = indicators.season(place, "chickpea", "oi")
+    assert (s.sow_source, s.length_source) == ("agricultor", "agricultor")
+
+
+def test_harvest_month_in_the_comparison_and_what_is_asked(panel_run):
+    from gradientdescentfarmers.model_builder.rotations.compare import comparar_rotaciones
+
+    base = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", escenarios=False)
+    both = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=12, mes_cosecha=5,
+                               escenarios=False)
+    d = both["fechas_siembra"][0]
+    assert (d["mes"], d["cosecha"], d["fuente_cosecha"]) == (12, 5, "agricultor") and both["preguntar"] == []
+    water = lambda r: r["rotaciones"][0]["indicadores"]["agua"]["valor"]
+    assert water(both) > water(base)                                              # a longer season needs more water
+    assert 4 in both["tendencias"]["detalle"][0]["meses"]
+    with pytest.raises(ValueError):
+        comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_cosecha=13, escenarios=False)

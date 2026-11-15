@@ -24,6 +24,9 @@ for r in result["rotaciones"]:
 5. Water balances and bad years keep field-shift's 2001–2025 window; the longer 1982–2025 series is used only for trends.
 6. **The farmer's sowing month sets its own cycle** (`indicators.sowing_day`). Field-shift applied `mes_siembra` to spring–summer only, so a Yaqui wheat farmer saying "December" changed nothing. Now March–August moves the spring–summer sowing and September–February the autumn–winter one. The result lists the date used for each cycle and whether it came from the farmer (`fechas_siembra`), and when a winter crop runs on the default the result asks for the month (`preguntar`), for the assistant or the web page to pass on.
 
+7. **Harvest month and district calendars** (`indicators.season`). A season's sowing and harvest months come from the farmer (`mes_siembra`, `mes_cosecha`), then from the district calendar in `tables/calendars.csv`, then from the formula. A known harvest month sets the season length, keeping FAO-56's stage proportions. `fechas_siembra` says where each date came from, and `preguntar` asks for the harvest month when a winter crop's season length comes from the formula.
+8. **Crop and soil tables checked against FAO-56** (Tables 11, 12, 19, 22) on 15 November 2026; the result is in `tables/crop_sources.csv`. Wheat now uses FAO's December-sown California desert row (160 days) instead of the spring-sown mid-latitude row (135 days).
+
 ## Known limitation to review
 
 The crop calendar assumes irrigated autumn-winter crops are sown around 21 November, and FAO-56 stage lengths shorten in warm places: wheat in the Yaqui valley comes out at ~108 days (harvest mid-March), maize in Los Mochis at ~129 days. Local practice is probably later sowing and a longer season. This affects water need and the trend window. The farmer's sowing month now corrects the start; the season length still needs a technician's or INIFAP's calendar for each district.

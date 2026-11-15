@@ -65,6 +65,8 @@ class Place:
     observed: pd.DataFrame | None = None            # 12 rows: MODIS NDVI and SMAP root-zone moisture by month
     mun_id: int | None = None                       # the municipality, when the place is one
     mun_ids: tuple = ()                             # every municipality of the district (for district-wide series)
+    calendar: dict = field(default_factory=dict)    # (crop, cycle) -> {"siembra", "cosecha", "fuente"}: district calendar
+    harvest_months: dict = field(default_factory=dict)  # (crop, cycle) -> the farmer's harvest month (1-12)
 
     @property
     def lgp(self):
@@ -165,7 +167,37 @@ def farmer_sowing_month(place, cycle):
     return m if m and sowing_cycle(m) == cycle else None
 
 
-def sowing_day(place, cycle, after_day=None):
+MIN_SEASON, MAX_SEASON = 60, 300   # a calendar or farmer season outside this range is ignored as implausible
+
+
+def calendar_entry(place, crop, cycle):
+    """The district calendar's entry for a crop (or, for milpa, its lead crop) in a cycle, or None."""
+    entry = place.calendar.get((crop, cycle))
+    if entry is None and crop in catalog.COMPOSITES:
+        parts = catalog.components(crop)
+        entry = place.calendar.get((max(parts, key=parts.get), cycle))
+    return entry
+
+
+def sowing_source(place, cycle, crop=None):
+    if farmer_sowing_month(place, cycle):
+        return "agricultor"
+    entry = calendar_entry(place, crop, cycle) if crop else None
+    return "calendario" if entry and entry.get("siembra") else "supuesto"
+
+
+def harvest_target(place, crop, cycle):
+    """(harvest month, source) from the farmer, then the district calendar; (None, "formula") otherwise."""
+    month = place.harvest_months.get((crop, cycle))
+    if month:
+        return int(month), "agricultor"
+    entry = calendar_entry(place, crop, cycle)
+    if entry and entry.get("cosecha"):
+        return int(entry["cosecha"]), "calendario"
+    return None, "formula"
+
+
+def sowing_day(place, cycle, after_day=None, crop=None):
     """Day of year (0-364) a season starts.
 
     The farmer's sowing month sets the season of its own cycle: a month from March to August moves the
@@ -174,8 +206,11 @@ def sowing_day(place, cycle, after_day=None):
     """
     lgp = place.lgp
     farmer = farmer_sowing_month(place, cycle)
+    entry = calendar_entry(place, crop, cycle) if crop else None
     if farmer:
         day = int(DAYS[:farmer - 1].sum()) + 10
+    elif entry and entry.get("siembra"):
+        day = int(DAYS[:int(entry["siembra"]) - 1].sum()) + 10      # the district's usual sowing month
     elif cycle == "pv":
         if place.water == "riego":
             day = 120                                                # ~May 1
@@ -205,7 +240,9 @@ class Season:
     present_month: np.ndarray    # share of each month in the field
     frost: float                 # share of years with a night <= 2 °C while a frost-sensitive crop is in the field
     heat_days: float             # days >= 35 °C during the middle of the season (heat-sensitive crops)
-    stretch: float               # stage-length factor (temperature)
+    stretch: float               # stage-length factor (temperature, or calendar / farmer season length)
+    sow_source: str = "supuesto"      # "agricultor", "calendario" or "supuesto"
+    length_source: str = "formula"    # "agricultor", "calendario" or "formula" (FAO-56 lengths scaled by temperature)
 
     @property
     def harvest_day(self):
@@ -215,8 +252,18 @@ class Season:
 def season(place, crop, cycle, after_day=None):
     parts = catalog.components(crop)
     lead = max(parts, key=parts.get)                                # milpa follows maize
-    sow = sowing_day(place, cycle, after_day)
+    sow = sowing_day(place, cycle, after_day, crop=crop)
     lengths, stretch = stage_lengths(place, lead, sow)
+    length_source = "formula"
+    harvest, source = harvest_target(place, crop, cycle)
+    if harvest:
+        # A known harvest month sets the season length; FAO-56's stage proportions are kept.
+        total = _days_between(sow, int(DAYS[:harvest - 1].sum()) + 14)
+        if MIN_SEASON <= total <= MAX_SEASON:
+            nominal = catalog.crops().loc[lead, ["d_ini", "d_des", "d_med", "d_fin"]].to_numpy(float)
+            lengths = np.maximum(np.round(nominal * total / nominal.sum()).astype(int), 1)
+            lengths[-1] += total - int(lengths.sum())
+            stretch, length_source = total / nominal.sum(), source
     kc = kc_curve(lead, lengths)
     if crop in catalog.COMPOSITES:                                   # squash guides keep the canopy longer
         kc = np.maximum(kc, 0.9 * kc.max() * (np.arange(len(kc)) > lengths[0]))
@@ -243,7 +290,8 @@ def season(place, crop, cycle, after_day=None):
     heat = 0.0
     if (c["calor"] < 2).any() and len(mid):
         heat = float(np.bincount(MONTH_OF_DAY[mid], minlength=12) @ (place.climate["heat_days"].to_numpy() / DAYS))
-    return Season(crop, cycle, sow, len(kc), occupancy, etc_month, present, frost, heat, stretch)
+    return Season(crop, cycle, sow, len(kc), occupancy, etc_month, present, frost, heat, stretch,
+                  sowing_source(place, cycle, crop), length_source)
 
 
 def water_deficit(place, seasons, rain=None, et0=None):

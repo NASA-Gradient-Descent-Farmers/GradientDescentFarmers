@@ -465,7 +465,7 @@ def sowing_dates(place, current_eval):
 
     source is "agricultor" (the farmer's month) or "supuesto" (the engine's default for that cycle).
     """
-    from .indicators import MONTH_OF_DAY, farmer_sowing_month
+    from .indicators import MONTH_OF_DAY
 
     out, seen = [], set()
     for item in current_eval["seasons"]:
@@ -473,8 +473,9 @@ def sowing_dates(place, current_eval):
         if s.cycle in seen:
             continue
         seen.add(s.cycle)
-        out.append({"ciclo": s.cycle, "cultivo": s.crop, "mes": int(MONTH_OF_DAY[s.sow_day]) + 1,
-                    "fuente": "agricultor" if farmer_sowing_month(place, s.cycle) else "supuesto"})
+        out.append({"ciclo": s.cycle, "cultivo": s.crop, "mes": int(MONTH_OF_DAY[s.sow_day]) + 1, "fuente": s.sow_source,
+                    "cosecha": int(MONTH_OF_DAY[s.harvest_day]) + 1, "dias": int(s.length),
+                    "fuente_cosecha": s.length_source})
     return out
 
 
@@ -486,15 +487,24 @@ def sowing_lines(place, current_eval):
     for d in sowing_dates(place, current_eval):
         cycles.add(d["ciclo"])
         crop, month = catalog.name(d["cultivo"]), FULL_MONTHS[d["mes"] - 1]
+        harvest = FULL_MONTHS[d["cosecha"] - 1]
+        length = {"agricultor": f"cosecha en {harvest}, el mes que nos dijiste ({d['dias']} días)",
+                  "calendario": f"cosecha en {harvest}, según el calendario agrícola de tu distrito ({d['dias']} días)",
+                  "formula": (f"cosecha hacia {harvest} ({d['dias']} días, de valores generales del FAO-56 ajustados por "
+                              "temperatura; si cosechas en otro mes, dímelo)")}[d["fuente_cosecha"]]
         if d["fuente"] == "agricultor":
-            lines.append(f"Siembra de {crop}: {month}, el mes que nos dijiste.")
+            lines.append(f"Siembra de {crop}: {month}, el mes que nos dijiste; {length}.")
+            continue
+        if d["fuente"] == "calendario":
+            lines.append(f"Siembra de {crop}: {month}, según el calendario agrícola de tu distrito; {length}. Si siembras "
+                         "en otro mes, dímelo.")
             continue
         if d["ciclo"] == "pv":
             basis = "inicio de las lluvias" if place.water == "temporal" else "fecha típica de riego de primavera"
         else:
             basis = "fecha típica de riego de otoño-invierno" if place.water == "riego" else "final de las lluvias, con humedad residual"
-        lines.append(f"Supuse que siembras {crop} en {month} ({basis}). Si siembras en otro mes, dímelo: cambia "
-                     "heladas, calor, agua, calendario y las tendencias del clima en los meses de tu cultivo.")
+        lines.append(f"Supuse que siembras {crop} en {month} ({basis}); {length}. Si siembras en otro mes, dímelo: "
+                     "cambia heladas, calor, agua, calendario y las tendencias del clima en los meses de tu cultivo.")
     if place.sowing_month and sowing_cycle(place.sowing_month) not in cycles:
         lines.append(f"El mes que nos diste ({FULL_MONTHS[place.sowing_month - 1]}) es de "
                      f"{'primavera-verano' if sowing_cycle(place.sowing_month) == 'pv' else 'otoño-invierno'}, y tu "
