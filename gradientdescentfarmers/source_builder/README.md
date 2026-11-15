@@ -246,6 +246,9 @@ Ver [despliegue, HTTP y operación de la VM](docs/GCP_VM_DEPLOYMENT.md).
 SIAP y DENUE no están habilitados en este despliegue.
 Para integrar el formulario y el trigger desde la UI, ver el
 [contrato para Isaac: payload, backend, progreso y errores](docs/README.md#contrato-para-isaac-y-la-ui).
+La evaluación posterior se documenta en
+[WOFOST, SIAP y rotaciones](../rotations_service/README.md); su bucket de salida
+es `gs://gdfarming-farm-rotations` y no altera los perfiles ambientales.
 
 **`--run` exporta localmente; no activa una subida a GCP.** Para la entrega de
 Guanajuato se ejecutaron después dos scripts operativos locales:

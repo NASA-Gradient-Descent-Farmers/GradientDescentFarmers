@@ -12,6 +12,8 @@ README se versiona en Git; las descargas y datasets se excluyen.
 | `cache/earthdata/` | Gránulos originales MODIS, GPM y SMAP | Reanudar descargas; ocupa ~12.7 GiB en este ejemplo |
 | `guanajuato_resume/` | Logs, scripts de la sesión, diagnósticos, resumen final y mensaje WOFOST | Entender cómo se reanudó y publicó la entrega |
 | `gcp_deploy/` | Paquetes de código, SHA y recibos locales del despliegue en la VM | Reproducir el despliegue; ver `source_builder/docs/GCP_VM_DEPLOYMENT.md` |
+| `phase2/` | Entorno local, referencias SIAP/INEGI, caché WOFOST y paquetes de rotaciones por finca/run | Revisar los escenarios de la fase 2; ver la [guía de rotaciones](../gradientdescentfarmers/rotations_service/README.md) |
+| `rotations_deploy/` | Paquetes de código y referencias con SHA del servicio de rotaciones | Reproducir el despliegue independiente de `farm-rotations` |
 | `archive/` | Respaldo de 9 runs anteriores, inventario y `RESTORE.md` | Consultar o restaurar el histórico |
 | `integrated_guanajuato_audit.json` | Auditoría local del sitio | Revisar el resultado ambiental |
 | `worldbank_only.json` | Configuración local histórica de recuperación de World Bank | Referencia; no interviene en el run integral |
@@ -64,3 +66,18 @@ El módulo `gradientdescentfarmers.source_builder.siap` escribe en `data/siap/`
 por defecto. Conserva `raw/`, `parquet/`, `dictionary/` y `manifest.json`.
 `SIAP_DATA_DIR` permite usar otro directorio; en una VM debe apuntar a disco
 persistente. Ver la [guía SIAP](../gradientdescentfarmers/source_builder/siap/README.md).
+
+## Rotaciones de la fase 2
+
+`phase2/reference/` conserva el snapshot de precios SIAP redistribuido por
+DataMX, los polígonos oficiales INEGI y los parámetros públicos de cultivos.
+`phase2/cache/models/` evita repetir simulaciones al cambiar prioridades.
+Los resultados están en
+`phase2/runs/<farm_id>/<source_run_id>/<rotation_run_id>/`: abrir `rotations.json`
+y `validation.json`. `local_trials.json` y `cloud_trials_report.json` registran
+las verificaciones realizadas; no son entradas del modelo.
+
+En GCP, los perfiles ambientales nuevos viven en `gs://gdfarming-farm-data` y
+las rotaciones en `gs://gdfarming-farm-rotations`. Cada paquete es versionado;
+`latest/` solo sirve para localizarlo. Los montos son ingresos brutos por
+hectárea del escenario histórico, sin validación local ni costos inferidos.

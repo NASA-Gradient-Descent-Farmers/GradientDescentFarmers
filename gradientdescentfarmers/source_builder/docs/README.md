@@ -27,6 +27,13 @@ El servicio recibe `config`, `farmer_input` y `settings` como objetos JSON.
 Devuelve un `job_id` para consultar el progreso y, al terminar, la ruta GCS del
 run y sus reportes QA. SIAP y DENUE quedan fuera de este despliegue.
 
+La fase 2 se ejecuta en un servicio independiente: después de publicarse el
+perfil, adapta los datos a WOFOST, incorpora referencias SIAP y publica opciones
+en `gs://gdfarming-farm-rotations`. El contrato para mostrar esas tarjetas y
+consultar su progreso está en
+[Fase 2: salida para Isaac, UI y WhatsApp](../../rotations_service/README.md#salida-para-isaac-la-ui-y-whatsapp).
+DENUE y el envío de mensajes WhatsApp siguen fuera de esta implementación.
+
 ## Contrato para Isaac y la UI
 
 La UI debe generar una solicitud con **tres objetos JSON**: `config`,
@@ -132,7 +139,8 @@ Este ejemplo reproduce las nueve fuentes y ventanas de las pruebas integrales:
 
 Las cinco prioridades suman 100. Si se incluye `budget`, se debe incluir
 `currency` (por ejemplo `MXN`). El builder conserva esos datos para la fase de
-modelos; adquirir fuentes no produce todavía una recomendación de rotación.
+modelos; el job de adquisición no devuelve por sí mismo las rotaciones: el
+servicio de fase 2 las genera después y conserva el mismo `source_run_id`.
 Mantener presupuesto y otros límites como restricciones explícitas: un precio
 SIAP no proporciona costos para comprobar automáticamente un presupuesto.
 

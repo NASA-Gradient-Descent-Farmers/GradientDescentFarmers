@@ -1,0 +1,8 @@
+{
+  "model": {
+    "horizon_years": 2,
+    "water_regimes": ["rainfed", "irrigated"],
+    "allow_fallow": true
+  },
+  "optimizer": {}
+}
