@@ -48,6 +48,8 @@ KEYS = {
     "climate_district": [*DISTRICT, "month"],
     "climate_district_years": [*DISTRICT, "year", "month"],
     "power_cells": UNIT,
+    "chirps_municipal_years": [*UNIT, "year", "month"],
+    "chirps_district_years": [*DISTRICT, "year", "month"],
     "observed_municipal": [*UNIT, "month"],
     "observed_district": [*DISTRICT, "month"],
     "grace_municipal": UNIT,

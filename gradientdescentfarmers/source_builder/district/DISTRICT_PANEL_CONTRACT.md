@@ -86,6 +86,8 @@ Keys: (`state_id`, `mun_id` | `ddr`), `year`, `month`. Columns: `rain`, `et0`, `
 
 Per municipality, the ratio of CHIRPS v2.0 to POWER mean rain over 2001–2025, for May–October and for November–April (clipped to 0.3–3; the November–April ratio only where POWER's mean exceeds 20 mm), applied to that municipality's rain **in every year**. One fixed ratio per season keeps the 1982–2025 series free of a step at 1999, when CHIRPS starts.
 
+`chirps_municipal_years`, `chirps_district_years`: monthly CHIRPS rain (`chirps_rain`, mm) by year, November 2000 – December 2025, the values behind the ratios. The engine uses them only to check that a POWER rain trend has the same sign in CHIRPS.
+
 ### 5.6 `observed_municipal`, `observed_district`: satellites by calendar month (Earthdata login)
 
 | Column | Definition | Unit |

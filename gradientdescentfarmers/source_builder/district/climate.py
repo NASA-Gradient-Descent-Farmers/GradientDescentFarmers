@@ -259,7 +259,7 @@ def build_municipal(points: pd.DataFrame, s: DistrictSettings, run_dir: Path, lo
 def build(points: pd.DataFrame, weights: pd.DataFrame, s: DistrictSettings, run_dir: Path, log=print):
     """All climate tables plus a CHIRPS status: (tables, chirps_ok, chirps_error)."""
     normals, yearly, cells = build_municipal(points, s, run_dir, log)
-    chirps_ok, chirps_error = False, None
+    chirps_ok, chirps_error, chirps = False, None, None
     if s.enabled("chirps"):
         try:
             first = (s.normal_years[0] - 1, 11)
@@ -280,4 +280,8 @@ def build(points: pd.DataFrame, weights: pd.DataFrame, s: DistrictSettings, run_
         "climate_district_years": district_mean(yearly, weights, ("year", "month"), YEAR_COLUMNS),
         "power_cells": cells,
     }
+    if chirps_ok:
+        # Kept so the engine can check the sign of rain trends against an independent, gauge-based product.
+        tables["chirps_municipal_years"] = chirps
+        tables["chirps_district_years"] = district_mean(chirps, weights, ("year", "month"), ["chirps_rain"])
     return tables, chirps_ok, chirps_error
