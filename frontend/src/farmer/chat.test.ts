@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { classify, extractPrevious, nextAsk, parseChat, planReply, type Context } from './chat.ts'
+import { classify, extractPrevious, nextAsk, parseChat, planReply, userTurn, type Context } from './chat.ts'
 import type { Zone } from './recommend.ts'
 
 const inside: Zone = { status: 'inside', key: 'inside', km: 9 }
@@ -75,6 +75,13 @@ describe('parseChat', () => {
     const bad = [{ id: 'd', at: 4, role: 'bot', body: { kind: 'ask', field: 'colour' } }, { id: 'e', at: 5, role: 'bot', body: { kind: 'nonsense' } }, { role: 'user' }, 5]
     expect(parseChat(JSON.stringify([...good, ...bad])).map((t) => t.id)).toEqual(['a', 'b', 'c'])
     expect(parseChat('nope')).toEqual([])
+  })
+
+  it('keeps the dictionary key of what a button said, so it can be shown in the language chosen later', () => {
+    const turn = userTurn('¿Cuánto podría ganar?', { key: 'farmer.chat.suggestions.money' })
+    const back = parseChat(JSON.stringify([turn]))[0]
+    expect(back).toMatchObject({ role: 'user', text: '¿Cuánto podría ganar?', key: 'farmer.chat.suggestions.money' })
+    expect(userTurn('hola')).not.toHaveProperty('key')
   })
 
 })

@@ -26,7 +26,7 @@ interface Props {
   onSituation: (patch: Situation) => void
   onGoParcel: () => void
   /** A question to ask on arrival (from another page); `nonce` makes the same text askable twice. */
-  seed: { text: string; nonce: number } | null
+  seed: { text: string; key?: string; nonce: number } | null
   onSeedUsed: () => void
 }
 
@@ -71,14 +71,14 @@ export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel,
   )
 
   const send = useCallback(
-    async (raw: string) => {
+    async (raw: string, said?: { key: string; vars?: Record<string, string | number> }) => {
       const text = raw.trim()
       if (!text) return
       setDraft('')
       const { patch, focus, plan } = planReply(text, { hasParcel: parcel !== null, situation: state.situation, zone: null, last: null })
       if (Object.keys(patch).length > 0) onSituation(patch)
       if (focus) focusRef.current = focus
-      append(userTurn(text))
+      append(userTurn(text, said))
       // a question about the place's own data (its climate, soil, satellite series, sources)
       const dataTopic = environmentTopicOf(text)
       if (dataTopic) {
@@ -104,15 +104,15 @@ export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel,
   useEffect(() => {
     if (!seed || seeded.current === seed.nonce) return
     seeded.current = seed.nonce
-    void send(seed.text)
+    void send(seed.text, seed.key ? { key: seed.key } : undefined)
     onSeedUsed()
   }, [seed, send, onSeedUsed])
 
   /** A tap on an answer button: the answer is noted, then the next question, or the answer to the original question. */
-  const answer = (field: Field, value: Situation[Field], label: string) => {
+  const answer = (field: Field, value: Situation[Field], label: string, said: { key: string; vars?: Record<string, string | number> }) => {
     const situation = { ...state.situation, [field]: value }
     onSituation({ [field]: value } as Situation)
-    append(userTurn(label))
+    append(userTurn(label, said))
     const ask = nextAsk(parcel !== null, situation)
     if (ask) append(botTurn({ kind: 'ask', field: ask, lead: false }))
     else answerFromZone(focusRef.current, situation)
@@ -186,7 +186,7 @@ export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel,
           turn.role === 'user' ? (
             <div key={turn.id} className="fa-msg from-user">
               <p className="who">{t('farmer.chat.you')}</p>
-              <p>{turn.text}</p>
+              <p>{turn.key ? t(turn.key, turn.vars) : turn.text}</p>
             </div>
           ) : (
             <BotMessage
@@ -206,7 +206,7 @@ export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel,
           <p className="help">{t('farmer.chat.suggested')}</p>
           <div className="chips">
             {SUGGESTIONS.map((id) => (
-              <button key={id} type="button" className="chip" onClick={() => void send(t(`farmer.chat.suggestions.${id}`))}>
+              <button key={id} type="button" className="chip" onClick={() => void send(t(`farmer.chat.suggestions.${id}`), { key: `farmer.chat.suggestions.${id}` })}>
                 {t(`farmer.chat.suggestions.${id}`)}
               </button>
             ))}
@@ -251,7 +251,7 @@ interface BotProps {
   body: Body
   /** The latest message, still waiting for its answer: only then are the answer buttons shown. */
   active: boolean
-  onAnswer: (field: Field, value: Situation[Field], label: string) => void
+  onAnswer: (field: Field, value: Situation[Field], label: string, said: { key: string; vars?: Record<string, string | number> }) => void
   onGoParcel: () => void
 }
 
@@ -274,18 +274,18 @@ function BotMessage({ body, active, onAnswer, onGoParcel }: BotProps) {
             </button>
           )}
           {active && body.field === 'previous' && (
-            <BigChoice label={question} value={undefined} options={previousOptions(t)} onChange={(value) => onAnswer('previous', value, t(`farmer.parcel.previous.${value}`))} />
+            <BigChoice label={question} value={undefined} options={previousOptions(t)} onChange={(value) => onAnswer('previous', value, t(`farmer.parcel.previous.${value}`), { key: `farmer.parcel.previous.${value}` })} />
           )}
           {active && body.field === 'water' && (
-            <BigChoice label={question} value={undefined} options={waterOptions(t)} onChange={(value) => onAnswer('water', value, t(`farmer.parcel.water.${value}.label`))} />
+            <BigChoice label={question} value={undefined} options={waterOptions(t)} onChange={(value) => onAnswer('water', value, t(`farmer.parcel.water.${value}.label`), { key: `farmer.parcel.water.${value}.label` })} />
           )}
           {active && body.field === 'goal' && (
-            <BigChoice label={question} value={undefined} options={goalOptions(t)} onChange={(value) => onAnswer('goal', value, t(`farmer.parcel.goal.${value}.label`))} />
+            <BigChoice label={question} value={undefined} options={goalOptions(t)} onChange={(value) => onAnswer('goal', value, t(`farmer.parcel.goal.${value}.label`), { key: `farmer.parcel.goal.${value}.label` })} />
           )}
           {active && body.field === 'hectares' && (
             <div className="inline-hectares">
               <HectaresField id="chat-hectares" value={hectares} onChange={setHectares} />
-              <button type="button" className="btn primary" disabled={hectares === undefined} onClick={() => hectares !== undefined && onAnswer('hectares', hectares, t('farmer.parcel.hectares.quick', { n: hectares }))}>
+              <button type="button" className="btn primary" disabled={hectares === undefined} onClick={() => hectares !== undefined && onAnswer('hectares', hectares, t('farmer.parcel.hectares.quick', { n: hectares }), { key: 'farmer.parcel.hectares.quick', vars: { n: hectares } })}>
                 {t('farmer.common.next')}
               </button>
             </div>
