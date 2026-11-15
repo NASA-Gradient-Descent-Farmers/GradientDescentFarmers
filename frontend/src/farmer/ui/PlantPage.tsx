@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import { useRotations } from '../../hooks/useRotations.ts'
 import { useI18n } from '../../i18n/index.tsx'
+import { nearRotationSite } from '../../lib/rotations.ts'
 import type { DashboardData } from '../../lib/types.ts'
 import { recommend, type Recommendation, type Zone } from '../recommend.ts'
 import { isComplete, missing, type FarmerState, type Parcel } from '../state.ts'
 import { CheckIcon } from './glyphs.tsx'
 import { RecommendationCard } from './RecommendationCard.tsx'
+import { RotationPlant } from './RotationPlant.tsx'
 import { ZoneNotice } from './ZoneNotice.tsx'
 
 type Run = { key: string; status: 'loading' | 'ready' | 'error'; rec?: Recommendation; message?: string }
@@ -27,7 +30,15 @@ const UNKNOWN_ZONE: Zone = { status: 'unknown', key: null, km: 0 }
  * (right in the browser, no connection needed) and draws the recommendation. Outside the zone the model was fitted for, it says
  * so first and shows nothing for the parcel; Texcoco's options are offered only as a clearly labelled reference.
  */
-export function PlantPage({ data, state, parcel, zone, saved, onSave, onGoParcel, onAsk }: Props) {
+export function PlantPage(props: Props) {
+  const rotations = useRotations()
+  const { parcel, onAsk } = props
+  // a parcel close to a point the rotations service has run gets those results; anywhere else, the planner (or its refusal)
+  const site = parcel && rotations ? nearRotationSite(parcel.point, rotations) : null
+  return site ? <RotationPlant site={site} onAsk={onAsk} /> : <PlannerPlantPage {...props} />
+}
+
+function PlannerPlantPage({ data, state, parcel, zone, saved, onSave, onGoParcel, onAsk }: Props) {
   const { t } = useI18n()
   const { situation } = state
   const ready = parcel !== null && isComplete(situation)

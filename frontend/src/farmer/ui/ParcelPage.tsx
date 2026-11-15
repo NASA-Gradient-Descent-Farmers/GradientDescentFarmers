@@ -91,7 +91,7 @@ export function ParcelPage({ state, parcel, site, zone, onParcel, onSituation, o
             <strong>{situation.goal ? t(`farmer.parcel.goal.${situation.goal}.label`) : '—'}</strong>
           </SummaryRow>
         </dl>
-        {parcel && <ZoneNotice zone={zone} />}
+        {parcel && <ZoneNotice zone={zone} point={parcel.point} />}
         <button type="button" className="btn primary big block" onClick={onPlant} disabled={!parcel || missing(situation).length > 0}>
           {t('farmer.parcel.summary.cta')}
         </button>
@@ -209,7 +209,7 @@ function PlaceStep({ parcel, site, zone, parcelText, onParcel }: { parcel: Parce
             </p>
           </div>
         </div>
-        <ZoneNotice zone={zone} />
+        <ZoneNotice zone={zone} point={parcel.point} />
         <button type="button" className="btn secondary" onClick={() => setChanging(true)}>
           {t('farmer.common.change')}
         </button>

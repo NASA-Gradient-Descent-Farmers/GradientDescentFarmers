@@ -3,7 +3,9 @@
 // crop model run on 2024-2025 weather with SIAP state prices, not a forecast and not validated in the field. Amounts are
 // gross income per hectare over the whole plan, never profit. Everything here only reads and checks the file.
 
-import type { DemoLocationId } from './demoLocations.ts'
+import { INSIDE_KM } from './coverage.ts'
+import { DEMO_LOCATIONS, type DemoLocationId } from './demoLocations.ts'
+import { distanceKm, type LatLon } from './geo.ts'
 
 export type Regime = 'irrigated' | 'rainfed'
 
@@ -139,6 +141,30 @@ export function bestOption(rotations: Rotations, regime: Regime): RotationOption
 export function topIncomeOption(rotations: Rotations, regime: Regime): RotationOption | null {
   const withIncome = rotations.options.filter((option) => option.regime === regime && option.gross?.median != null)
   return withIncome.reduce<RotationOption | null>((top, option) => (top === null || option.gross!.median! > top.gross!.median! ? option : top), null)
+}
+
+/** A point with published rotation results that a parcel is close enough to use. */
+export interface RotationSite {
+  id: DemoLocationId
+  name: string
+  rotations: Rotations
+  /** From the parcel to the point the rotation service ran. */
+  km: number
+}
+
+/**
+ * The nearest point with rotation results, if the parcel is within `maxKm` of it (the same distance the app calls "inside"
+ * for its own model: about one NASA POWER weather cell). Farther away the results say nothing about the parcel, so none.
+ */
+export function nearRotationSite(point: LatLon, loaded: RotationsByLocation, maxKm: number = INSIDE_KM): RotationSite | null {
+  let nearest: RotationSite | null = null
+  for (const place of DEMO_LOCATIONS) {
+    const rotations = loaded[place.id]
+    if (!rotations) continue
+    const km = distanceKm(point, { lat: place.latitude, lon: place.longitude })
+    if (km <= maxKm && (nearest === null || km < nearest.km)) nearest = { id: place.id, name: place.name, rotations, km }
+  }
+  return nearest
 }
 
 async function getJson(url: string): Promise<unknown> {

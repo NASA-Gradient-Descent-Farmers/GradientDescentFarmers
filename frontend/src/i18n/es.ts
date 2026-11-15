@@ -4,6 +4,7 @@ import { farmerEs } from './farmer.es.ts'
 import { accountEs } from './account.es.ts'
 import { whatsappEs } from './whatsapp.es.ts'
 import { landingEs } from './landing.es.ts'
+import { nearEs } from './near.es.ts'
 import type { Dict } from './en.ts'
 
 export const es: Dict = {
@@ -13,6 +14,7 @@ export const es: Dict = {
   account: accountEs,
   whatsapp: whatsappEs,
   landing: landingEs,
+  near: nearEs,
   app: {
     title: 'YolIA',
     tagline: 'Rotaciones de temporal en El Batán · NASA POWER, suelos IGBP-DIS y GLDAS, modelo de cultivos WOFOST',

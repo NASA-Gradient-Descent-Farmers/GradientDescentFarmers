@@ -6,6 +6,7 @@ import { farmerEn } from './farmer.en.ts'
 import { accountEn } from './account.en.ts'
 import { whatsappEn } from './whatsapp.en.ts'
 import { landingEn } from './landing.en.ts'
+import { nearEn } from './near.en.ts'
 
 export const en = {
   assistant: assistantEn,
@@ -14,6 +15,7 @@ export const en = {
   account: accountEn,
   whatsapp: whatsappEn,
   landing: landingEn,
+  near: nearEn,
   app: {
     title: 'YolIA',
     tagline: 'Rainfed crop rotations at El Batán · NASA POWER, IGBP-DIS and GLDAS soils, WOFOST crop model',

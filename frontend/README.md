@@ -183,6 +183,8 @@ WhatsApp, Twilio or any API, and it needs no key, internet or language model. It
 (`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
 the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). Guanajuato answers with the bundled model results (computed at El Batán, Texcoco), labelled experimental demonstration data. Sinaloa and Sonora answer from the rotation results the rotations service published for those two points (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence). If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
 
+A parcel pinned within 25 km of Sinaloa's or Sonora's run point (the app's own "inside" distance; `nearRotationSite` in `src/lib/rotations.ts`) gets those rotation results on **Qué sembrar** (`src/farmer/ui/RotationPlant.tsx`) instead of the "outside the model zone" refusal, with a notice on the parcel page. They are per hectare and do not depend on the parcel questions. Pins farther away keep the refusal: the results say nothing about them.
+
 ### Updating the rotation results
 
 The rotations service (`gradientdescentfarmers/rotations_service`) writes `rotations.json` to a private bucket. Download the run you want (needs access to the `gdfarming` project), then slim it into the file the app and the WhatsApp server read:
