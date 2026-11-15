@@ -9,13 +9,14 @@ __pycache__/
 *.pyc
 
 # Raw / downloaded data. Everything under data/ stays local, except the small
-# derived economic tables in data/economics/*.parquet, which may be tracked.
+# derived economic tables in data/economics/*.parquet and their README.md.
 data/*
 data/raw/
 */**/data/
 !data/economics/
 data/economics/*
 !data/economics/*.parquet
+!data/economics/README.md
 
 # LaTeX build files
 *.aux
