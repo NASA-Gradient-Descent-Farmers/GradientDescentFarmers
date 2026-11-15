@@ -233,13 +233,25 @@ function RotationCard({ rotation, isCurrent, best, prioritized }: { rotation: Di
         </>
       )}
       <Disclosure title={t('district.view.indicators')}>
-        <DataTable
-          head={[t('district.view.indicator'), t('district.view.value'), t('district.view.scoreCol'), t('district.view.evidenceCol')]}
-          rows={indicators.map((key) => {
+        {/* one small card per indicator: a 4-column table does not fit a phone */}
+        <dl className="dist-indicators">
+          {indicators.map((key) => {
             const i = rotation.indicadores[key]
-            return [t(`district.view.ind.${key}`), `${i.texto} — ${i.unidad}`, i.puntaje === null ? '—' : fmt.number(Math.round(i.puntaje)), `${t(`district.evidence.${i.evidencia}`)} · ${i.fuente}`]
+            return (
+              <div key={key}>
+                <dt>{t(`district.view.ind.${key}`)}</dt>
+                <dd>
+                  <strong>{i.texto}</strong>
+                  {i.puntaje !== null && <span className="dist-score">{t('district.view.scoreCol')}: {fmt.number(Math.round(i.puntaje))}</span>}
+                </dd>
+                <dd className="muted">{i.unidad}</dd>
+                <dd className="muted">
+                  {t('district.view.evidenceCol')}: {t(`district.evidence.${i.evidencia}`)} · {i.fuente}
+                </dd>
+              </div>
+            )
           })}
-        />
+        </dl>
       </Disclosure>
       <Disclosure title={t('district.view.evidenceList')}>
         <ul>

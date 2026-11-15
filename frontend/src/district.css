@@ -77,3 +77,33 @@
   border-color: var(--orange-600);
   border-width: 3px;
 }
+
+.dist-indicators {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.dist-indicators > div {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-m);
+  background: var(--gray-50);
+}
+.dist-indicators dt {
+  font-size: 14px;
+  font-weight: 700;
+}
+.dist-indicators dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.dist-score {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--orange-600);
+}
+.dist-card .data-table td {
+  white-space: normal;
+}
