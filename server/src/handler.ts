@@ -6,6 +6,7 @@
 import { fold } from '../../frontend/src/farmer/places.ts'
 import { DICTIONARIES, translate } from '../../frontend/src/i18n/translate.ts'
 import { makeFormat } from '../../frontend/src/lib/format.ts'
+import type { EnvironmentByLocation } from '../../frontend/src/lib/environment.ts'
 import type { RotationsByLocation } from '../../frontend/src/lib/rotations.ts'
 import type { DashboardData } from '../../frontend/src/lib/types.ts'
 import { EMPTY_CHAT, focusOf, greeting, needsLocation, readLocation, reply, type BotBubble, type Env } from '../../frontend/src/whatsapp/engine.ts'
@@ -36,14 +37,16 @@ export interface HandlerDeps {
   data: DashboardData
   /** Rotation results for the locations that have them; a location without an entry answers "data unavailable". */
   rotations: RotationsByLocation
+  /** Environmental packages for the places that have them (climate, soil, satellite series, sources). */
+  environment?: EnvironmentByLocation
   sessions: SessionStore
   siteUrl: string
 }
 
-export function makeEnv(data: DashboardData, rotations: RotationsByLocation = {}): Env {
+export function makeEnv(data: DashboardData, rotations: RotationsByLocation = {}, environment: EnvironmentByLocation = {}): Env {
   const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
   const fmt = makeFormat('es')
-  return { data, rotations, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
+  return { data, rotations, environment, t, fmt, distance: (km) => (km < 1 ? t('where.lessThanOne') : fmt.number(km)) }
 }
 
 /** Splits text into messages no longer than `max`, breaking between paragraphs where it can. */
@@ -80,8 +83,8 @@ function render(bubbles: BotBubble[]): { text: string; options: string[] } {
 
 /** The messages to send back for one incoming message. Never throws: a failure becomes an apology. */
 export async function handleIncoming(message: Incoming, deps: HandlerDeps): Promise<string[]> {
-  const { data, rotations, sessions, siteUrl } = deps
-  const env = makeEnv(data, rotations)
+  const { data, rotations, environment, sessions, siteUrl } = deps
+  const env = makeEnv(data, rotations, environment)
   const sender = message.from
   const text = message.body.trim()
   try {

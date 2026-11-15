@@ -7,6 +7,7 @@ import { accountEn } from './account.en.ts'
 import { whatsappEn } from './whatsapp.en.ts'
 import { landingEn } from './landing.en.ts'
 import { nearEn } from './near.en.ts'
+import { envEn } from './env.en.ts'
 
 export const en = {
   assistant: assistantEn,
@@ -16,6 +17,7 @@ export const en = {
   whatsapp: whatsappEn,
   landing: landingEn,
   near: nearEn,
+  env: envEn,
   app: {
     title: 'YolIA',
     tagline: 'Rainfed crop rotations at El Batán · NASA POWER, IGBP-DIS and GLDAS soils, WOFOST crop model',
@@ -102,6 +104,8 @@ export const en = {
     pin: 'Your pin',
     noPin: 'You have not dropped the pin yet.',
     distance: 'You are {km} km from El Batán, Texcoco, the modeled area.',
+    distanceZone: 'You are {km} km from {place}, a point with published data.',
+    inPlace: 'I am in {place}',
     lessThanOne: 'less than 1',
     inTexcoco: "I'm in the Texcoco area",
     continue: 'Continue with this location',

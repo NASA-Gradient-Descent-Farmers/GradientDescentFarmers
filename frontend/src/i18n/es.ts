@@ -5,6 +5,7 @@ import { accountEs } from './account.es.ts'
 import { whatsappEs } from './whatsapp.es.ts'
 import { landingEs } from './landing.es.ts'
 import { nearEs } from './near.es.ts'
+import { envEs } from './env.es.ts'
 import type { Dict } from './en.ts'
 
 export const es: Dict = {
@@ -15,6 +16,7 @@ export const es: Dict = {
   whatsapp: whatsappEs,
   landing: landingEs,
   near: nearEs,
+  env: envEs,
   app: {
     title: 'YolIA',
     tagline: 'Rotaciones de temporal en El Batán · NASA POWER, suelos IGBP-DIS y GLDAS, modelo de cultivos WOFOST',
@@ -101,6 +103,8 @@ export const es: Dict = {
     pin: 'Tu pin',
     noPin: 'Todavía no has puesto el pin.',
     distance: 'Estás a {km} km de El Batán, Texcoco, la zona del modelo.',
+    distanceZone: 'Estás a {km} km de {place}, un punto con datos publicados.',
+    inPlace: 'Estoy en {place}',
     lessThanOne: 'menos de 1',
     inTexcoco: 'Estoy en la zona de Texcoco',
     continue: 'Seguir con esta ubicación',

@@ -6,6 +6,10 @@ export const nearEn = {
     body: 'Your parcel is {km} km from {place}{where}, where the rotation model has been run. They are exploratory scenarios with low confidence, not a recommendation.',
     where: ' (municipality of {municipality})',
   },
+  noticeEnvironment: {
+    title: 'There is NASA data for this area',
+    body: 'Your parcel is {km} km from {place}, where climate, soil and satellite data were gathered. The rotation model has not been run here yet.',
+  },
   heading: 'Rotation options near {place}',
   scope: 'These results are per hectare and for the {place} area; they do not change with your answers about the parcel.',
   recommended: 'The one that best fits the model priorities',

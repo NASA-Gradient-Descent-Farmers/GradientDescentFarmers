@@ -185,17 +185,25 @@ the only new code is in `src/whatsapp/`. The demo has three reference locations,
 
 A parcel pinned within 25 km of Sinaloa's or Sonora's run point (the app's own "inside" distance; `nearRotationSite` in `src/lib/rotations.ts`) gets those rotation results on **Qué sembrar** (`src/farmer/ui/RotationPlant.tsx`) instead of the "outside the model zone" refusal, with a notice on the parcel page. They are per hectare and do not depend on the parcel questions. Pins farther away keep the refusal: the results say nothing about them.
 
-### Updating the rotation results
+### Daniel's data in the app (`public/data/environment/` and `public/data/rotations/`)
 
-The rotations service (`gradientdescentfarmers/rotations_service`) writes `rotations.json` to a private bucket. Download the run you want (needs access to the `gdfarming` project), then slim it into the file the app and the WhatsApp server read:
+Two files per place come from the data service (`gradientdescentfarmers/source_builder` and `rotations_service`), both private in GCS (`gdfarming-farm-data`, `gdfarming-farm-rotations`):
+
+| File | What it holds | Where it shows |
+| --- | --- | --- |
+| `environment/<place>.json` (Guanajuato, Sinaloa, Sonora) | The whole FarmProfile: two years of NASA POWER weather (monthly, annual and daily), SoilGrids soil, SRTM terrain, MODIS vegetation, evapotranspiration and surface temperature, SMAP soil moisture, GPM rain, World Bank context, the status of every source, the readiness gates, blockers and limits | **Qué sembrar** for a parcel near the place (`EnvironmentPanel`), the WhatsApp chat (climate, soil, satellite and sources questions) |
+| `rotations/<place>.json` (Sinaloa, Sonora) | The rotation options, income, confidence, and how the run was set up: settings, soil model, prices used, rejected simulations | **Qué sembrar** (`RotationPlant`), the WhatsApp chat |
+
+A parcel within 25 km of a place (the app's own "inside" distance; `nearZone` in `src/lib/environment.ts`) gets what was published for it instead of the "outside the model zone" refusal; the map step says so too and has one-tap shortcuts to the three places. Farther pins keep the refusal. Guanajuato has an environmental package but no rotation run yet, so its planner answers stay the labelled experimental ones.
+
+To refresh them, download a run (needs access to the `gdfarming` project) and slim it:
 
 ```bash
-gcloud storage cp gs://gdfarming-farm-rotations/farm_rotations/<farm_id>/source_runs/<source_run_id>/runs/<rotation_run_id>/rotations.json .
-node scripts/slim-rotations.mjs <sinaloa|sonora|guanajuato> ./rotations.json
+gcloud storage cp -r "gs://gdfarming-farm-data/farm_profiles/<farm_id>/runs/<run_id>/*" ./profile/
+node scripts/slim-profile.mjs <guanajuato|sinaloa|sonora> ./profile
+
+gcloud storage cp -r "gs://gdfarming-farm-rotations/farm_rotations/<farm_id>/source_runs/<source_run_id>/runs/<rotation_run_id>/*" ./rotations/
+node scripts/slim-rotations.mjs <sinaloa|sonora> ./rotations/rotations.json
 ```
 
-The script copies the figures as they are and drops server paths and hashes. `src/lib/rotations.ts` checks the file when it is loaded. Current runs: `mexico_norte_01` (Sinaloa, run `be357172bae941c1`) and `mexico_norte_02` (Sonora, run `5abb561d6ead496b`). A new location needs `results: 'rotations'` in `src/lib/demoLocations.ts`.
-
-- The home page (`src/screens/HomeScreen.tsx`, shown before signing in) has a WhatsApp button that opens the simulator at `#/demo/whatsapp`; `main.tsx` follows the address, so no reload is needed.
-- Open `/demo/whatsapp` with `npm run dev`, or `#/demo/whatsapp` on a static host (the built app uses relative asset paths).
-- Tests: `npm test` (`src/whatsapp/*.test.ts*`).
+The scripts copy the figures (rounded to 2-3 decimals for size) and drop server paths and hashes. `src/lib/environment.ts` and `src/lib/rotations.ts` check each file when it is loaded; a file that is missing or invalid just leaves that place without it. Not copied: `model_evaluations.jsonl` and `pcse_weather_daily.csv` (the simulator's own per-scenario ledger and a copy of the weather already in the environment file). Current runs: Sinaloa `b50bfdf0a58240aa` / `be357172bae941c1`, Sonora `9849d2f76f944625` / `5abb561d6ead496b`, Guanajuato `67b66942681a4214`. A new place needs an entry in `src/lib/demoLocations.ts`.

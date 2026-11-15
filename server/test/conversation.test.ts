@@ -145,6 +145,39 @@ describe('rotation results for Sinaloa and Sonora', () => {
   })
 })
 
+describe('environmental data of each place (Daniel\'s source profiles)', () => {
+  for (const [name, id] of [['Guanajuato', 'guanajuato'], ['Sinaloa', 'sinaloa'], ['Sonora', 'sonora']] as const) {
+    const environment = results.environment[id]!
+    it(`${name}: climate, soil, satellite and source questions are answered from its package`, async () => {
+      const from = `whatsapp:+5215500${id === 'guanajuato' ? '0501' : id === 'sinaloa' ? '0502' : '0503'}`
+      await say(base, from, name)
+      const climate = await say(base, from, '¿Cómo es el clima?')
+      for (const row of environment.climate.annual) assert.ok(climate.includes(`${row.year}: ${Math.round(row.rainMm!)} mm de lluvia`), climate)
+      assert.match(climate, /no miden tu parcela/)
+      assert.match(await say(base, from, '¿Cómo es el suelo?'), /pH \d.*arcilla \d+ %/s)
+      assert.match(await say(base, from, '¿Qué dicen los satélites?'), /NDVI entre/)
+      const sources = await say(base, from, '¿De dónde salen los datos?')
+      assert.match(sources, /Disponibles: .*NASA POWER/)
+      assert.match(sources, /Todavía no se puede/)
+      assert.doesNotMatch(sources, /Datos no disponibles/)
+    })
+  }
+
+  it('a question that waited for the location is answered once it is chosen, and the answer fits WhatsApp', async () => {
+    const from = 'whatsapp:+5215500000510'
+    assert.match(await say(base, from, '¿Cómo es el suelo?'), /Elige Guanajuato, Sinaloa o Sonora/)
+    const answer = await say(base, from, '3')
+    assert.match(answer, /\*Suelo\*/)
+    for (const message of answer.split('\n---\n')) assert.ok(message.length <= 1500)
+  })
+
+  it('without the package, the place says "Datos no disponibles" for these questions too', async () => {
+    const from = 'whatsapp:+5215500000511'
+    await say(bare, from, 'Sonora')
+    assert.match(await say(bare, from, '¿Cómo es el clima?'), /Datos no disponibles para Sonora/)
+  })
+})
+
 describe('missing agricultural data', () => {
   for (const name of ['Sinaloa', 'Sonora']) {
     it(`${name} without its rotation file: every question about results is answered "Datos no disponibles", with no figures`, async () => {

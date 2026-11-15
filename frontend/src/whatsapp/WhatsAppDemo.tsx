@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import { I18nProvider, useI18n } from '../i18n/index.tsx'
 import { loadData } from '../lib/data.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
+import { loadEnvironment, type EnvironmentByLocation } from '../lib/environment.ts'
 import { loadRotations, type RotationsByLocation } from '../lib/rotations.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
@@ -19,25 +20,29 @@ interface Message {
   time: string
 }
 
-const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare'] as const
+const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare', 'climate', 'soil', 'sources'] as const
 
 const clock = () => new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 /** /demo/whatsapp: loads the stored model results (from this app's own files) and shows the chat. */
 export default function WhatsAppDemo() {
-  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation } | null>(null)
+  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation } | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
     document.title = 'YolIA · WhatsApp (simulación)'
     const base = appRoot(window.location)
     // a rotation file that is missing only leaves that location on "data unavailable"; the model results are required
     const withRotations = DEMO_LOCATIONS.filter((place) => place.results === 'rotations').map((place) => place.id)
-    Promise.all([loadData(base), loadRotations(withRotations, base)]).then(([data, rotations]) => setLoaded({ data, rotations }), (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
+    // a file that is missing only leaves that location without it; the model results are required
+    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base)]).then(
+      ([data, rotations, environment]) => setLoaded({ data, rotations, environment }),
+      (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
+    )
   }, [])
   return (
     <I18nProvider initial="es">
-      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} home={appRoot(window.location)} /> : <Loading error={error} />}
+      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} home={appRoot(window.location)} /> : <Loading error={error} />}
     </I18nProvider>
   )
 }
@@ -56,14 +61,16 @@ interface ChatProps {
   data: DashboardData
   /** Rotation results for the locations that have them; a location without an entry shows "data unavailable". */
   rotations?: RotationsByLocation
+  /** Environmental packages for the places that have them; a place without one cannot answer about its climate or soil. */
+  environment?: EnvironmentByLocation
   /** The YolIA site this chat links to. */
   home: string
   typingMs?: number
 }
 
-export function WhatsAppChat({ data, rotations, home, typingMs = TYPING_MS }: ChatProps) {
+export function WhatsAppChat({ data, rotations, environment, home, typingMs = TYPING_MS }: ChatProps) {
   const { t, fmt, distance } = useI18n()
-  const env = useMemo<Env>(() => ({ data, rotations, t, fmt, distance }), [data, rotations, t, fmt, distance])
+  const env = useMemo<Env>(() => ({ data, rotations, environment, t, fmt, distance }), [data, rotations, environment, t, fmt, distance])
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)

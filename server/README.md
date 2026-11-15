@@ -25,7 +25,11 @@ phone ──WhatsApp──▶ Twilio ──HTTPS POST /whatsapp──▶ tunnel 
   the field. Income is always *gross per hectare* over the whole plan, never profit, and "sin datos" is never zero. If a
   location's file is missing or fails its check the bot says *"Datos no disponibles"* for it and never reuses another
   location's results. To refresh them, see *Updating the rotation results* in `frontend/README.md`.
-- Every figure comes from the stored model results; nothing is estimated or written by hand.
+- **Climate, soil, satellite data and sources** for all three places: ask *¿Cómo es el clima?*, *¿Cómo es el suelo?*,
+  *¿Qué dicen los satélites?* or *¿De dónde salen los datos?*. They are answered from the environmental packages in
+  `frontend/public/data/environment/` (Daniel's source profiles). The bot always says these are satellite and model grids
+  for a point, not measurements of the parcel. *¿Qué pasa si llueve poco?* also quotes the rain observed in the place.
+- Every figure comes from the stored model results and data files; nothing is estimated or written by hand.
 - Send `menu` at any time to start over. Photos and voice notes are not read.
 
 ## Requirements

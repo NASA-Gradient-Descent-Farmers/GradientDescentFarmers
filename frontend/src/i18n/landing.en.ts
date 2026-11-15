@@ -1,6 +1,8 @@
 // English copy of the home page; it must have the same keys as landing.es.ts.
 
 export const landingEn = {
+  eyebrow: 'Sonora · Sinaloa · Guanajuato · Texcoco',
+  tagline: 'Crop rotations from NASA satellites and a crop model.',
   lede: 'Tell YolIA where your plot is and what matters to you. It suggests what to plant, with the risks, in plain words.',
   start: 'Enter YolIA',
   startHint: 'Choose whether you use it as a farmer or as a technician.',

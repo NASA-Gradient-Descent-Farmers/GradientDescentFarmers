@@ -24,6 +24,12 @@ describe('the home page', () => {
     expect(html).toMatch(/<button[^>]*>Entrar a YolIA<\/button>/)
   })
 
+  it('is about the places that have data, not only Texcoco', () => {
+    expect(words(html)).toContain('Sonora · Sinaloa · Guanajuato · Texcoco')
+    expect(words(html)).toContain('Rotaciones de cultivos con satélites de la NASA')
+    expect(words(html)).not.toContain('de temporal con satélites')
+  })
+
   it('links to the WhatsApp simulation with the WhatsApp icon, and says it is a simulation', () => {
     const links = html.match(/<a [^>]*href="#\/demo\/whatsapp"/g) ?? []
     expect(links.length).toBe(2)

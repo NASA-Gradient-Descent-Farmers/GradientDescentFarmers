@@ -44,3 +44,91 @@
   padding-bottom: 8px;
   border-bottom: 1px solid var(--line);
 }
+
+/* Environmental data of a place */
+.env {
+  display: grid;
+  gap: 12px;
+  margin: 22px 0;
+}
+.env h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.env h3 {
+  margin: 14px 0 4px;
+  font-size: 17px;
+}
+.env p {
+  margin: 0;
+  line-height: 1.5;
+}
+.env-summary {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.env-summary > div {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-m);
+}
+.env-summary dt {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.env-summary dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.chart {
+  margin: 6px 0;
+}
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+.chart-legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+.data-table-wrap {
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.data-table th,
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+.data-table th[scope='row'],
+.data-table thead th:first-child {
+  text-align: left;
+  white-space: normal;
+}
+@media (min-width: 760px) {
+  .env-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}

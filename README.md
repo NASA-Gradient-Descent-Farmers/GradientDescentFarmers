@@ -24,7 +24,7 @@ npm test && npm run lint && npm run build
 
 `server/` is an optional Twilio WhatsApp Sandbox webhook that answers with the same conversation engine; see
 [server/README.md](server/README.md) for the setup (it needs a Twilio account and keeps its credentials in a git-ignored `.env`).
-Details of the app, its pages and how to refresh the rotation results are in [frontend/README.md](frontend/README.md).
+Details of the app, its pages, and how Daniel's data (environmental profiles and rotation runs for Sonora, Sinaloa and Guanajuato) gets into it and is refreshed are in [frontend/README.md](frontend/README.md).
 
 ## Structure
 

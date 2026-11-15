@@ -5,7 +5,9 @@
 
 import type { Format } from '../lib/format.ts'
 import { bestOption, topIncomeOption, type Regime, type RotationOption, type Rotations } from '../lib/rotations.ts'
+import type { Environment } from '../lib/environment.ts'
 import type { BotBubble, Focus } from './engine.ts'
+import { observedRain } from './environmentAnswers.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
@@ -15,6 +17,8 @@ export type RotationTopic = Focus | 'trust' | 'fertilizer'
 interface Ctx {
   t: T
   fmt: Format
+  /** The place's environmental package, when loaded: the rain question adds what was observed there. */
+  observed?: Environment | null
 }
 
 const REGIMES: Regime[] = ['irrigated', 'rainfed']
@@ -109,6 +113,8 @@ function rain(rotations: Rotations, ctx: Ctx): BotBubble[] {
   const irrigated = chosen(rotations, 'irrigated')
   const rainfed = chosen(rotations, 'rainfed')
   const bubbles: BotBubble[] = [{ text: t('whatsapp.rotations.rainHead', { years: years(rotations) }) }]
+  const observed = ctx.observed ? observedRain(ctx.observed, ctx) : null
+  if (observed) bubbles.push(observed)
   if (irrigated && rainfed) bubbles.push({ text: t('whatsapp.rotations.rainCompare', { irrigated: money(irrigated.gross?.median ?? null, ctx), rainfed: money(rainfed.gross?.median ?? null, ctx) }) })
   const dry = rotations.options.filter((option) => option.regime === 'rainfed')
   if (dry.length > 0) bubbles.push({ text: t('whatsapp.rotations.rainFailed', { n: dry.filter((option) => option.failedHarvests > 0).length, total: dry.length }) })

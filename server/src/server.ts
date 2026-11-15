@@ -34,7 +34,7 @@ function readBody(request: IncomingMessage): Promise<string> {
   })
 }
 
-export function createWebhook(config: Config, { data, rotations }: Results, sessions = new SessionStore(config.sessionMinutes)): Server {
+export function createWebhook(config: Config, { data, rotations, environment }: Results, sessions = new SessionStore(config.sessionMinutes)): Server {
   return createServer(async (request, response) => {
     const send = (status: number, body: string, type = 'text/plain; charset=utf-8') => {
       response.writeHead(status, { 'Content-Type': type })
@@ -55,7 +55,7 @@ export function createWebhook(config: Config, { data, rotations }: Results, sess
       }
       if (!params.From || params.Body === undefined) return send(400, 'missing From or Body')
 
-      const messages = await handleIncoming({ from: params.From, body: params.Body, media: Number(params.NumMedia ?? 0) || 0 }, { data, rotations, sessions, siteUrl: config.siteUrl })
+      const messages = await handleIncoming({ from: params.From, body: params.Body, media: Number(params.NumMedia ?? 0) || 0 }, { data, rotations, environment, sessions, siteUrl: config.siteUrl })
       console.log(`reply to ${maskSender(params.From)}: ${messages.length} message(s)`)
       const twiml = new twilio.twiml.MessagingResponse()
       for (const message of messages) twiml.message(message)

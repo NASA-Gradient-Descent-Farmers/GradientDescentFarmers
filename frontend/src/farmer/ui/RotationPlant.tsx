@@ -1,6 +1,10 @@
 import { useI18n } from '../../i18n/index.tsx'
-import { bestOption, type RotationOption, type RotationSite } from '../../lib/rotations.ts'
+import type { Rotations } from '../../lib/rotations.ts'
+import { bestOption, type RotationOption } from '../../lib/rotations.ts'
+import type { Zone } from '../../lib/environment.ts'
+import { DataTable } from './DataTable.tsx'
 import { Disclosure } from './Disclosure.tsx'
+import { EnvironmentPanel } from './EnvironmentPanel.tsx'
 import '../../near.css'
 
 const REGIMES = ['irrigated', 'rainfed'] as const
@@ -58,14 +62,72 @@ function OptionCard({ regime, option }: { regime: (typeof REGIMES)[number]; opti
   )
 }
 
+/** How the run was set up and what it used: the settings, the soil model, the prices, and what was discarded. */
+function RunDetails({ rotations }: { rotations: Rotations }) {
+  const { t, fmt } = useI18n()
+  const details = rotations.details
+  if (!details) return null
+  const crop = (key: string) => {
+    const text = t(`env.crop.${key}`)
+    return text === `env.crop.${key}` ? key : text
+  }
+  const settings = details.runSettings
+  const soil = details.soilModel
+  const years = [...new Set(details.prices.map((row) => row.year))].sort((a, b) => a - b)
+  const groups = [...new Set(details.prices.map((row) => `${row.crop}|${row.regime}`))]
+  const price = (key: string, year: number) => details.prices.find((row) => `${row.crop}|${row.regime}` === key && row.year === year)?.mxnPerT ?? null
+  const fraction = (value: number | undefined) => (value === undefined ? '—' : fmt.number(value, 2))
+  return (
+    <Disclosure title={t('env.run.title')}>
+      {settings && (
+        <p>
+          {t('env.run.settings', {
+            crops: settings.crops.map(crop).join(', '),
+            years: settings.horizonYears,
+            efficiency: fmt.number(settings.irrigationEfficiency, 2),
+            depth: fmt.number(settings.rootableDepthCm, 0),
+            water: fmt.number(settings.initialAvailableWaterFraction * 100, 0),
+          })}
+        </p>
+      )}
+      {soil && (
+        <>
+          <p>{t('env.run.soil', { method: soil.method, fc: fraction(soil.parameters.SMFCF), wp: fraction(soil.parameters.SMW), sat: fraction(soil.parameters.SM0) })}</p>
+          <h3>{t('env.run.soilAssumptions')}</h3>
+          <ul>
+            {soil.assumptions.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </>
+      )}
+      {details.cropVarieties && <p>{t('env.run.varieties', { list: Object.entries(details.cropVarieties.varieties).map(([key, name]) => `${crop(key)} (${name})`).join(', ') })}</p>}
+      {groups.length > 0 && (
+        <>
+          <h3>{t('env.run.prices')}</h3>
+          <DataTable
+            head={[t('env.run.pricesCrop'), ...years.map(String)]}
+            rows={groups.map((key) => {
+              const [name, regime] = key.split('|')
+              return [`${crop(name)} (${t(`env.run.regime.${regime}`)})`, ...years.map((year) => (price(key, year) === null ? '—' : fmt.number(price(key, year)!, 0)))]
+            })}
+          />
+          <p className="muted">{t('env.run.priceNote')}</p>
+        </>
+      )}
+      {details.rejected && <p>{t('env.run.rejected', { n: details.rejected.optimizationRejected.length, fail: details.rejected.modelFailures })}</p>}
+    </Disclosure>
+  )
+}
+
 /**
  * "Qué sembrar" for a parcel close to a point the rotations service has run. The results are exploratory scenarios for
  * that zone, per hectare, so they say so first and do not use the parcel questions. Nothing here is computed: every figure
  * is the file's, rounded for display.
  */
-export function RotationPlant({ site, onAsk }: { site: RotationSite; onAsk: () => void }) {
+export function RotationPlant({ zone, rotations, onAsk }: { zone: Zone; rotations: Rotations; onAsk: () => void }) {
   const { t } = useI18n()
-  const { rotations, name } = site
+  const { name } = zone
   const { income } = useFigures()
   const years = (() => {
     const first = Math.min(...rotations.weatherYears)
@@ -109,7 +171,12 @@ export function RotationPlant({ site, onAsk }: { site: RotationSite; onAsk: () =
         <p>{t('whatsapp.rotations.noProbability')}</p>
       </Disclosure>
 
+      <RunDetails rotations={rotations} />
+
       <p className="muted">{t('whatsapp.rotations.caution', { years })}</p>
+
+      <EnvironmentPanel zone={zone} />
+
       <button type="button" className="btn secondary" onClick={onAsk}>
         {t('farmer.rec.actions.ask')}
       </button>

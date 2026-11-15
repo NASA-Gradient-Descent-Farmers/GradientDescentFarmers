@@ -1,7 +1,7 @@
-import { useRotations } from '../../hooks/useRotations.ts'
+import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
 import type { LatLon } from '../../lib/geo.ts'
-import { nearRotationSite } from '../../lib/rotations.ts'
+import { nearZone } from '../../lib/environment.ts'
 import type { Zone } from '../recommend.ts'
 import { InfoIcon, WarnIcon } from './glyphs.tsx'
 
@@ -12,9 +12,9 @@ import { InfoIcon, WarnIcon } from './glyphs.tsx'
  */
 export function ZoneNotice({ zone, point }: { zone: Zone | null; point?: LatLon | null }) {
   const { t, distance } = useI18n()
-  const rotations = useRotations()
-  const site = point && rotations ? nearRotationSite(point, rotations) : null
-  if (site) {
+  const published = useZoneData()
+  const site = point && published ? nearZone(point, published) : null
+  if (site?.rotations) {
     const where = site.rotations.municipality ? t('near.notice.where', { municipality: site.rotations.municipality }) : ''
     return (
       <div className="callout zone-near" role="status">
@@ -30,7 +30,7 @@ export function ZoneNotice({ zone, point }: { zone: Zone | null; point?: LatLon 
   }
   const key = zone?.key ?? 'pending'
   const status = zone?.status ?? 'unknown'
-  return (
+  const planner = (
     <div className={`callout zone-${status}`} role="status">
       <span className="callout-icon">{status === 'inside' ? <InfoIcon /> : <WarnIcon />}</span>
       <div>
@@ -39,4 +39,22 @@ export function ZoneNotice({ zone, point }: { zone: Zone | null; point?: LatLon 
       </div>
     </div>
   )
+  // data from the environmental package but no rotation results here: say what exists, then what the planner says
+  if (site?.environment) {
+    return (
+      <>
+        <div className="callout zone-near" role="status">
+          <span className="callout-icon">
+            <InfoIcon />
+          </span>
+          <div>
+            <strong>{t('near.noticeEnvironment.title')}</strong>
+            <p>{t('near.noticeEnvironment.body', { km: distance(site.km), place: site.name })}</p>
+          </div>
+        </div>
+        {planner}
+      </>
+    )
+  }
+  return planner
 }

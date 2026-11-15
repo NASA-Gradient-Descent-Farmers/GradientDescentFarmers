@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { useRotations } from '../../hooks/useRotations.ts'
+import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
-import { nearRotationSite } from '../../lib/rotations.ts'
+import { nearZone } from '../../lib/environment.ts'
 import type { DashboardData } from '../../lib/types.ts'
 import { recommend, type Recommendation, type Zone } from '../recommend.ts'
 import { isComplete, missing, type FarmerState, type Parcel } from '../state.ts'
 import { CheckIcon } from './glyphs.tsx'
 import { RecommendationCard } from './RecommendationCard.tsx'
+import { EnvironmentPanel } from './EnvironmentPanel.tsx'
 import { RotationPlant } from './RotationPlant.tsx'
 import { ZoneNotice } from './ZoneNotice.tsx'
 
@@ -31,11 +32,23 @@ const UNKNOWN_ZONE: Zone = { status: 'unknown', key: null, km: 0 }
  * so first and shows nothing for the parcel; Texcoco's options are offered only as a clearly labelled reference.
  */
 export function PlantPage(props: Props) {
-  const rotations = useRotations()
+  const published = useZoneData()
   const { parcel, onAsk } = props
-  // a parcel close to a point the rotations service has run gets those results; anywhere else, the planner (or its refusal)
-  const site = parcel && rotations ? nearRotationSite(parcel.point, rotations) : null
-  return site ? <RotationPlant site={site} onAsk={onAsk} /> : <PlannerPlantPage {...props} />
+  // a parcel close to a point the data service has run gets what was published for it: the rotation results when there are
+  // some, and always the environmental data; anywhere else, the planner (or its refusal)
+  const zone = parcel && published ? nearZone(parcel.point, published) : null
+  if (zone?.rotations) return <RotationPlant zone={zone} rotations={zone.rotations} onAsk={onAsk} />
+  if (zone?.environment) {
+    return (
+      <>
+        <div className="page">
+          <EnvironmentPanel zone={zone} />
+        </div>
+        <PlannerPlantPage {...props} />
+      </>
+    )
+  }
+  return <PlannerPlantPage {...props} />
 }
 
 function PlannerPlantPage({ data, state, parcel, zone, saved, onSave, onGoParcel, onAsk }: Props) {

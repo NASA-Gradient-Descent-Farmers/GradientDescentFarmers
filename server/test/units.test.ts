@@ -9,7 +9,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { loadRotationResults } from '../src/data.ts'
+import { loadEnvironmentResults, loadRotationResults } from '../src/data.ts'
 
 describe('configuration from the environment', () => {
   it('needs the token and the public URL, and says what is missing', () => {
@@ -65,5 +65,20 @@ describe('loading the rotation results from disk', () => {
     writeFileSync(join(dir, 'rotations', 'sinaloa.json'), JSON.stringify({ version: 7 }))
     assert.deepEqual(loadRotationResults(pathToFileURL(`${dir}/`)), {})
     assert.equal(warn.mock.callCount(), 2)
+  })
+})
+
+describe('loading the environmental packages from disk', () => {
+  it('loads the published package of every demonstration place', () => {
+    assert.deepEqual(Object.keys(loadEnvironmentResults()).sort(), ['guanajuato', 'sinaloa', 'sonora'])
+  })
+
+  it('leaves out a package that is missing or fails the check, with a warning', (context) => {
+    const warn = context.mock.method(console, 'warn', () => {})
+    const dir = mkdtempSync(join(tmpdir(), 'yolia-environment-'))
+    mkdirSync(join(dir, 'environment'))
+    writeFileSync(join(dir, 'environment', 'sonora.json'), JSON.stringify({ version: 9 }))
+    assert.deepEqual(loadEnvironmentResults(pathToFileURL(`${dir}/`)), {})
+    assert.equal(warn.mock.callCount(), 3)
   })
 })

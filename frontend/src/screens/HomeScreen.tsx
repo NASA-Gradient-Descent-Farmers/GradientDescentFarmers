@@ -18,12 +18,12 @@ export function HomeScreen({ onStart }: { onStart: () => void }) {
       <TopBar />
       <main className="landing-main">
         <section className="landing-hero" aria-labelledby="landing-title">
-          <p className="landing-eyebrow">{t('welcome.eyebrow')}</p>
+          <p className="landing-eyebrow">{t('landing.eyebrow')}</p>
           <h1 id="landing-title" className="statement">
             <strong>
               {t('welcome.hello')} <Brand />.
             </strong>{' '}
-            {t('welcome.tagline')}
+            {t('landing.tagline')}
           </h1>
           <p className="landing-lede">{t('landing.lede')}</p>
           <div className="landing-actions">

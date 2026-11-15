@@ -12,7 +12,7 @@ export const data = results.data
 
 /** `withRotations: false` starts the webhook as if the rotation files were missing, to test "data unavailable". */
 export async function start(withRotations = true): Promise<{ server: Server; url: string; close: () => Promise<void> }> {
-  const server = createWebhook(config, withRotations ? results : { data, rotations: {} })
+  const server = createWebhook(config, withRotations ? results : { data, rotations: {}, environment: {} })
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
   const url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`
   return { server, url, close: () => new Promise<void>((resolve) => server.close(() => resolve())) }

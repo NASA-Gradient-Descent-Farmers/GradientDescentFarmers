@@ -367,5 +367,557 @@
     }
    ]
   }
- ]
+ ],
+ "details": {
+  "prices": [
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 5313,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 6045,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 6356,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 5282,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "maize",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 5304,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 5356,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 8429,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 8552,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 6603,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "wheat",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 5378,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 4456,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 5455,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 4596,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 4478,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Temporal"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2021,
+    "mxnPerT": 17774,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2022,
+    "mxnPerT": 20608,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2023,
+    "mxnPerT": 18946,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2024,
+    "mxnPerT": 17023,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "rainfed",
+    "year": 2025,
+    "mxnPerT": 18069,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "pooled_modalities"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 5453,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 7295,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 7502,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 6578,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "maize",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 5568,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 5356,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 8429,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 8552,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 6603,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "wheat",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 5378,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 4492,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 5580,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 5886,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 5389,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "sorghum",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 4563,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Primavera - Verano",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2021,
+    "mxnPerT": 17774,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2022,
+    "mxnPerT": 20608,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2023,
+    "mxnPerT": 18946,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2024,
+    "mxnPerT": 17023,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   },
+   {
+    "crop": "chickpea",
+    "regime": "irrigated",
+    "year": 2025,
+    "mxnPerT": 18069,
+    "scope": "state",
+    "state": "Sonora",
+    "cycle": "Otoño - Invierno",
+    "modality": "Riego"
+   }
+  ],
+  "soilModel": {
+   "method": "SoilGrids wv0033/wv1500 water retention; saturation from bulk density",
+   "fieldValidated": false,
+   "assumptions": [
+    "0–30 cm texture extrapolated to assumed rootable depth",
+    "Rootable depth, drainage, initial water and particle density are not measured",
+    "Salinity, groundwater, compaction and nutrients are not calibrated"
+   ],
+   "inputs": {
+    "bulk_density_g_cm3": 1.3833333333333333,
+    "clay_fraction": 0.303,
+    "organic_matter_pct": 1.4395399999999998,
+    "sand_fraction": 0.38516666666666666
+   },
+   "parameters": {
+    "CRAIRC": 0.06,
+    "KSUB": 2,
+    "RDMSOL": 100,
+    "SM0": 0.4779874213836478,
+    "SMFCF": 0.317,
+    "SMW": 0.16116666666666668,
+    "SOPE": 2
+   }
+  },
+  "rejected": {
+   "modelFailures": 0,
+   "optimizationRejected": [
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end",
+     "too_few_positive_harvests"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ],
+    [
+     "crop_not_mature_by_calendar_end"
+    ]
+   ]
+  },
+  "runSettings": {
+   "crops": [
+    "wheat",
+    "chickpea",
+    "maize",
+    "sorghum"
+   ],
+   "horizonYears": 2,
+   "waterRegimes": [
+    "rainfed",
+    "irrigated"
+   ],
+   "irrigationEfficiency": 0.75,
+   "rootableDepthCm": 100,
+   "initialAvailableWaterFraction": 0.6,
+   "priceYears": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "cropVarieties": {
+   "fieldValidated": false,
+   "varieties": {
+    "chickpea": "Chickpea_VanHeemst_1988",
+    "maize": "Maize_VanHeemst_1988",
+    "sorghum": "Sorghum_VanHeemst_1988",
+    "wheat": "Winter_wheat_107"
+   }
+  },
+  "priceSource": {
+   "dataset": "https://datamx.io/dataset/produccion-agricola-en-mexico-1980-2024",
+   "note": "Public redistribution of SIAP; direct official server unavailable in the initial acquisition",
+   "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  }
+ }
 }

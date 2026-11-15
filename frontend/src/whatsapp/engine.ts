@@ -13,8 +13,10 @@ import type { Format } from '../lib/format.ts'
 import { WATER, type Water } from '../lib/farm.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import { distanceKm } from '../lib/geo.ts'
+import type { EnvironmentByLocation } from '../lib/environment.ts'
 import type { RotationsByLocation } from '../lib/rotations.ts'
 import type { DashboardData } from '../lib/types.ts'
+import { environmentBubbles, type EnvironmentTopic } from './environmentAnswers.ts'
 import { locatedNote, rotationBubbles, type RotationTopic } from './rotationAnswers.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
@@ -28,7 +30,7 @@ export interface ChatState {
   /** The question the farmer is being asked, whose answer the next message is read as. */
   pending: Field | 'location' | null
   /** What they originally asked, answered once the questions are done. */
-  focus: Focus | null
+  focus: Focus | EnvironmentTopic | null
   last: Recommendation | null
   /** The demonstration location chosen, used for every answer until another is chosen. */
   location: DemoLocationId | null
@@ -53,6 +55,8 @@ export interface Env {
   distance: (km: number) => string
   /** The rotation results loaded for the locations that have them; a location missing here has none. */
   rotations?: RotationsByLocation
+  /** The environmental packages loaded for the places that have them (climate, soil, satellite series, sources). */
+  environment?: EnvironmentByLocation
   /** Injected so tests can run without the planner. */
   run?: typeof recommend
   now?: () => number
@@ -138,6 +142,31 @@ export function focusOf(text: string): Focus | null {
   return base === 'plant' || base === 'money' || base === 'rain' ? base : null
 }
 
+// ---- reading a question about the place's data ----
+
+const SOURCES = /\b(fuente|fuentes|de donde (salen|vienen|sacan)|origen de (los )?datos|que datos|calidad de (los )?datos|nasa)\b/
+const SATELLITE = /\b(satelite|satelites|satelital|vegetacion|ndvi|evi|evapotranspiracion|humedad del suelo|temperatura de la superficie)\b/
+const SOIL = /\b(suelo|ph|arcilla|arena|textura|carbono organico|altitud|elevacion|pendiente|terreno)\b/
+const CLIMATE = /\b(clima|temperatura|calor|caluroso|frio|lluvia|lluvias|llueve|precipitacion|meses)\b/
+
+/**
+ * A question about the place's own data: its climate, soil and terrain, satellite series, or where the data comes from.
+ * The assistant's rain-risk ("¿y si llueve poco?"), fertilizer and planting questions keep their own answers.
+ */
+export function environmentTopicOf(text: string): EnvironmentTopic | null {
+  const q = fold(text)
+  const base = classify(text)
+  if (base === 'fertilizer' || base === 'rain') return null
+  if (SOURCES.test(q)) return 'sources'
+  if (SATELLITE.test(q)) return 'satellite'
+  if (SOIL.test(q)) return 'soil'
+  if (CLIMATE.test(q)) return 'climate'
+  return null
+}
+
+const ENVIRONMENT_TOPICS: readonly string[] = ['climate', 'soil', 'satellite', 'sources']
+const isEnvironmentTopic = (topic: string | null): topic is EnvironmentTopic => topic !== null && ENVIRONMENT_TOPICS.includes(topic)
+
 // ---- the sentences ----
 
 const lowerFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string, letter: string) => mark + letter.toLowerCase())
@@ -169,7 +198,16 @@ function locationBubbles(place: DemoLocation, env: Env): BotBubble[] {
   const head = t('whatsapp.locationSet', { name: place.name, coords: coords(place) })
   const kind = resultsKind(place, env)
   const note = kind === 'rotations' ? locatedNote(place.name, env.rotations![place.id]!, env) : kind === 'experimental' ? t('whatsapp.experimental') : t('whatsapp.unavailable', { name: place.name })
-  return [{ text: `${head}\n${t('whatsapp.referencePoint')}` }, { text: note }]
+  const hint = env.environment?.[place.id] ? [{ text: t('whatsapp.envHint') }] : []
+  return [{ text: `${head}\n${t('whatsapp.referencePoint')}` }, { text: note }, ...hint]
+}
+
+/** The question is about the place's own data: answered from its environmental package, with nothing left to ask. */
+function environmentTurn(state: ChatState, topic: EnvironmentTopic, place: DemoLocation, env: Env): Turn {
+  const environment = env.environment?.[place.id]
+  if (!environment) return { state, bubbles: [unavailableBubble(place, env.t)] }
+  // the question being asked (if any) stays pending: the next message still answers it
+  return { state, bubbles: environmentBubbles(topic, place.name, environment, env), showsResults: true }
 }
 
 const unavailableBubble = (place: DemoLocation, t: T): BotBubble => ({ text: t('whatsapp.unavailable', { name: place.name }) })
@@ -352,7 +390,7 @@ export interface Turn {
 }
 
 /** Topics that need a location: everything about the models' results. */
-export const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text))
+export const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text)) || environmentTopicOf(text) !== null
 
 /** What a question about the results is about, in the rotation answers' terms, or null. */
 function topicOf(text: string): RotationTopic | null {
@@ -364,7 +402,7 @@ function topicOf(text: string): RotationTopic | null {
 
 /** A location with rotation results: the question is answered from them, with nothing left to ask. */
 function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env): Turn {
-  return { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, env), showsResults: true }
+  return { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, { ...env, observed: env.environment?.[place.id] ?? null }), showsResults: true }
 }
 
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
@@ -378,9 +416,15 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
     const chosen: ChatState = { ...state, location: named.id, last: changed ? null : state.last }
     const confirm = changed ? locationBubbles(named, env) : []
     const kind = resultsKind(named, env)
-    if (kind === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
+    const hasEnvironment = Boolean(env.environment?.[named.id])
+    if (kind === null && !hasEnvironment) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
     // a question left waiting for a location is answered now
     if (state.pending === 'location' && state.focus) {
+      if (isEnvironmentTopic(state.focus)) {
+        const turn = environmentTurn({ ...chosen, pending: null, focus: null }, state.focus, named, env)
+        return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
+      }
+      if (kind === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
       const turn = kind === 'rotations' ? rotationTurn(chosen, state.focus, named, env) : await continueWith({ ...chosen, pending: null }, state.focus, env)
       return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
     }
@@ -393,7 +437,7 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
   }
 
   if (state.location === null && (needsLocation(text) || state.pending === 'location')) {
-    return { state: { ...state, pending: 'location', focus: focusOf(text) ?? state.focus ?? 'plant' }, bubbles: [locationAsk(t)] }
+    return { state: { ...state, pending: 'location', focus: focusOf(text) ?? environmentTopicOf(text) ?? state.focus ?? 'plant' }, bubbles: [locationAsk(t)] }
   }
   return answer(text, state, env)
 }
@@ -403,6 +447,10 @@ async function answer(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
   const place = demoLocation(state.location!)
   const kind = resultsKind(place, env)
+  // an answer to the question just asked ("cuidar el suelo") is an answer, not a question about the soil
+  const answersPending = state.pending !== null && state.pending !== 'location' && readAnswer(state.pending, text) !== undefined
+  const dataTopic = answersPending ? null : environmentTopicOf(text)
+  if (dataTopic) return environmentTurn(state, dataTopic, place, env)
   if (kind === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
   if (kind === 'rotations') {
     const topic = topicOf(text)
@@ -452,7 +500,7 @@ function afterAnswer(state: ChatState, env: Env): Promise<Turn> | Turn {
 
 async function recommendNow(state: ChatState, env: Env): Promise<Turn> {
   const { data, t } = env
-  const focus = state.focus ?? 'plant'
+  const focus: Focus = state.focus && !isEnvironmentTopic(state.focus) ? state.focus : 'plant'
   const place = demoLocation(state.location!)
   try {
     const rec = await (env.run ?? recommend)({

@@ -3,9 +3,7 @@
 // crop model run on 2024-2025 weather with SIAP state prices, not a forecast and not validated in the field. Amounts are
 // gross income per hectare over the whole plan, never profit. Everything here only reads and checks the file.
 
-import { INSIDE_KM } from './coverage.ts'
-import { DEMO_LOCATIONS, type DemoLocationId } from './demoLocations.ts'
-import { distanceKm, type LatLon } from './geo.ts'
+import type { DemoLocationId } from './demoLocations.ts'
 
 export type Regime = 'irrigated' | 'rainfed'
 
@@ -35,6 +33,16 @@ export interface RotationOption {
   campaigns: RotationCampaign[]
 }
 
+/** How the run was set up and what it used, from the other files of the run folder (null when they were not provided). */
+export interface RotationDetails {
+  prices: { crop: string; regime: string; year: number; mxnPerT: number | null; scope: string; state: string; cycle: string; modality: string }[]
+  soilModel: { method: string; fieldValidated: boolean; assumptions: string[]; inputs: Record<string, number>; parameters: Record<string, number> } | null
+  rejected: { modelFailures: number; optimizationRejected: string[][] } | null
+  runSettings: { crops: string[]; horizonYears: number; waterRegimes: string[]; irrigationEfficiency: number; rootableDepthCm: number; initialAvailableWaterFraction: number; priceYears: number[] } | null
+  cropVarieties: { fieldValidated: boolean; varieties: Record<string, string> } | null
+  priceSource: { dataset: string; note: string; years: number[] } | null
+}
+
 export interface Rotations {
   version: 1
   farmId: string
@@ -48,6 +56,7 @@ export interface Rotations {
   weatherYears: number[]
   best: { irrigated: string | null; rainfed: string | null }
   options: RotationOption[]
+  details: RotationDetails | null
 }
 
 /** The rotation results by demonstration location; a location missing here has none loaded. */
@@ -96,6 +105,24 @@ function parseOption(raw: unknown, index: number): RotationOption {
   }
 }
 
+function parseDetails(raw: unknown): RotationDetails | null {
+  if (!isObject(raw)) return null
+  const object = (value: unknown) => (isObject(value) ? value : null)
+  const soil = object(raw.soilModel)
+  const rejected = object(raw.rejected)
+  const settings = object(raw.runSettings)
+  const varieties = object(raw.cropVarieties)
+  const source = object(raw.priceSource)
+  return {
+    prices: Array.isArray(raw.prices) ? (raw.prices as RotationDetails['prices']) : [],
+    soilModel: soil && { method: String(soil.method), fieldValidated: soil.fieldValidated === true, assumptions: (soil.assumptions as string[]) ?? [], inputs: (soil.inputs as Record<string, number>) ?? {}, parameters: (soil.parameters as Record<string, number>) ?? {} },
+    rejected: rejected && { modelFailures: Number(rejected.modelFailures ?? 0), optimizationRejected: (rejected.optimizationRejected as string[][]) ?? [] },
+    runSettings: settings && (settings as unknown as RotationDetails['runSettings']),
+    cropVarieties: varieties && { fieldValidated: varieties.fieldValidated === true, varieties: (varieties.varieties as Record<string, string>) ?? {} },
+    priceSource: source && (source as unknown as RotationDetails['priceSource']),
+  }
+}
+
 /** Checks a slim rotations file and returns it typed. Throws, naming the field, on anything the answers would rely on. */
 export function parseRotations(raw: unknown): Rotations {
   if (!isObject(raw)) return fail('the file is not an object')
@@ -128,6 +155,7 @@ export function parseRotations(raw: unknown): Rotations {
     weatherYears: list(raw.weatherYears, 'weatherYears').map((year, i) => finite(year, `weatherYears[${i}]`)),
     best: { irrigated: (best.irrigated as string | null) ?? null, rainfed: (best.rainfed as string | null) ?? null },
     options,
+    details: parseDetails(raw.details),
   }
 }
 
@@ -141,30 +169,6 @@ export function bestOption(rotations: Rotations, regime: Regime): RotationOption
 export function topIncomeOption(rotations: Rotations, regime: Regime): RotationOption | null {
   const withIncome = rotations.options.filter((option) => option.regime === regime && option.gross?.median != null)
   return withIncome.reduce<RotationOption | null>((top, option) => (top === null || option.gross!.median! > top.gross!.median! ? option : top), null)
-}
-
-/** A point with published rotation results that a parcel is close enough to use. */
-export interface RotationSite {
-  id: DemoLocationId
-  name: string
-  rotations: Rotations
-  /** From the parcel to the point the rotation service ran. */
-  km: number
-}
-
-/**
- * The nearest point with rotation results, if the parcel is within `maxKm` of it (the same distance the app calls "inside"
- * for its own model: about one NASA POWER weather cell). Farther away the results say nothing about the parcel, so none.
- */
-export function nearRotationSite(point: LatLon, loaded: RotationsByLocation, maxKm: number = INSIDE_KM): RotationSite | null {
-  let nearest: RotationSite | null = null
-  for (const place of DEMO_LOCATIONS) {
-    const rotations = loaded[place.id]
-    if (!rotations) continue
-    const km = distanceKm(point, { lat: place.latitude, lon: place.longitude })
-    if (km <= maxKm && (nearest === null || km < nearest.km)) nearest = { id: place.id, name: place.name, rotations, km }
-  }
-  return nearest
 }
 
 async function getJson(url: string): Promise<unknown> {

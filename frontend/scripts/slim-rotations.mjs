@@ -7,8 +7,10 @@
 // It keeps only what the answers quote (options, calendars, gross income, irrigation, confidence and its reasons) and
 // drops the server paths, hashes and per-year price tables. Nothing is computed or estimated: every number is copied.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+import { readCsv } from './csv.mjs'
 
 const [id, source] = process.argv.slice(2)
 if (!id || !source) {
@@ -18,6 +20,12 @@ if (!id || !source) {
 
 const raw = JSON.parse(readFileSync(source, 'utf8'))
 if (String(raw.schema_version) !== '1.0') throw new Error(`unsupported schema_version ${raw.schema_version}`)
+
+// The other files of the same run folder, when they are next to rotations.json: the prices the scenarios used, the soil
+// model, the rejected simulations and how the run was set up.
+const folder = dirname(source)
+const sibling = (name) => (existsSync(join(folder, name)) ? join(folder, name) : null)
+const siblingJson = (name) => (sibling(name) ? JSON.parse(readFileSync(sibling(name), 'utf8')) : null)
 
 const number = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null)
 
@@ -64,6 +72,41 @@ const slim = {
       grossMxnHa: campaign.crop === null ? null : number(campaign.gross_at_median_price_mxn_ha),
     })),
   })),
+}
+
+const soilModel = siblingJson('soil_parameters.json')
+const rejections = siblingJson('simulation_rejections.json')
+const request = siblingJson('request.json')
+const varieties = siblingJson('crop_parameter_manifest.json')
+const financial = siblingJson('financial_provenance.json')
+if (sibling('economic_reference.csv') || soilModel || rejections || request || varieties || financial) {
+  slim.details = {
+    prices: sibling('economic_reference.csv')
+      ? readCsv(sibling('economic_reference.csv')).map((r) => ({ crop: r.crop, regime: r.water_regime, year: Number(r.year), mxnPerT: number(Number(Number(r.price_mxn_t).toFixed(0))), scope: r.scope, state: r.state, cycle: r.cycle, modality: r.modality }))
+      : [],
+    soilModel: soilModel && {
+      method: soilModel.method,
+      fieldValidated: soilModel.field_validated === true,
+      assumptions: soilModel.assumptions,
+      inputs: soilModel.inputs,
+      parameters: soilModel.parameters,
+    },
+    rejected: rejections && {
+      modelFailures: rejections.model_failures?.length ?? 0,
+      optimizationRejected: (rejections.optimization_rejected ?? []).map((r) => r.reasons),
+    },
+    runSettings: request && {
+      crops: request.model?.crops,
+      horizonYears: request.model?.horizon_years,
+      waterRegimes: request.model?.water_regimes,
+      irrigationEfficiency: request.model?.irrigation_efficiency,
+      rootableDepthCm: request.model?.rootable_depth_cm,
+      initialAvailableWaterFraction: request.model?.initial_available_water_fraction,
+      priceYears: request.model?.siap_years,
+    },
+    cropVarieties: varieties && { fieldValidated: varieties.cultivars_field_validated === true, varieties: Object.fromEntries(Object.entries(varieties.files ?? {}).map(([crop, f]) => [crop, f.variety])) },
+    priceSource: financial && { dataset: financial.dataset_url, note: financial.note, years: financial.available_years },
+  }
 }
 
 const out = new URL(`../public/data/rotations/${id}.json`, import.meta.url)
