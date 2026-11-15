@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { useZoneData } from '../../hooks/useZoneData.ts'
+import { loadZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
 import { zoneFor } from '../../lib/environment.ts'
 import { botTurn, loadChat, nextAsk, planReply, storeChat, userTurn, type Body, type Turn } from '../chat.ts'
@@ -55,19 +55,19 @@ export function AskPage({ state, parcel, heading, lede, onSituation, onGoParcel,
 
   const append = useCallback((...items: Turn[]) => setTurns((previous) => [...previous, ...items]), [])
 
-  const published = useZoneData()
-
-  /** The answer to a question, from the place the parcel is in or nearest to. */
+  /** The answer to a question, from the place the parcel is in or nearest to. It waits for the files if they are still loading. */
   const answerFromZone = useCallback(
-    (topic: Extract<Body, { kind: 'zone' }>['topic'], situation: Situation) => {
-      const zone = parcel && published ? zoneFor(parcel.point, published) : null
-      if (!zone) {
-        append(botTurn({ kind: 'error', message: t('farmer.plant.loading') }))
-        return
+    async (topic: Extract<Body, { kind: 'zone' }>['topic'], situation: Situation) => {
+      if (!parcel) return
+      try {
+        const zone = zoneFor(parcel.point, await loadZoneData())
+        if (!zone) throw new Error(t('farmer.plant.loading'))
+        append(botTurn({ kind: 'zone', topic, place: zone.id, km: zone.km, goal: situation.goal, water: situation.water }))
+      } catch (error) {
+        append(botTurn({ kind: 'error', message: error instanceof Error ? error.message : String(error) }))
       }
-      append(botTurn({ kind: 'zone', topic, place: zone.id, km: zone.km, goal: situation.goal, hectares: situation.hectares, water: situation.water }))
     },
-    [append, parcel, published, t],
+    [append, parcel, t],
   )
 
   const send = useCallback(

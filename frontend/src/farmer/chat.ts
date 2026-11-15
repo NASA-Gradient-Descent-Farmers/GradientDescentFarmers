@@ -53,7 +53,7 @@ export type Body =
   | { kind: 'ask'; field: 'parcel' | Field; lead: boolean }
   | { kind: 'recommendation'; rec: Recommendation; focus: 'plant' | 'money' | 'rain' }
   /** An answer built from what the data service published for the parcel's place; `km` is the distance to that place. */
-  | { kind: 'zone'; topic: RotationTopic | EnvironmentTopic; place: DemoLocationId; km: number; goal?: Goal; hectares?: number; water?: Water }
+  | { kind: 'zone'; topic: RotationTopic | EnvironmentTopic; place: DemoLocationId; km: number; goal?: Goal; water?: Water }
   | { kind: 'outside'; km: number }
   | { kind: 'fertilizer'; rec: Recommendation | null }
   | { kind: 'trust' }

@@ -19,7 +19,7 @@ export const es: Dict = {
   env: envEs,
   app: {
     title: 'YolIA',
-    tagline: 'Datos de la NASA y un modelo de cultivos · Sonora, Sinaloa y Guanajuato',
+    tagline: 'Datos de la NASA y un modelo de cultivos',
     home: 'Volver al inicio',
     techMode: 'Modo Técnico',
     hemispheres: 'N,S,E,O',
@@ -160,7 +160,9 @@ export const es: Dict = {
   },
   caveat: {
     title: 'Prototipo inicial, no es una recomendación agronómica.',
-    body: 'Los resultados son escenarios exploratorios: usan el clima de 2024–2025 y precios históricos del SIAP, y no están validados en campo.',
+    body:
+      'Los precios de los cultivos vienen del SIAP, pero los costos de producción, el precio del nitrógeno y el del rastrojo son valores provisionales. ' +
+      'Además, los dos modelos de cultivo no coinciden en lo que aporta el fertilizante. Compara planes dentro de un mismo modelo.',
   },
   crops: { maize: 'Maíz', barley: 'Cebada', fababean: 'Haba' },
   rotations: {

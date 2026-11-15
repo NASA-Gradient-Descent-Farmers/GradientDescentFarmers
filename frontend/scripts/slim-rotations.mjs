@@ -46,6 +46,13 @@ const slim = {
     probabilityOfSuccess: number(raw.confidence.probability_of_success),
   },
   weatherYears: raw.confidence.weather_record_years,
+  areaNote: raw.area_note,
+  areaTotalsComputed: raw.area_totals_computed === true,
+  weightsRequested: raw.optimization?.weights_requested ?? null,
+  references: {
+    irrigated: raw.optimization?.references?.irrigated ? { kind: raw.optimization.references.irrigated.reference_kind, sequence: raw.optimization.references.irrigated.sequence, grossMedianMxnHa: number(raw.optimization.references.irrigated.gross_median_mxn_ha), irrigationGrossMm: number(raw.optimization.references.irrigated.irrigation_gross_mm) } : null,
+    rainfed: raw.optimization?.references?.rainfed ? { kind: raw.optimization.references.rainfed.reference_kind, sequence: raw.optimization.references.rainfed.sequence, grossMedianMxnHa: number(raw.optimization.references.rainfed.gross_median_mxn_ha), irrigationGrossMm: number(raw.optimization.references.rainfed.irrigation_gross_mm) } : null,
+  },
   best: {
     irrigated: raw.optimization?.groups?.irrigated?.best_by_priorities ?? null,
     rainfed: raw.optimization?.groups?.rainfed?.best_by_priorities ?? null,
@@ -56,8 +63,19 @@ const slim = {
     descriptionEs: option.description_es,
     priorityScore: number(option.priority_score),
     irrigationM3Ha: number(option.irrigation_gross_m3_ha),
+    advisoryStatus: option.advisory_status,
+    // which objectives the service picked this option for: balance (its priority ranking), income, water, soil, pesticide, tradeoff
+    highlightObjectives: option.highlight_objectives,
+    priorityScoreNote: 'relative affinity with the priorities within this request and water regime; not a probability of success',
+    paretoEfficient: option.pareto_efficient === true,
+    // water: applied (irrigation) against what the crops used in total, and the rain of the period
+    irrigationEffectiveMm: number(option.irrigation_effective_mm),
     evapotranspirationMm: number(option.evapotranspiration_mm),
-    soilScore: number(option.indicators?.soil_proxy_score),
+    rainfallMm: number(option.rainfall_mm),
+    // against the comparison reference of its regime (never the farmer's current practice); negative means more irrigation
+    irrigationSavingPct: number(option.irrigation_saving_vs_reference_pct),
+    soilProxyScore: number(option.indicators?.soil_proxy_score),
+    immatureCampaigns: option.immature_campaigns,
     failedHarvests: option.failed_harvests,
     requiresIrrigationConfirmation: option.requires_irrigation_confirmation === true,
     highlightsEs: option.highlights_es,
@@ -68,6 +86,7 @@ const slim = {
       cropEs: campaign.crop_label,
       fallow: campaign.crop === null,
       planningYear: campaign.planning_year,
+      planningYearEnd: campaign.planning_year_end,
       sowing: campaign.sowing_month_day,
       end: campaign.calendar_end_month_day,
       grainTHa: campaign.crop === null ? null : number(campaign.marketable_grain_t_ha),

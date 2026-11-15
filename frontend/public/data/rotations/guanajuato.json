@@ -24,6 +24,38 @@
   2024,
   2025
  ],
+ "areaNote": "All amounts are per hectare; source demo acreage is not assumed to be measured",
+ "areaTotalsComputed": false,
+ "weightsRequested": {
+  "climate": 15,
+  "income": 30,
+  "pesticide": 0,
+  "risk": 20,
+  "soil": 20,
+  "water": 15
+ },
+ "references": {
+  "irrigated": {
+   "kind": "feasible_highest_gross_income_scenario",
+   "sequence": [
+    "sorghum",
+    "chickpea",
+    null
+   ],
+   "grossMedianMxnHa": 84705.69986822488,
+   "irrigationGrossMm": 649.9487751206576
+  },
+  "rainfed": {
+   "kind": "feasible_highest_gross_income_scenario",
+   "sequence": [
+    "sorghum",
+    "chickpea",
+    null
+   ],
+   "grossMedianMxnHa": 53080.19536924475,
+   "irrigationGrossMm": 0
+  }
+ },
  "best": {
   "irrigated": "ae83769632fc6d7b",
   "rainfed": "67447fde8f57742c"
@@ -35,8 +67,22 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
    "priorityScore": 85.00000000000001,
    "irrigationM3Ha": 6499.487751206576,
+   "advisoryStatus": "unvalidated_experiment",
+   "highlightObjectives": [
+    "balance",
+    "income",
+    "water",
+    "soil",
+    "pesticide"
+   ],
+   "priorityScoreNote": "relative affinity with the priorities within this request and water regime; not a probability of success",
+   "paretoEfficient": true,
+   "irrigationEffectiveMm": 487.4615813404932,
    "evapotranspirationMm": 1535.5376281624249,
-   "soilScore": 79.16666666666666,
+   "rainfallMm": 1542.0000000000016,
+   "irrigationSavingPct": 0,
+   "soilProxyScore": 79.16666666666666,
+   "immatureCampaigns": 0,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": true,
    "highlightsEs": [
@@ -54,6 +100,7 @@
      "cropEs": "Sorgo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 1,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": 9.167337499127665,
@@ -63,6 +110,7 @@
      "cropEs": "Garbanzo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 2,
      "sowing": "11-15",
      "end": "05-31",
      "grainTHa": 3.971934339672185,
@@ -72,6 +120,7 @@
      "cropEs": "Barbecho",
      "fallow": true,
      "planningYear": 2,
+     "planningYearEnd": 2,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": null,
@@ -85,8 +134,18 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: trigo (nov–may) → año 2: barbecho (jun–oct)",
    "priorityScore": 15,
    "irrigationM3Ha": 9535.678914408501,
+   "advisoryStatus": "unvalidated_experiment",
+   "highlightObjectives": [
+    "tradeoff"
+   ],
+   "priorityScoreNote": "relative affinity with the priorities within this request and water regime; not a probability of success",
+   "paretoEfficient": true,
+   "irrigationEffectiveMm": 715.1759185806375,
    "evapotranspirationMm": 1696.057728591411,
-   "soilScore": 16.666666666666664,
+   "rainfallMm": 1542.0000000000016,
+   "irrigationSavingPct": -46.71431471869889,
+   "soilProxyScore": 16.666666666666664,
+   "immatureCampaigns": 0,
    "failedHarvests": 0,
    "requiresIrrigationConfirmation": true,
    "highlightsEs": [
@@ -104,6 +163,7 @@
      "cropEs": "Sorgo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 1,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": 9.167337499127665,
@@ -113,6 +173,7 @@
      "cropEs": "Trigo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 2,
      "sowing": "11-15",
      "end": "05-31",
      "grainTHa": 4.015432279170202,
@@ -122,6 +183,7 @@
      "cropEs": "Barbecho",
      "fallow": true,
      "planningYear": 2,
+     "planningYearEnd": 2,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": null,
@@ -135,8 +197,21 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: garbanzo (nov–may) → año 2: barbecho (jun–oct)",
    "priorityScore": 85.00000000000001,
    "irrigationM3Ha": 0,
+   "advisoryStatus": "high_risk_experiment",
+   "highlightObjectives": [
+    "balance",
+    "income",
+    "soil",
+    "pesticide"
+   ],
+   "priorityScoreNote": "relative affinity with the priorities within this request and water regime; not a probability of success",
+   "paretoEfficient": true,
+   "irrigationEffectiveMm": 0,
    "evapotranspirationMm": 1134.9744366893137,
-   "soilScore": 79.16666666666666,
+   "rainfallMm": 1542.0000000000016,
+   "irrigationSavingPct": null,
+   "soilProxyScore": 79.16666666666666,
+   "immatureCampaigns": 0,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -155,6 +230,7 @@
      "cropEs": "Sorgo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 1,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": 9.19700366284712,
@@ -164,6 +240,7 @@
      "cropEs": "Garbanzo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 2,
      "sowing": "11-15",
      "end": "05-31",
      "grainTHa": 0.012912736728580102,
@@ -173,6 +250,7 @@
      "cropEs": "Barbecho",
      "fallow": true,
      "planningYear": 2,
+     "planningYearEnd": 2,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": null,
@@ -186,8 +264,18 @@
    "descriptionEs": "año 1: sorgo (jun–oct) → año 1: trigo (nov–may) → año 2: barbecho (jun–oct)",
    "priorityScore": 15,
    "irrigationM3Ha": 0,
+   "advisoryStatus": "high_risk_experiment",
+   "highlightObjectives": [
+    "water"
+   ],
+   "priorityScoreNote": "relative affinity with the priorities within this request and water regime; not a probability of success",
+   "paretoEfficient": true,
+   "irrigationEffectiveMm": 0,
    "evapotranspirationMm": 1132.7636452960226,
-   "soilScore": 16.666666666666664,
+   "rainfallMm": 1542.0000000000016,
+   "irrigationSavingPct": null,
+   "soilProxyScore": 16.666666666666664,
+   "immatureCampaigns": 0,
    "failedHarvests": 1,
    "requiresIrrigationConfirmation": false,
    "highlightsEs": [
@@ -206,6 +294,7 @@
      "cropEs": "Sorgo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 1,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": 9.19700366284712,
@@ -215,6 +304,7 @@
      "cropEs": "Trigo",
      "fallow": false,
      "planningYear": 1,
+     "planningYearEnd": 2,
      "sowing": "11-15",
      "end": "05-31",
      "grainTHa": 0,
@@ -224,6 +314,7 @@
      "cropEs": "Barbecho",
      "fallow": true,
      "planningYear": 2,
+     "planningYearEnd": 2,
      "sowing": "06-15",
      "end": "10-31",
      "grainTHa": null,

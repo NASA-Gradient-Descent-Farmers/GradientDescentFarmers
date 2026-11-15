@@ -42,6 +42,23 @@ describe('which parcels get the published data', () => {
   })
 })
 
+describe('a run that found nothing feasible', () => {
+  const none = parseRotations({ ...(read('rotations', 'sonora') as Record<string, unknown>), status: 'no_feasible_options', options: [], best: { irrigated: null, rainfed: null } })
+  const zone = { id: 'sonora' as const, name: 'Sonora', km: 0, rotations: none, environment: null }
+  const html = renderToStaticMarkup(
+    <I18nProvider initial="es">
+      <RotationPlant zone={zone} rotations={none} onAsk={() => {}} />
+    </I18nProvider>,
+  )
+
+  it('says so, and recommends nothing', () => {
+    const text = words(html)
+    expect(text).toContain('no encontró opciones factibles')
+    expect(text).not.toContain('Con riego')
+    expect(text).not.toMatch(/Ingreso bruto/)
+  })
+})
+
 describe('Qué sembrar for a parcel near a run', () => {
   const zone = nearZone({ lat: 27.52, lon: -110.12 }, published)!
   const html = renderToStaticMarkup(

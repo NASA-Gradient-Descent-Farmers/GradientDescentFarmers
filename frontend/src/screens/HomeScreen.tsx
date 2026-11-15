@@ -1,15 +1,14 @@
 import { Brand } from '../components/Brand.tsx'
 import { TopBar } from '../components/TopBar.tsx'
+import { WhatsAppFab } from '../components/WhatsAppFab.tsx'
 import { useI18n } from '../i18n/index.tsx'
-import { DEMO_HREF } from '../whatsapp/route.ts'
-import { WhatsAppMark } from '../whatsapp/WhatsAppMark.tsx'
 import '../landing.css'
 
 const STEPS = [0, 1, 2] as const
 
 /**
- * The home page, shown before signing in: what YolIA is, the way into the app, and the WhatsApp simulation. The
- * simulation is a link, not an embedded chat: it is its own page, and says on arrival that it is not real WhatsApp.
+ * The home page, shown before signing in: what YolIA is and the way into the app. The WhatsApp simulation is a floating
+ * button in the bottom right; it opens its own page, which says on arrival that it is not real WhatsApp.
  */
 export function HomeScreen({ onStart }: { onStart: () => void }) {
   const { t } = useI18n()
@@ -18,7 +17,6 @@ export function HomeScreen({ onStart }: { onStart: () => void }) {
       <TopBar />
       <main className="landing-main">
         <section className="landing-hero" aria-labelledby="landing-title">
-          <p className="landing-eyebrow">{t('landing.eyebrow')}</p>
           <h1 id="landing-title" className="statement">
             <strong>
               {t('welcome.hello')} <Brand />.
@@ -30,10 +28,6 @@ export function HomeScreen({ onStart }: { onStart: () => void }) {
             <button type="button" className="btn primary big" onClick={onStart}>
               {t('landing.start')}
             </button>
-            <a className="btn secondary big landing-wa-link" href={DEMO_HREF}>
-              <WhatsAppMark size={30} />
-              {t('landing.channels.whatsapp.cta')}
-            </a>
           </div>
           <p className="landing-hint">{t('landing.startHint')}</p>
         </section>
@@ -55,30 +49,9 @@ export function HomeScreen({ onStart }: { onStart: () => void }) {
           </ol>
         </section>
 
-        <section className="landing-block" aria-labelledby="landing-channels">
-          <h2 id="landing-channels">{t('landing.channels.title')}</h2>
-          <div className="landing-cards">
-            <article className="landing-card landing-card-wa">
-              <WhatsAppMark size={56} />
-              <h3>{t('landing.channels.whatsapp.title')}</h3>
-              <p>{t('landing.channels.whatsapp.body')}</p>
-              <p className="landing-note">{t('landing.channels.whatsapp.note')}</p>
-              <a className="btn big landing-card-link" href={DEMO_HREF}>
-                {t('landing.channels.whatsapp.cta')} →
-              </a>
-            </article>
-            <article className="landing-card">
-              <h3>{t('landing.channels.app.title')}</h3>
-              <p>{t('landing.channels.app.body')}</p>
-              <button type="button" className="btn secondary big" onClick={onStart}>
-                {t('landing.start')} →
-              </button>
-            </article>
-          </div>
-        </section>
-
         <p className="calm-foot">{t('welcome.foot')}</p>
       </main>
+      <WhatsAppFab />
     </div>
   )
 }

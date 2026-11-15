@@ -4,6 +4,7 @@ import type { Rotations } from '../../lib/rotations.ts'
 import { bestOption, pickForGoal, type RotationGoal, type RotationOption } from '../../lib/rotations.ts'
 import type { Situation } from '../state.ts'
 import type { Zone } from '../../lib/environment.ts'
+import { optionLines, season } from '../../whatsapp/rotationAnswers.ts'
 import { DataTable } from './DataTable.tsx'
 import { Disclosure } from './Disclosure.tsx'
 import { EnvironmentPanel } from './EnvironmentPanel.tsx'
@@ -13,55 +14,63 @@ const REGIMES = ['irrigated', 'rainfed'] as const
 /** Below this a simulated harvest counts as none (the service flags campaigns under 50 kg/ha). */
 const NO_HARVEST_T_HA = 0.05
 
-/** Money to the nearest thousand: the scenarios are not precise to the peso. */
-const thousand = (value: number) => Math.round(value / 1000) * 1000
-const monthOf = (monthDay: string) => Number(monthDay.slice(0, 2)) - 1
-
 function useFigures() {
   const { t, fmt } = useI18n()
-  const money = (value: number | null) => (value === null ? t('whatsapp.rotations.noData') : fmt.number(thousand(value)))
-  const span = (sowing: string, end: string) => `${fmt.monthShort(monthOf(sowing))}–${fmt.monthShort(monthOf(end))}`
+  const money = (value: number | null) => (value === null ? t('whatsapp.rotations.noData') : fmt.number(Math.round(value)))
   const income = (option: RotationOption) => {
     const low = option.gross?.p10 != null ? money(option.gross.p10) : null
     const high = option.gross?.p90 != null ? money(option.gross.p90) : null
-    // a range that rounds to one figure says nothing
+    // a range that is one figure says nothing
     const range = low !== null && high !== null && low !== high ? t('whatsapp.rotations.range', { low, high }) : ''
     return t('whatsapp.rotations.income', { amount: money(option.gross?.median ?? null), range })
   }
-  return { t, fmt, span, income }
+  return { t, fmt, income }
 }
 
-function OptionCard({ regime, option, goal, hectares }: { regime: (typeof REGIMES)[number]; option: RotationOption; goal: RotationGoal | null; hectares: number | null }) {
-  const { t, fmt, span, income } = useFigures()
-  const total = hectares !== null && option.gross?.median != null ? Math.round((option.gross.median * hectares) / 1000) * 1000 : null
+/**
+ * One option, with everything the service generated for it (the same lines the chat uses): the plan and its calendar by plan year,
+ * the grain and income of each season, its status as an experiment, what it stands out in, its own highlights, the range over the
+ * price years, the water it applies and uses, its irrigation against the reference, and its affinity with the priorities.
+ */
+function OptionCard({ regime, option, rotations, goal }: { regime: (typeof REGIMES)[number]; option: RotationOption; rotations: Rotations; goal: RotationGoal | null }) {
+  const ctx = useI18n()
+  const { t, fmt } = ctx
+  const lines = optionLines(option, ctx, rotations)
+  const [status, ...rest] = lines
+  const flagged = option.advisoryStatus === 'high_risk_experiment'
+  const kicker = goal && option.highlightObjectives.includes(goal === 'earn' ? 'income' : goal) ? t('near.forGoal', { goal: t(`farmer.rec.goals.${goal}`) }) : t('near.recommended')
   return (
     <article className="near-option">
       <h2>{t(`whatsapp.rotations.regime.${regime}`)}</h2>
-      <p className="near-kicker">{goal ? t('near.forGoal', { goal: t(`farmer.rec.goals.${goal}`) }) : t('near.recommended')}</p>
+      <p className="near-kicker">{kicker}</p>
+      <p>
+        <strong>{option.descriptionEs}</strong>
+      </p>
+      <p className={`callout ${flagged ? 'is-error' : 'is-warn'}`}>{status}</p>
       <ol className="near-seasons">
         {option.campaigns.map((campaign, i) => (
           <li key={i}>
             <strong>{campaign.fallow ? t('near.fallow') : campaign.cropEs}</strong>
-            <span className="muted">
-              {t('near.year', { year: campaign.planningYear })} · {span(campaign.sowing, campaign.end)}
-            </span>
+            <span className="muted">{season(campaign, ctx)}</span>
             {!campaign.fallow && (
               <span>
                 {campaign.grainTHa === null
                   ? t('whatsapp.rotations.noData')
                   : campaign.grainTHa < NO_HARVEST_T_HA
                     ? t('whatsapp.rotations.harvestNone')
-                    : t('whatsapp.rotations.harvestAmount', { amount: fmt.number(campaign.grainTHa, 1) })}
+                    : t('whatsapp.rotations.harvestAmount', { amount: fmt.number(campaign.grainTHa, 2) })}
+                {campaign.grossMxnHa !== null && ` · ${t('whatsapp.rotations.seasonIncome', { amount: fmt.number(Math.round(campaign.grossMxnHa)) })}`}
               </span>
             )}
           </li>
         ))}
       </ol>
-      <p>{income(option)}</p>
-      {total !== null && hectares !== null && <p>{t('near.forHectares', { ha: fmt.number(hectares, Number.isInteger(hectares) ? 0 : 1), total: fmt.number(total, 0) })}</p>}
-      {regime === 'irrigated' && option.irrigationM3Ha !== null && <p>{t('whatsapp.rotations.water', { amount: fmt.number(Math.round(option.irrigationM3Ha / 100) * 100) })}</p>}
-      {option.failedHarvests > 0 && <p className="callout is-warn">{t('whatsapp.rotations.failed', { n: option.failedHarvests })}</p>}
-      {option.requiresIrrigationConfirmation && <p className="callout is-warn">{t('whatsapp.rotations.confirmIrrigation')}</p>}
+      <p className="muted">{t('whatsapp.rotations.calendarNote')}</p>
+      <ul className="near-facts">
+        {rest.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
     </article>
   )
 }
@@ -134,7 +143,6 @@ export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { z
   const { name } = zone
   const { income } = useFigures()
   const goal = situation?.goal ?? null
-  const hectares = situation?.hectares ?? null
   // the regime the farmer says they have comes first; both are always shown
   const order: (typeof REGIMES)[number][] = situation?.water === 'rain' ? ['rainfed', 'irrigated'] : ['irrigated', 'rainfed']
   const years = (() => {
@@ -151,9 +159,11 @@ export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { z
       <p className="callout is-warn">{t('whatsapp.rotations.label', { years })}</p>
       <p className="muted">{t('near.scope', { place: name })}</p>
 
+      {rotations.options.length === 0 && <p className="callout is-warn">{t('whatsapp.rotations.noFeasible')}</p>}
+
       {order.map((regime) => {
         const option = (goal ? pickForGoal(rotations, regime, goal) : bestOption(rotations, regime)) ?? rotations.options.find((candidate) => candidate.regime === regime)
-        return option ? <OptionCard key={regime} regime={regime} option={option} goal={goal} hectares={hectares} /> : null
+        return option ? <OptionCard key={regime} regime={regime} option={option} rotations={rotations} goal={goal} /> : null
       })}
 
       <Disclosure title={t('near.allOptions', { n: rotations.options.length })}>
@@ -163,6 +173,7 @@ export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { z
               <strong>{t(`whatsapp.rotations.regime.${option.regime}`)}</strong>
               <span>{option.descriptionEs}</span>
               <span className="muted">{income(option)}</span>
+              <span className="muted">{t(`whatsapp.rotations.status.${option.advisoryStatus}`)}</span>
             </li>
           ))}
         </ul>

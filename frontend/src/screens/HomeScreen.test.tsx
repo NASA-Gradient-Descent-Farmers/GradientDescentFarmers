@@ -24,18 +24,18 @@ describe('the home page', () => {
     expect(html).toMatch(/<button[^>]*>Entrar a YolIA<\/button>/)
   })
 
-  it('is about the places that have data, and does not mention Texcoco', () => {
-    expect(words(html)).toContain('Sonora · Sinaloa · Guanajuato')
-    expect(words(html)).not.toMatch(/Texcoco|El Batán/)
+  it('does not list the places, and does not mention Texcoco', () => {
+    expect(words(html)).not.toMatch(/Sonora|Sinaloa|Guanajuato|Texcoco|El Batán/)
     expect(words(html)).toContain('Rotaciones de cultivos con satélites de la NASA')
-    expect(words(html)).not.toContain('de temporal con satélites')
   })
 
-  it('links to the WhatsApp simulation with the WhatsApp icon, and says it is a simulation', () => {
-    const links = html.match(/<a [^>]*href="#\/demo\/whatsapp"/g) ?? []
-    expect(links.length).toBe(2)
+  it('has the WhatsApp simulation as one floating button, not as buttons in the page', () => {
+    const links = html.match(/<a [^>]*href="#\/demo\/whatsapp"[^>]*>/g) ?? []
+    expect(links).toHaveLength(1)
+    expect(links[0]).toContain('class="wa-fab"')
+    expect(links[0]).toContain('aria-label="Abrir la simulación de WhatsApp (simulación, no es WhatsApp real)"')
     expect(html).toContain('class="wa-mark"')
-    expect(words(html)).toContain('Es una simulación: no se envía nada a WhatsApp.')
+    expect(words(html)).toContain('Probar por WhatsApp')
   })
 
   it('keeps the prototype notice, and does not promise results', () => {
@@ -46,8 +46,8 @@ describe('the home page', () => {
   it('has an English version with the same structure', () => {
     const en = render('en')
     expect(words(en)).toContain('Hello! Welcome to')
-    expect(words(en)).toContain('This is a simulation: nothing is sent to WhatsApp.')
-    expect((en.match(/href="#\/demo\/whatsapp"/g) ?? []).length).toBe(2)
+    expect(words(en)).toContain('Try it on WhatsApp')
+    expect((en.match(/href="#\/demo\/whatsapp"/g) ?? []).length).toBe(1)
   })
 
   it('the simulator link is one the app follows', () => {

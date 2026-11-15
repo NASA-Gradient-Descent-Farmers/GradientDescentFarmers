@@ -1,7 +1,6 @@
 // English copy of the home page; it must have the same keys as landing.es.ts.
 
 export const landingEn = {
-  eyebrow: 'Sonora · Sinaloa · Guanajuato',
   tagline: 'Crop rotations from NASA satellites and a crop model.',
   lede: 'Tell YolIA where your plot is and what matters to you. It suggests what to plant, with the risks, in plain words.',
   start: 'Enter YolIA',
@@ -14,18 +13,9 @@ export const landingEn = {
       { title: 'Get clear options', body: 'What to plant, how much it could yield and the risks. No promised harvests.' },
     ],
   },
-  channels: {
-    title: 'Two ways to use YolIA',
-    app: {
-      title: 'In the app',
-      body: 'Farmer: a simple start and an assistant that answers. Technician: the full planner and the model numbers.',
-    },
-    whatsapp: {
-      title: 'On WhatsApp',
-      body: 'See how YolIA would answer by message: pick Guanajuato, Sinaloa or Sonora and ask what to plant.',
-      note: 'This is a simulation: nothing is sent to WhatsApp.',
-      cta: 'Open the WhatsApp simulation',
-    },
+  whatsapp: {
+    cta: 'Try it on WhatsApp',
+    label: 'Open the WhatsApp simulation (a simulation, not real WhatsApp)',
   },
   back: '← Back to the home page',
 }

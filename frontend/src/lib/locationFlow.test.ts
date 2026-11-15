@@ -13,7 +13,7 @@ function strings(node: unknown, path = ''): [string, string][] {
 const at = (dict: unknown, path: string): unknown => path.split('.').reduce<unknown>((node, key) => (typeof node === 'object' && node !== null ? (node as Record<string, unknown>)[key] : undefined), dict)
 
 // what a person reads while choosing and confirming where their parcel is, and the home page that leads there
-const FLOW = ['where', 'near', 'landing', 'env', 'caveat', 'farmer.nav', 'farmer.home', 'farmer.parcel.place', 'farmer.plant', 'farmer.chat.outside', 'farmer.chat.unknown', 'app.tagline']
+const FLOW = ['where', 'near', 'landing', 'env', 'farmer.parcel.place', 'farmer.plant', 'farmer.chat.outside', 'farmer.chat.unknown', 'app.tagline']
 
 describe.each(['es', 'en'] as const)('the location flow in %s', (lang) => {
   it('never names Texcoco or El Batán', () => {

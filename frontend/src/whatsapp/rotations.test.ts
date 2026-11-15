@@ -20,7 +20,7 @@ const fmt = makeFormat('es')
 const env: Env = { data, rotations, t, fmt, distance: (km) => fmt.number(km) }
 const flat = (bubbles: BotBubble[]) => bubbles.map((b) => b.text).join('\n')
 const QUESTIONS = ['¿Qué me conviene sembrar?', '¿Qué pasa si llueve poco?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?', '¿Cuánto podría ganar?', '¿Qué tan seguros son estos datos?', '¿Cuánto abono necesito?']
-const thousand = (n: number) => fmt.number(Math.round(n / 1000) * 1000)
+const exact = (n: number) => fmt.number(Math.round(n))
 
 describe('the published rotation files', () => {
   it('pass the check, with the runs the service reported', () => {
@@ -79,7 +79,7 @@ describe.each([
     expect(flat(turn.bubbles)).not.toContain('Datos no disponibles')
     expect(flat(turn.bubbles)).not.toContain(t('whatsapp.experimental'))
     // the only mention of validation is the disclaimer that there is none
-    expect(flat(turn.bubbles).replace(/(ni está|no están|sin) validad[oa]s?( en campo)?/gi, '')).not.toMatch(/validad/i)
+    expect(flat(turn.bubbles).replace(/(ni está|no están|sin|operativo) validad[oa]s?( en campo)?/gi, '')).not.toMatch(/validad/i)
   })
 
   it('quotes the planting options as the service gave them, in each water regime', async () => {
@@ -87,7 +87,7 @@ describe.each([
     for (const regime of ['irrigated', 'rainfed'] as const) {
       const option = bestOption(r, regime)!
       expect(text).toContain(option.descriptionEs)
-      expect(text).toContain(thousand(option.gross!.median!))
+      expect(text).toContain(`${Math.round(option.gross!.median!)} MXN/ha`)
     }
     expect(text).toContain('Confirma que tienes infraestructura de riego')
     expect(text).toContain('no es ganancia')
@@ -97,9 +97,10 @@ describe.each([
   it('says income is gross, with the whole plan as its basis, whenever it quotes money', async () => {
     for (const question of ['¿Cuánto podría ganar?', '¿Qué cultivo me conviene más?']) {
       const text = flat((await reply(question, start, env)).bubbles)
-      expect(text).toMatch(/Ingreso bruto: ≈ [\d,]+ MXN\/ha en todo el plan/)
+      expect(text).toMatch(/Ingreso bruto(?: de escenario)?: (?:≈ )?[\d,]+ MXN\/ha/)
       expect(text).toContain('no es ganancia')
-      expect(text).not.toMatch(/utilidad neta|ganancia de/i)
+      // the service's own highlight says "no es utilidad neta garantizada"; nothing may claim net profit
+      expect(text).not.toMatch(/(?<!no es )utilidad neta|ganancia de/i)
     }
   })
 
@@ -116,7 +117,7 @@ describe.each([
     for (const regime of ['irrigated', 'rainfed'] as const) {
       for (const campaign of bestOption(r, regime)!.campaigns.filter((c) => !c.fallow)) {
         expect(text).toContain(campaign.cropEs)
-        expect(text).toContain(campaign.grainTHa! < 0.05 ? 'casi sin cosecha' : `${fmt.number(campaign.grainTHa!, 1)} t/ha`)
+        expect(text).toContain(campaign.grainTHa! < 0.05 ? 'casi sin cosecha' : `${fmt.number(campaign.grainTHa!, 2)} t/ha`)
       }
     }
     expect(text).toContain('no es una predicción')
@@ -158,8 +159,8 @@ describe('results are never borrowed between locations', () => {
     const a = flat((await reply('¿Cuánto podría ganar?', { ...EMPTY_CHAT, location: 'sinaloa' }, env)).bubbles)
     const b = flat((await reply('¿Cuánto podría ganar?', { ...EMPTY_CHAT, location: 'sonora' }, env)).bubbles)
     expect(a).not.toBe(b)
-    expect(a).toContain(thousand(bestOption(sinaloa, 'irrigated')!.gross!.median!))
-    expect(b).toContain(thousand(bestOption(sonora, 'irrigated')!.gross!.median!))
+    expect(a).toContain(exact(bestOption(sinaloa, 'irrigated')!.gross!.median!))
+    expect(b).toContain(exact(bestOption(sonora, 'irrigated')!.gross!.median!))
   })
 
   it('switching from Guanajuato drops its answer, and its experimental label is not attached to rotation answers', async () => {

@@ -80,7 +80,7 @@ export function SignInScreen({ onBack }: { onBack?: () => void }) {
           <strong>
             {t('welcome.hello')} <Brand />.
           </strong>{' '}
-          {t('welcome.tagline')}
+          {t('landing.tagline')}
         </h1>
 
         {accounts.length > 0 && (

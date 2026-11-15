@@ -28,7 +28,7 @@ export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind
   if (!place) return null
   const rotations = published.rotations[body.place]
   const environment = published.environment[body.place] ?? null
-  const ctx = { t, fmt, observed: environment, goal: body.goal ?? null, hectares: body.hectares ?? null, water: body.water ?? null }
+  const ctx = { t, fmt, observed: environment, goal: body.goal ?? null, water: body.water ?? null }
   const bubbles = ENVIRONMENT.includes(body.topic)
     ? environment
       ? environmentBubbles(body.topic as EnvironmentTopic, place.name, environment, ctx)

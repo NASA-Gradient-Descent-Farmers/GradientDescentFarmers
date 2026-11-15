@@ -12,6 +12,8 @@ export interface RotationCampaign {
   /** A fallow campaign grows nothing, so it has no yield or income. */
   fallow: boolean
   planningYear: number
+  /** The plan year the season ends in: a season sown in November of year 1 ends in year 2. */
+  planningYearEnd: number
   /** "06-15": month and day, relative to the plan, not a calendar date. */
   sowing: string
   end: string
@@ -25,10 +27,19 @@ export interface RotationOption {
   descriptionEs: string
   priorityScore: number | null
   irrigationM3Ha: number | null
-  /** Water the crops used over the plan (rain plus irrigation), mm. */
+  /** What the service marks it as: `unvalidated_experiment`, or `high_risk_experiment` when a simulated harvest is under 50 kg/ha. */
+  advisoryStatus: string
+  /** The objectives the service picked this option for: balance (its priority ranking), income, water, soil, pesticide, tradeoff. */
+  highlightObjectives: string[]
+  paretoEfficient: boolean
+  /** Water the crops used in total over the plan (rain plus irrigation), mm: not the same as the irrigation applied. */
   evapotranspirationMm: number | null
+  rainfallMm: number | null
+  /** Against the comparison reference of its regime (never the farmer's practice); negative means more irrigation. */
+  irrigationSavingPct: number | null
   /** The run's soil-health proxy, 0-100: a heuristic, not a measurement. */
-  soilScore: number | null
+  soilProxyScore: number | null
+  immatureCampaigns: number
   failedHarvests: number
   requiresIrrigationConfirmation: boolean
   highlightsEs: string[]
@@ -60,7 +71,20 @@ export interface Rotations {
   weatherYears: number[]
   best: { irrigated: string | null; rainfed: string | null }
   options: RotationOption[]
+  /** The priorities the service ranked by (they sum to 100). */
+  weightsRequested: Record<string, number> | null
+  /** What each regime's irrigation saving is measured against. */
+  references: { irrigated: Reference | null; rainfed: Reference | null }
+  /** The service says it does not compute area totals: amounts are per hectare. */
+  areaTotalsComputed: boolean
   details: RotationDetails | null
+}
+
+export interface Reference {
+  kind: string
+  sequence: (string | null)[]
+  grossMedianMxnHa: number | null
+  irrigationGrossMm: number | null
 }
 
 /** The rotation results by demonstration location; a location missing here has none loaded. */
@@ -81,6 +105,7 @@ function parseCampaign(raw: unknown, where: string): RotationCampaign {
     cropEs: text(raw.cropEs, `${where}.cropEs`),
     fallow: raw.fallow === true,
     planningYear: finite(raw.planningYear, `${where}.planningYear`),
+    planningYearEnd: finite(raw.planningYearEnd ?? raw.planningYear, `${where}.planningYearEnd`),
     sowing: text(raw.sowing, `${where}.sowing`),
     end: text(raw.end, `${where}.end`),
     grainTHa: maybe(raw.grainTHa, `${where}.grainTHa`),
@@ -101,14 +126,25 @@ function parseOption(raw: unknown, index: number): RotationOption {
     descriptionEs: text(raw.descriptionEs, `${where}.descriptionEs`),
     priorityScore: maybe(raw.priorityScore, `${where}.priorityScore`),
     irrigationM3Ha: maybe(raw.irrigationM3Ha, `${where}.irrigationM3Ha`),
+    advisoryStatus: text(raw.advisoryStatus, `${where}.advisoryStatus`),
+    highlightObjectives: list(raw.highlightObjectives, `${where}.highlightObjectives`).map((objective, i) => text(objective, `${where}.highlightObjectives[${i}]`)),
+    paretoEfficient: raw.paretoEfficient === true,
     evapotranspirationMm: maybe(raw.evapotranspirationMm ?? null, `${where}.evapotranspirationMm`),
-    soilScore: maybe(raw.soilScore ?? null, `${where}.soilScore`),
+    rainfallMm: maybe(raw.rainfallMm ?? null, `${where}.rainfallMm`),
+    irrigationSavingPct: maybe(raw.irrigationSavingPct ?? null, `${where}.irrigationSavingPct`),
+    soilProxyScore: maybe(raw.soilProxyScore ?? null, `${where}.soilProxyScore`),
+    immatureCampaigns: finite(raw.immatureCampaigns ?? 0, `${where}.immatureCampaigns`),
     failedHarvests: finite(raw.failedHarvests, `${where}.failedHarvests`),
     requiresIrrigationConfirmation: raw.requiresIrrigationConfirmation === true,
     highlightsEs: list(raw.highlightsEs, `${where}.highlightsEs`).map((line, i) => text(line, `${where}.highlightsEs[${i}]`)),
     gross,
     campaigns,
   }
+}
+
+function parseReference(raw: unknown): Reference | null {
+  if (!isObject(raw)) return null
+  return { kind: String(raw.kind), sequence: Array.isArray(raw.sequence) ? (raw.sequence as (string | null)[]) : [], grossMedianMxnHa: typeof raw.grossMedianMxnHa === 'number' ? raw.grossMedianMxnHa : null, irrigationGrossMm: typeof raw.irrigationGrossMm === 'number' ? raw.irrigationGrossMm : null }
 }
 
 function parseDetails(raw: unknown): RotationDetails | null {
@@ -136,7 +172,8 @@ export function parseRotations(raw: unknown): Rotations {
   const confidence = isObject(raw.confidence) ? raw.confidence : fail('confidence is missing')
   const best = isObject(raw.best) ? raw.best : fail('best is missing')
   const options = list(raw.options, 'options').map(parseOption)
-  if (options.length === 0) fail('no options')
+  // a run that found nothing feasible says so (`no_feasible_options`) and has no options; any other run needs some
+  if (options.length === 0 && raw.status !== 'no_feasible_options') fail('no options')
   const ids = new Set(options.map((option) => option.id))
   for (const regime of ['irrigated', 'rainfed'] as const) {
     const id = best[regime]
@@ -161,6 +198,9 @@ export function parseRotations(raw: unknown): Rotations {
     weatherYears: list(raw.weatherYears, 'weatherYears').map((year, i) => finite(year, `weatherYears[${i}]`)),
     best: { irrigated: (best.irrigated as string | null) ?? null, rainfed: (best.rainfed as string | null) ?? null },
     options,
+    weightsRequested: isObject(raw.weightsRequested) ? (raw.weightsRequested as Record<string, number>) : null,
+    references: { irrigated: parseReference(isObject(raw.references) ? raw.references.irrigated : null), rainfed: parseReference(isObject(raw.references) ? raw.references.rainfed : null) },
+    areaTotalsComputed: raw.areaTotalsComputed === true,
     details: parseDetails(raw.details),
   }
 }
@@ -174,35 +214,18 @@ export function bestOption(rotations: Rotations, regime: Regime): RotationOption
 /** What the farmer says matters most; `earn` is income, `water` is using water well, `soil` is looking after the soil. */
 export type RotationGoal = 'earn' | 'water' | 'soil'
 
-/** Gross income per cubic metre of water the plan uses (1 mm over a hectare is 10 m³). Null without income or water data. */
-export function waterProductivity(option: RotationOption): number | null {
-  const income = option.gross?.median
-  if (income == null || option.evapotranspirationMm == null || option.evapotranspirationMm <= 0) return null
-  return income / (option.evapotranspirationMm * 10)
-}
+/** The objective the service labels its options with for each goal. */
+const OBJECTIVE_OF: Record<RotationGoal, string> = { earn: 'income', water: 'water', soil: 'soil' }
 
 /**
- * The option that best fits what the farmer says matters, among the options of one water regime, ranked by the run's own
- * figures: earn is the highest gross income; soil is the best soil score; water is the least irrigation water when the regime
- * irrigates (options with a failed harvest set aside), and the most income per m³ of water used when it does not. Income
- * breaks ties. Null when the regime has no option.
+ * The option the service itself picked for what the farmer says matters, within one water regime: the one whose
+ * `highlight_objectives` has income, water or soil for the goal (the highest priority score when several do). When the
+ * regime has none, the service's own priority ranking decides (its "balance" pick). Nothing is ranked here.
  */
 export function pickForGoal(rotations: Rotations, regime: Regime, goal: RotationGoal): RotationOption | null {
-  const candidates = rotations.options.filter((option) => option.regime === regime)
-  const income = (option: RotationOption) => option.gross?.median ?? -Infinity
-  const irrigates = candidates.some((option) => (option.irrigationM3Ha ?? 0) > 0)
-  const key = (option: RotationOption): [number, number] => {
-    if (goal === 'water' && irrigates) return [option.failedHarvests > 0 || option.irrigationM3Ha == null ? -Infinity : -option.irrigationM3Ha, income(option)]
-    if (goal === 'water') return [waterProductivity(option) ?? -Infinity, income(option)]
-    if (goal === 'soil') return [option.soilScore ?? -Infinity, income(option)]
-    return [income(option), option.priorityScore ?? -Infinity]
-  }
-  return candidates.reduce<RotationOption | null>((best, option) => {
-    if (best === null) return option
-    const [a1, a2] = key(option)
-    const [b1, b2] = key(best)
-    return a1 > b1 || (a1 === b1 && a2 > b2) ? option : best
-  }, null)
+  const labelled = rotations.options.filter((option) => option.regime === regime && option.highlightObjectives.includes(OBJECTIVE_OF[goal]))
+  const top = labelled.reduce<RotationOption | null>((best, option) => (best === null || (option.priorityScore ?? -Infinity) > (best.priorityScore ?? -Infinity) ? option : best), null)
+  return top ?? bestOption(rotations, regime)
 }
 
 /** The option with the highest median gross income in a regime, ignoring priorities; null without income data. */

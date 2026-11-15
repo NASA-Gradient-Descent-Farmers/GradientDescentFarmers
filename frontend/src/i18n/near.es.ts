@@ -18,7 +18,6 @@ export const nearEs = {
   heading: 'Opciones de rotación cerca de {place}',
   scope: 'Resultados por hectárea para la zona de {place}. Se ordenan según lo que más te importa.',
   forGoal: 'Lo que mejor encaja con lo que te importa: {goal}',
-  forHectares: 'Para tus {ha} ha: ≈ {total} MXN en todo el plan (el ingreso por hectárea multiplicado por tus hectáreas).',
   recommended: 'La que mejor encaja con las prioridades del modelo',
   year: 'año {year}',
   fallow: 'Sin sembrar (barbecho)',

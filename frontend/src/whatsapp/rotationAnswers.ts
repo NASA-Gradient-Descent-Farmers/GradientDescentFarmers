@@ -4,7 +4,7 @@
 // gross per hectare, never profit. Unknown values read "sin datos", never zero.
 
 import type { Format } from '../lib/format.ts'
-import { bestOption, pickForGoal, topIncomeOption, type Regime, type RotationGoal, type RotationOption, type Rotations } from '../lib/rotations.ts'
+import { bestOption, pickForGoal, topIncomeOption, type Regime, type RotationCampaign, type RotationGoal, type RotationOption, type Rotations } from '../lib/rotations.ts'
 import type { Environment } from '../lib/environment.ts'
 import type { BotBubble, Focus } from './engine.ts'
 import { observedRain } from './environmentAnswers.ts'
@@ -14,15 +14,13 @@ type T = (path: string, vars?: Record<string, string | number>) => string
 /** The chat's topics, plus the two the assistant answers about the evidence and the doses. */
 export type RotationTopic = Focus | 'trust' | 'fertilizer'
 
-interface Ctx {
+export interface Ctx {
   t: T
   fmt: Format
   /** The place's environmental package, when loaded: the rain question adds what was observed there. */
   observed?: Environment | null
   /** What matters most to the farmer: the options are ranked by it. */
   goal?: RotationGoal | null
-  /** The farmer's hectares: totals are the per-hectare figure times these. */
-  hectares?: number | null
   /** The water the farmer says they have: that regime is shown first. */
   water?: 'rain' | 'some' | 'regular' | null
 }
@@ -41,17 +39,16 @@ const years = ({ weatherYears }: Rotations) => {
 }
 
 const noData = ({ t }: Ctx) => t('whatsapp.rotations.noData')
-/** Money to the nearest thousand: the scenarios are not precise to the peso. */
-const money = (value: number | null, ctx: Ctx) => (value === null ? noData(ctx) : ctx.fmt.number(Math.round(value / 1000) * 1000))
+/** The figure as the service generated it, to the peso: no further rounding. */
+const money = (value: number | null, ctx: Ctx) => (value === null ? noData(ctx) : ctx.fmt.number(Math.round(value)))
 const monthOf = (monthDay: string) => Number(monthDay.slice(0, 2)) - 1
-const span = (sowing: string, end: string, { fmt }: Ctx) => `${fmt.monthShort(monthOf(sowing))}–${fmt.monthShort(monthOf(end))}`
-
-/** For the farmer's hectares: the per-hectare income times them, rounded like the rest. Empty without hectares or income. */
-function totalLine(option: RotationOption, ctx: Ctx): string {
-  const { hectares } = ctx
-  const median = option.gross?.median
-  if (hectares == null || median == null) return ''
-  return `\n${ctx.t('whatsapp.rotations.forHectares', { ha: ctx.fmt.number(hectares, Number.isInteger(hectares) ? 0 : 1), total: money(median * hectares, ctx) })}`
+/** The season as the plan gives it: sown in a month of one plan year, ending in a month of the same or the next (not dates). */
+export const season = (campaign: RotationCampaign, ctx: Ctx) =>
+  ctx.t('whatsapp.rotations.season', { y1: campaign.planningYear, from: ctx.fmt.monthShort(monthOf(campaign.sowing)), y2: campaign.planningYearEnd, to: ctx.fmt.monthShort(monthOf(campaign.end)) })
+/** A translated label, or the service's own word when the dictionary has none. */
+const word = (path: string, key: string, { t }: Ctx) => {
+  const text = t(`${path}.${key}`)
+  return text === `${path}.${key}` ? key : text
 }
 
 function incomeLine(option: RotationOption, ctx: Ctx): string {
@@ -63,14 +60,33 @@ function incomeLine(option: RotationOption, ctx: Ctx): string {
   return ctx.t('whatsapp.rotations.income', { amount: money(gross?.median ?? null, ctx), range })
 }
 
-/** One option as a bubble: its plan, income, water, and the warnings that go with it. */
-function optionBubble(head: string, option: RotationOption, ctx: Ctx): BotBubble {
+/**
+ * One option as a bubble, with what the service generated for it: its plan, its status (an experiment, never an approved plan),
+ * what it stands out in, its own highlights word for word, the range of income over the price years, the water it applies and
+ * uses, how its irrigation compares with the reference, and its affinity with the priorities (not a chance of success).
+ */
+export function optionLines(option: RotationOption, ctx: Ctx, rotations: Rotations): string[] {
   const { t, fmt } = ctx
-  const lines = [bold(head), option.descriptionEs, incomeLine(option, ctx) + totalLine(option, ctx)]
-  if (option.regime === 'irrigated' && option.irrigationM3Ha !== null) lines.push(t('whatsapp.rotations.water', { amount: fmt.number(Math.round(option.irrigationM3Ha / 100) * 100) }))
-  if (option.failedHarvests > 0) lines.push(t('whatsapp.rotations.failed', { n: option.failedHarvests }))
+  const lines = [t(`whatsapp.rotations.status.${option.advisoryStatus}`)]
+  if (option.highlightObjectives.length > 0) lines.push(t('whatsapp.rotations.stands', { list: option.highlightObjectives.map((objective) => word('whatsapp.rotations.objective', objective, ctx)).join(', ') }))
+  lines.push(...option.highlightsEs.map((line) => `• ${line}`))
+  const { gross } = option
+  if (gross?.p10 != null && gross?.p90 != null) lines.push(t('whatsapp.rotations.rangeP', { low: money(gross.p10, ctx), high: money(gross.p90, ctx) }))
+  if (option.regime === 'rainfed') lines.push(t('whatsapp.rotations.noIrrigation'))
+  if (option.evapotranspirationMm !== null) lines.push(t('whatsapp.rotations.consumed', { mm: fmt.number(Math.round(option.evapotranspirationMm)) }))
+  if (option.rainfallMm !== null) lines.push(t('whatsapp.rotations.rain', { mm: fmt.number(Math.round(option.rainfallMm)) }))
+  if (option.irrigationSavingPct !== null && option.regime === 'irrigated' && Math.round(option.irrigationSavingPct) !== 0) {
+    const reference = rotations.references[option.regime]
+    lines.push(t(option.irrigationSavingPct > 0 ? 'whatsapp.rotations.saving' : 'whatsapp.rotations.extra', { pct: fmt.number(Math.abs(Math.round(option.irrigationSavingPct))), reference: word('whatsapp.rotations.reference', reference?.kind ?? '', ctx) }))
+  }
+  if (option.priorityScore !== null) lines.push(t('whatsapp.rotations.affinity', { score: fmt.number(Math.round(option.priorityScore)) }))
+  if (option.immatureCampaigns > 0) lines.push(t('whatsapp.rotations.immature', { n: option.immatureCampaigns }))
   if (option.requiresIrrigationConfirmation) lines.push(t('whatsapp.rotations.confirmIrrigation'))
-  return { text: lines.join('\n') }
+  return lines
+}
+
+function optionBubble(head: string, option: RotationOption, ctx: Ctx, rotations: Rotations): BotBubble {
+  return { text: [bold(head), option.descriptionEs, ...optionLines(option, ctx, rotations)].join('\n') }
 }
 
 /** The option to show for a regime: the best for the farmer's goal when they gave one, else the service's own pick, else the highest income. */
@@ -85,14 +101,16 @@ const regimeName = (regime: Regime, { t }: Ctx) => t(`whatsapp.rotations.regime.
 
 function planting(rotations: Rotations, ctx: Ctx, compare: boolean): BotBubble[] {
   const bubbles: BotBubble[] = [label(rotations, ctx)]
+  // a run that found nothing feasible says so: no recommendation is made up
+  if (rotations.options.length === 0) return [...bubbles, { text: ctx.t('whatsapp.rotations.noFeasible') }]
   for (const regime of regimesFor(ctx)) {
     const option = chosen(rotations, regime, ctx)
     if (!option) continue
     const head = ctx.goal ? ctx.t('whatsapp.rotations.goalHead', { regime: regimeName(regime, ctx), goal: ctx.t(`farmer.rec.goals.${ctx.goal}`) }) : ctx.t('whatsapp.rotations.bestHead', { regime: regimeName(regime, ctx) })
-    bubbles.push(optionBubble(head, option, ctx))
+    bubbles.push(optionBubble(head, option, ctx, rotations))
     // "which crop is best" also names the highest-income option when the priorities picked another
     const top = compare ? topIncomeOption(rotations, regime) : null
-    if (top && top.id !== option.id) bubbles.push(optionBubble(ctx.t('whatsapp.rotations.topHead', { regime: regimeName(regime, ctx) }), top, ctx))
+    if (top && top.id !== option.id) bubbles.push(optionBubble(ctx.t('whatsapp.rotations.topHead', { regime: regimeName(regime, ctx) }), top, ctx, rotations))
   }
   bubbles.push(caution(rotations, ctx))
   return bubbles
@@ -107,8 +125,9 @@ function harvest(rotations: Rotations, ctx: Ctx): BotBubble[] {
     const lines = option.campaigns
       .filter((campaign) => !campaign.fallow)
       .map((campaign) => {
-        const amount = campaign.grainTHa === null ? noData(ctx) : campaign.grainTHa < NO_HARVEST_T_HA ? t('whatsapp.rotations.harvestNone') : t('whatsapp.rotations.harvestAmount', { amount: fmt.number(campaign.grainTHa, 1) })
-        return t('whatsapp.rotations.harvestLine', { crop: campaign.cropEs, year: campaign.planningYear, span: span(campaign.sowing, campaign.end, ctx), amount })
+        const amount = campaign.grainTHa === null ? noData(ctx) : campaign.grainTHa < NO_HARVEST_T_HA ? t('whatsapp.rotations.harvestNone') : t('whatsapp.rotations.harvestAmount', { amount: fmt.number(campaign.grainTHa, 2) })
+        const gross = campaign.grossMxnHa === null ? '' : ` · ${t('whatsapp.rotations.seasonIncome', { amount: money(campaign.grossMxnHa, ctx) })}`
+        return t('whatsapp.rotations.harvestLine', { crop: campaign.cropEs, season: season(campaign, ctx), amount }) + gross
       })
     bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${lines.length > 0 ? lines.join('\n') : t('whatsapp.rotations.fallowOnly')}` })
   }
@@ -120,7 +139,7 @@ function earnings(rotations: Rotations, ctx: Ctx): BotBubble[] {
   const bubbles: BotBubble[] = [label(rotations, ctx)]
   for (const regime of regimesFor(ctx)) {
     const option = chosen(rotations, regime, ctx)
-    if (option) bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${incomeLine(option, ctx)}${totalLine(option, ctx)}` })
+    if (option) bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${incomeLine(option, ctx)}` })
   }
   bubbles.push(caution(rotations, ctx))
   return bubbles

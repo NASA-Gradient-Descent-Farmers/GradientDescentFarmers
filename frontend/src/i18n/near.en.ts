@@ -17,7 +17,6 @@ export const nearEn = {
   heading: 'Rotation options near {place}',
   scope: 'Results per hectare for the {place} area. They are ordered by what matters most to you.',
   forGoal: 'The best fit for what matters to you: {goal}',
-  forHectares: 'For your {ha} ha: ≈ {total} MXN over the whole plan (income per hectare times your hectares).',
   recommended: 'The one that best fits the model priorities',
   year: 'year {year}',
   fallow: 'Not planted (fallow)',

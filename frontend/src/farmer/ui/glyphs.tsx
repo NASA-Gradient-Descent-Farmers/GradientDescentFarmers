@@ -16,7 +16,6 @@ export const SproutIcon = () => svg(<><path d="M12 21v-8" /><path d="M12 13c0-4-
 export const AskIcon = () => svg(<path d="M4 5h16v11H9.500L5 20v-4H4z" />)
 export const SavedIcon = () => svg(<path d="M6.500 3.500h11v17L12 16.500l-5.500 4z" />)
 export const MicIcon = () => svg(<><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.500 11.500a6.500 6.500 0 0 0 13 0M12 18v3" /></>)
-export const ChatIcon = () => svg(<path d="M5 5h14v10H10l-5 4z" />)
 export const SendIcon = () => svg(<path d="M12 19V5M5.500 11.500L12 5l6.500 6.500" />)
 export const CheckIcon = () => svg(<path d="M5 12.500l4.500 4.500L19 7" />)
 export const InfoIcon = () => svg(<><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7.800h.01" /></>)
