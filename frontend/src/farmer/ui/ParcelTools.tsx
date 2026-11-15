@@ -1,49 +1,41 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useI18n } from '../../i18n/index.tsx'
 import type { LatLon } from '../../lib/geo.ts'
-import type { DashboardData } from '../../lib/types.ts'
-import type { Recommendation } from '../recommend.ts'
-import { loadSaved, storeSaved, withoutSaved } from '../saved.ts'
 import { isComplete, loadState, parcelAt, saveState, type FarmerState, type Parcel, type Situation } from '../state.ts'
-import { PinIcon, SavedIcon, SproutIcon } from './glyphs.tsx'
+import { AskPage } from './AskPage.tsx'
+import { ChatIcon, PinIcon, SproutIcon } from './glyphs.tsx'
 import { ParcelPage } from './ParcelPage.tsx'
 import { PlantPage } from './PlantPage.tsx'
-import { SavedPage } from './SavedPage.tsx'
 
-type Tab = 'parcel' | 'plant' | 'saved'
+type Tab = 'parcel' | 'plant' | 'ask'
 
 const TABS: { id: Tab; icon: ReactNode }[] = [
   { id: 'parcel', icon: <PinIcon /> },
   { id: 'plant', icon: <SproutIcon /> },
-  { id: 'saved', icon: <SavedIcon /> },
+  { id: 'ask', icon: <ChatIcon /> },
 ]
 
 interface Props {
-  data: DashboardData
   pin: LatLon | null
-  /** Sets the pin the whole app shares (the assistant and the planner read the same one). */
+  /** Sets the pin the whole app shares. */
   onPin: (point: LatLon) => void
-  /** The one site the crop model was fitted to. */
+  /** Only used to know the data has loaded before the map is offered. */
   site: LatLon
-  /** Opens the assistant of this mode. */
-  onAsk: () => void
 }
 
 /**
- * Parcel tools, inside Técnico: the guided questions (Mi parcela), the full recommendation card (Qué sembrar) and the
- * recommendations kept for later (Mis recomendaciones). These are the pages a first-time farmer is walked through; here they
- * are simply available. They read and write the same parcel and answers as the Agricultor home.
+ * Técnico: the parcel tools in one place. The guided questions (Mi parcela), the results for the parcel's place (Qué sembrar,
+ * with its rotation options and data) and the assistant (Preguntar a YolIA), all reading and writing the same parcel and
+ * answers as the Agricultor home.
  */
-export function ParcelTools({ data, pin, onPin, site, onAsk }: Props) {
+export function ParcelTools({ pin, onPin, site }: Props) {
   const { t } = useI18n()
   const [state, setState] = useState<FarmerState>(loadState)
-  const [saved, setSaved] = useState<Recommendation[]>(loadSaved)
   const parcel = useMemo(() => parcelAt(state, pin), [state, pin])
   const [tab, setTab] = useState<Tab>(() => (parcelAt(state, pin) && isComplete(state.situation) ? 'plant' : 'parcel'))
   const region = useRef<HTMLDivElement>(null)
 
   useEffect(() => saveState(state), [state])
-  useEffect(() => storeSaved(saved), [saved])
 
   const setParcel = useCallback(
     (next: Parcel) => {
@@ -53,7 +45,6 @@ export function ParcelTools({ data, pin, onPin, site, onAsk }: Props) {
     [onPin],
   )
   const patchSituation = useCallback((patch: Situation) => setState((current) => ({ ...current, situation: { ...current.situation, ...patch } })), [])
-  const remove = useCallback((id: string) => setSaved((list) => withoutSaved(list, id)), [])
 
   const go = (next: Tab) => {
     setTab(next)
@@ -71,13 +62,20 @@ export function ParcelTools({ data, pin, onPin, site, onAsk }: Props) {
         ))}
       </nav>
       <div ref={region} tabIndex={-1} role="region" aria-label={t(`farmer.nav.${tab}`)} className="parcel-tools-body">
-        {tab === 'parcel' && (
-          <ParcelPage state={state} parcel={parcel} site={site} onParcel={setParcel} onSituation={patchSituation} onPlant={() => go('plant')} />
+        {tab === 'parcel' && <ParcelPage state={state} parcel={parcel} site={site} onParcel={setParcel} onSituation={patchSituation} onPlant={() => go('plant')} />}
+        {tab === 'plant' && <PlantPage state={state} parcel={parcel} onGoParcel={() => go('parcel')} onAsk={() => go('ask')} />}
+        {tab === 'ask' && (
+          <AskPage
+            state={state}
+            parcel={parcel}
+            heading={t('farmer.nav.ask')}
+            lede={t('farmer.home.lede')}
+            onSituation={patchSituation}
+            onGoParcel={() => go('parcel')}
+            seed={null}
+            onSeedUsed={() => undefined}
+          />
         )}
-        {tab === 'plant' && (
-          <PlantPage state={state} parcel={parcel} onGoParcel={() => go('parcel')} onAsk={onAsk} />
-        )}
-        {tab === 'saved' && <SavedPage saved={saved} meta={data.meta} models={data.models} onRemove={remove} onGoPlant={() => go('plant')} />}
       </div>
     </div>
   )

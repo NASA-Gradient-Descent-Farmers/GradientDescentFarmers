@@ -161,9 +161,7 @@ export const en = {
   },
   caveat: {
     title: 'Early prototype, not farm advice.',
-    body:
-      'Crop prices come from SIAP, but production costs, the nitrogen price and the stover price are placeholders. ' +
-      'The two crop models also disagree about what fertilizer buys. Compare plans within one model.',
+    body: 'The results are exploratory scenarios: they use 2024–2025 weather and historical SIAP prices, and are not validated in the field.',
   },
   crops: { maize: 'Maize', barley: 'Barley', fababean: 'Faba bean' },
   rotations: {
