@@ -136,14 +136,14 @@ The planner is also a page of its own.
 From this folder (`frontend/`):
 
 ```bash
-npm install
-npm run dev      # http://localhost:5173
+npm ci           # exact versions from package-lock.json
+npm run dev      # http://localhost:5173 (the home page; the WhatsApp simulation is at /demo/whatsapp)
 npm test         # planner and front logic against the Python results, translation key parity
 npm run lint
 npm run build    # type-check and build to dist/ (relative paths: serve from any folder)
 ```
 
-Needs Node 20 or newer. The build in `dist/` is plain static files, so any static host serves it (GitHub Pages, Netlify, an S3 bucket).
+Needs Node 22.12 or newer (`nvm use` picks it up from the repository's `.nvmrc`). No backend, API key or Python is needed: everything the app reads is committed in `public/data/`. The build in `dist/` is plain static files, so any static host serves it (GitHub Pages, Netlify, an S3 bucket).
 
 ## Data
 

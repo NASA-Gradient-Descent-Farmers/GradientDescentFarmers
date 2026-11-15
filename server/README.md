@@ -30,7 +30,7 @@ phone ──WhatsApp──▶ Twilio ──HTTPS POST /whatsapp──▶ tunnel 
 
 ## Requirements
 
-Node 22.6 or newer (it runs the TypeScript directly), and `npm`. Install once:
+Node 22.9 or newer (it runs the TypeScript directly), and `npm`. Install once:
 
 ```bash
 cd frontend && npm ci && cd ../server && npm ci

@@ -10,6 +10,22 @@ selection using farmer priorities, locally and on GCP. Its results are
 exploratory and require local calibration; soil and pesticide indicators are
 heuristic proxies. Each implementation installs through its own optional extras.
 
+## Web app and WhatsApp demo
+
+`frontend/` is the YolIA web app (React + Vite, Spanish first). It needs only Node 22.12 or newer: no Python, backend or API key, because
+the model results it shows are committed in `frontend/public/data/`.
+
+```bash
+cd frontend
+npm ci
+npm run dev        # http://localhost:5173  (home page; the WhatsApp simulation is at /demo/whatsapp)
+npm test && npm run lint && npm run build
+```
+
+`server/` is an optional Twilio WhatsApp Sandbox webhook that answers with the same conversation engine; see
+[server/README.md](server/README.md) for the setup (it needs a Twilio account and keeps its credentials in a git-ignored `.env`).
+Details of the app, its pages and how to refresh the rotation results are in [frontend/README.md](frontend/README.md).
+
 ## Structure
 
 ```text
