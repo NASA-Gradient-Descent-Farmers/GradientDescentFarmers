@@ -444,3 +444,19 @@ def test_calendar_table_rows_are_valid_and_used_for_yaqui_wheat(panel_run):
     d = r["fechas_siembra"][0]
     assert (d["mes"], d["fuente"], d["cosecha"], d["fuente_cosecha"]) == (12, "calendario", 4, "calendario")
     assert r["preguntar"] == [] and any("calendario agrícola de tu distrito" in l for l in r["tu_lugar"])
+
+
+def test_committed_national_panel_is_the_default():
+    import json
+    from gradientdescentfarmers.model_builder.rotations import DEFAULT_PANEL, RotationModelBuilder, panel
+
+    if not (DEFAULT_PANEL / "tables").is_dir():
+        pytest.skip("national panel not in this checkout")
+    manifest = json.loads((DEFAULT_PANEL / "manifest.json").read_text(encoding="utf-8"))
+    import hashlib
+    for name, rec in manifest["tables"].items():                 # files match the manifest
+        assert hashlib.sha256((DEFAULT_PANEL / "tables" / f"{name}.parquet").read_bytes()).hexdigest() == rec["sha256"]
+    engine = RotationModelBuilder().build(None, {"defaults": {"escenarios": False}})
+    assert panel.read("municipality_districts")[["state_id", "ddr"]].drop_duplicates().shape[0] == 191
+    out = engine.compare("Celaya", "maíz", estado="Guanajuato", agua="temporal")
+    assert out["lugar"]["distrito"] == "Celaya" and len(out["rotaciones"]) >= 3

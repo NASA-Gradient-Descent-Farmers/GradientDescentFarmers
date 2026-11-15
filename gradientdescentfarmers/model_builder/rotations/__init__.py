@@ -11,7 +11,8 @@ panel built by `source_builder.district` (see its DISTRICT_PANEL_CONTRACT.md):
     result = engine.compare("Bácum", "trigo", estado="Sonora", agua="riego", prioridades=["agua"])
 
 Or point it at an existing run: `RotationModelBuilder().build("data/processed/districts", {})` (the folder with
-latest.json, a run folder, or its tables/ folder).
+latest.json, a run folder, or its tables/ folder). With no source at all, `RotationModelBuilder().build(None, {})`
+uses the national panel committed in resources/district_panel_national/.
 
 Every number is computed by code from SIAP, NASA and literature tables; a language model only phrases it.
 The engine supports farmers' and technicians' judgement and does not replace it.
@@ -23,6 +24,9 @@ from typing import Any, Mapping
 
 from ..base import ModelBuilder
 from . import panel
+
+# The national panel committed to the repo (all 191 SIAP districts), used when no other panel is given.
+DEFAULT_PANEL = Path(__file__).resolve().parents[3] / "resources" / "district_panel_national"
 
 
 class RotationEngine:
@@ -56,10 +60,12 @@ class RotationModelBuilder(ModelBuilder):
         config = dict(config or {})
         target = config.get("panel") or (source.get("output_dir") if isinstance(source, Mapping) else source)
         if not target:
-            raise ValueError("No district panel: pass the source builder's result or a run folder")
+            if not (DEFAULT_PANEL / "tables").is_dir():
+                raise ValueError("No district panel: pass the source builder's result or a run folder")
+            target = DEFAULT_PANEL
         if isinstance(source, Mapping) and source.get("build_state") == "failed" and not config.get("panel"):
             raise ValueError(f"The district panel run failed: {source.get('fatal')}")
         return RotationEngine(Path(target), config.get("defaults"))
 
 
-__all__ = ["RotationEngine", "RotationModelBuilder", "panel"]
+__all__ = ["DEFAULT_PANEL", "RotationEngine", "RotationModelBuilder", "panel"]

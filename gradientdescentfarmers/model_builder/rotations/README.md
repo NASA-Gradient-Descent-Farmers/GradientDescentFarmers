@@ -7,7 +7,8 @@ It reads only a district panel built by `source_builder.district` (see `source_b
 ```python
 from gradientdescentfarmers.model_builder.rotations import RotationModelBuilder
 
-engine = RotationModelBuilder().build("data/processed/districts", {})        # folder with latest.json, or a run
+engine = RotationModelBuilder().build(None, {})                              # the committed national panel
+# or: RotationModelBuilder().build("data/processed/districts", {})           # a panel you built (latest.json or a run)
 result = engine.compare("Bácum", "trigo", estado="Sonora", agua="riego", prioridades=["agua", "suelo"])
 for r in result["rotaciones"]:
     print(r["nombre"], r["puntaje_prioridades"], r["tarjeta"]["por_que"])

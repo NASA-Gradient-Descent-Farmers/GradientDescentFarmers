@@ -1,0 +1,351 @@
+{
+  "schema_version": "district-panel/0.1",
+  "run_id": "20261115T071028Z_d16825a6",
+  "created_utc": "2026-11-15T07:17:59Z",
+  "build_state": "complete",
+  "fatal": null,
+  "output_dir": "resources/district_panel_national",
+  "tables": {
+    "sites": {
+      "path": "tables/sites.parquet",
+      "rows": 0,
+      "columns": [
+        "site",
+        "latitude",
+        "longitude",
+        "state_id",
+        "mun_id",
+        "municipality_inegi",
+        "state_inegi",
+        "ddr",
+        "ddr_name",
+        "state",
+        "municipality",
+        "other_districts",
+        "note"
+      ],
+      "sha256": "9f03ff9c7785bd1ae9536a6796ccfd45047fb59d6065335816df63dcd4511f27"
+    },
+    "siap_crop_years": {
+      "path": "tables/siap_crop_years.parquet",
+      "rows": 52420,
+      "columns": [
+        "year",
+        "state_id",
+        "ddr",
+        "crop",
+        "cycle",
+        "water",
+        "state",
+        "ddr_name",
+        "sown_ha",
+        "harvested_ha",
+        "lost_ha",
+        "production_t",
+        "value_mxn"
+      ],
+      "sha256": "fcb27e336f424dc4ffd8f8bdb8d4e4afb38239affcb0abbe28c06330d3fdfafc"
+    },
+    "municipality_district_weights": {
+      "path": "tables/municipality_district_weights.parquet",
+      "rows": 2467,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "ddr",
+        "sown_ha",
+        "ddr_name",
+        "weight_ha",
+        "is_primary"
+      ],
+      "sha256": "a9ec88a574b6eb8bc771a02e62bf9f1f102c37d098cfc839433f3deb7fdf74a5"
+    },
+    "municipality_districts": {
+      "path": "tables/municipality_districts.parquet",
+      "rows": 2446,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "ddr",
+        "state",
+        "municipality",
+        "ddr_name"
+      ],
+      "sha256": "538cbc22dc51d073a3fe8cc844bad39ca2ef931e098edfb5d616e322c6a080de"
+    },
+    "observed_municipal": {
+      "path": "tables/observed_municipal.parquet",
+      "rows": 29268,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "month",
+        "ndvi",
+        "ndvi_p20",
+        "ndvi_p80",
+        "ndvi_cropland_weighted",
+        "smap_rootzone",
+        "smap_dry",
+        "smap_wet",
+        "smap_relative"
+      ],
+      "sha256": "ca6b5170af208349baa00be2ddac097878ae5713913f3cccf6b8082aa12e47cc"
+    },
+    "observed_district": {
+      "path": "tables/observed_district.parquet",
+      "rows": 2292,
+      "columns": [
+        "state_id",
+        "ddr",
+        "month",
+        "ndvi",
+        "ndvi_p20",
+        "ndvi_p80",
+        "smap_rootzone",
+        "smap_relative"
+      ],
+      "sha256": "490c22e7a384116b5a153cce41ff18b0f30f3494fda6b6b0c40848aa81d5d271"
+    },
+    "soil_municipal": {
+      "path": "tables/soil_municipal.parquet",
+      "rows": 2439,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "texture_class",
+        "sand",
+        "silt",
+        "clay",
+        "profile_available_water_capacity",
+        "soil_carbon_density"
+      ],
+      "sha256": "b06b2006516cee0f9fe355099b423f6d214c58e4dfea260a15b86270c23c27a4"
+    },
+    "climate_municipal": {
+      "path": "tables/climate_municipal.parquet",
+      "rows": 29268,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "month",
+        "rain",
+        "et0",
+        "tmin",
+        "tmax",
+        "frost_prob",
+        "frost_nights",
+        "heat_days",
+        "rain_p20",
+        "rain_corrected"
+      ],
+      "sha256": "6323f56538c59124026b564aaeda35075ad2c82f733bfa783ff782846d4d37c1"
+    },
+    "climate_municipal_years": {
+      "path": "tables/climate_municipal_years.parquet",
+      "rows": 1287792,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "year",
+        "month",
+        "rain",
+        "et0",
+        "tmin",
+        "tmax",
+        "frost_nights",
+        "heat_days",
+        "rain_corrected",
+        "rain_flagged"
+      ],
+      "sha256": "031af03c4b53394db57beb7e855f7d934235ce3537fbef76013442d63c9ce53a"
+    },
+    "climate_district": {
+      "path": "tables/climate_district.parquet",
+      "rows": 2292,
+      "columns": [
+        "state_id",
+        "ddr",
+        "month",
+        "rain",
+        "et0",
+        "tmin",
+        "tmax",
+        "frost_prob",
+        "frost_nights",
+        "heat_days",
+        "rain_p20"
+      ],
+      "sha256": "87aec35469d4cb27affe6dbac8c89b2e782674745f8f91c358c0c6ba6d30b8db"
+    },
+    "climate_district_years": {
+      "path": "tables/climate_district_years.parquet",
+      "rows": 100848,
+      "columns": [
+        "state_id",
+        "ddr",
+        "year",
+        "month",
+        "rain",
+        "et0",
+        "tmin",
+        "tmax",
+        "frost_nights",
+        "heat_days"
+      ],
+      "sha256": "efc1692ce210c6c17b617659b523f2dfbc14ab96a4a9403dc4a4158670e13c6d"
+    },
+    "power_cells": {
+      "path": "tables/power_cells.parquet",
+      "rows": 2439,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "lat",
+        "lon",
+        "cell_lat",
+        "cell_lon"
+      ],
+      "sha256": "1017558ec7847ec505612da26ee9404e859a9d8edd342d1eec669bb19e11e2f5"
+    },
+    "chirps_municipal_years": {
+      "path": "tables/chirps_municipal_years.parquet",
+      "rows": 736578,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "year",
+        "month",
+        "chirps_rain"
+      ],
+      "sha256": "ee20b6f320857a3ea98f45e7b812702e37773615dad9fa28d24807a611e0a4bd"
+    },
+    "chirps_district_years": {
+      "path": "tables/chirps_district_years.parquet",
+      "rows": 57682,
+      "columns": [
+        "state_id",
+        "ddr",
+        "year",
+        "month",
+        "chirps_rain"
+      ],
+      "sha256": "9fe356d890cbb2ebbce632e0d593ab304fca15548d0164c8aa2a8845cd1707ac"
+    },
+    "grace_municipal": {
+      "path": "tables/grace_municipal.parquet",
+      "rows": 2439,
+      "columns": [
+        "state_id",
+        "mun_id",
+        "mascon",
+        "trend_cm_yr",
+        "trend_se",
+        "trend_recent_cm_yr",
+        "trend_recent_se",
+        "change_cm",
+        "leakage_trend_cm_yr",
+        "noise_2sigma_cm",
+        "rank_national",
+        "first_year",
+        "last_year"
+      ],
+      "sha256": "ef14069d3cb98b04dd4b1a5012e49e2ab64d5683871d9d10f39438ae976709ba"
+    },
+    "grace_district": {
+      "path": "tables/grace_district.parquet",
+      "rows": 191,
+      "columns": [
+        "state_id",
+        "ddr",
+        "trend_cm_yr",
+        "trend_se",
+        "trend_recent_cm_yr",
+        "trend_recent_se",
+        "change_cm",
+        "leakage_trend_cm_yr",
+        "noise_2sigma_cm",
+        "rank_national",
+        "mascon",
+        "n_mascons",
+        "first_year",
+        "last_year"
+      ],
+      "sha256": "69704adc0c3b34e8906cec1e897d45c7a8077e10de45ed09538238085ec71ea0"
+    },
+    "grace_years": {
+      "path": "tables/grace_years.parquet",
+      "rows": 4125,
+      "columns": [
+        "year",
+        "mascon",
+        "cm",
+        "months"
+      ],
+      "sha256": "f48362192e9a2ff9874646944fb35c5f76c262f2178741c178b6a7ea8797dc7d"
+    }
+  },
+  "sources": {
+    "inegi_boundaries": "available",
+    "siap": "available",
+    "power": "available",
+    "chirps": "available",
+    "grace": "available",
+    "ndvi": "available",
+    "smap": "available",
+    "gldas": "available",
+    "igbp": "available"
+  },
+  "settings": {
+    "sites": [],
+    "all_districts": true,
+    "output_root": "/home/claude/gradientdescentfarmers/data/processed/districts_national",
+    "cache_root": "/home/claude/gradientdescentfarmers/data/cache/districts",
+    "sources": {
+      "siap": true,
+      "power": true,
+      "chirps": true,
+      "grace": true,
+      "ndvi": true,
+      "smap": true,
+      "gldas": true,
+      "igbp": true
+    },
+    "siap_years": [
+      2003,
+      2025
+    ],
+    "weight_years": [
+      2016,
+      2025
+    ],
+    "weather_years": [
+      1982,
+      2025
+    ],
+    "normal_years": [
+      2001,
+      2025
+    ],
+    "ndvi_years": [
+      2003,
+      2025
+    ],
+    "smap_years": [
+      2015,
+      2025
+    ],
+    "smap_start": "2015-04-01",
+    "smap_hour_utc": "13:30",
+    "district_membership": "shared",
+    "et0_wind": "power",
+    "frost_c": 2.0,
+    "heat_c": 35.0,
+    "ndvi_radius_km": 15.0,
+    "smap_radius_km": 10.0,
+    "chirps_radius_km": 10.0,
+    "box_margin_deg": 0.5,
+    "http_timeout_s": 120,
+    "workers": 6
+  },
+  "note": "Committed copy of run 20261115T071028Z_d16825a6, tables recompressed with zstd (values identical)."
+}
