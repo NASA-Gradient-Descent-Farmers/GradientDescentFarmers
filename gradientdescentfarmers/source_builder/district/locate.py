@@ -82,8 +82,9 @@ def assign_districts(located: pd.DataFrame, weights: pd.DataFrame, primary: pd.D
     the municipality under more than one district, the others are listed in `other_districts` with their
     share of the municipality's sown area, because the site could belong to any of them.
     """
-    out = located.merge(primary[["state_id", "mun_id", "ddr", "ddr_name", "state", "municipality"]],
-                        on=["state_id", "mun_id"], how="left")
+    located = located.astype({"state_id": "Int64", "mun_id": "Int64"})
+    out = located.merge(primary[["state_id", "mun_id", "ddr", "ddr_name", "state", "municipality"]]
+                        .astype({"state_id": "Int64", "mun_id": "Int64"}), on=["state_id", "mun_id"], how="left")
     notes, others = [], []
     for r in out.itertuples(index=False):
         if pd.isna(r.state_id):

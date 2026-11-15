@@ -254,3 +254,20 @@ def test_locate_points_and_district_split(tmp_path):
     assert out.loc["a", "ddr"] == 133 and out.loc["a", "note"] == ""
     assert out.loc["b", "ddr"] == 135 and "Los Mochis" in out.loc["b", "other_districts"]
     assert out.loc["sea", "note"] == "outside every INEGI municipality"
+
+
+def test_rain_outliers_are_set_to_missing_and_flagged():
+    rng = np.random.default_rng(4)
+    rows = []
+    for y in range(1982, 2026):
+        for m in range(1, 13):
+            wet = max(rng.normal(300, 90), 50) if m == 7 else 0          # wet months vary a lot from year to year
+            rows.append({"state_id": 32, "mun_id": 43, "year": y, "month": m, "rain": 15.0 + (y % 5) + wet})
+    t = pd.DataFrame(rows)
+    t.loc[(t.year == 1991) & (t.month == 2), "rain"] = 4165.0            # the POWER artifact
+    t.loc[(t.year == 2010) & (t.month == 7), "rain"] = 900.0             # a real wet-season extreme
+    out = climate.flag_rain_outliers(t)
+    assert out.loc[(out.year == 1991) & (out.month == 2), "rain_flagged"].all()
+    assert out.loc[(out.year == 1991) & (out.month == 2), "rain"].isna().all()
+    assert not out.loc[(out.year == 2010) & (out.month == 7), "rain_flagged"].any()
+    assert int(out.rain_flagged.sum()) == 1

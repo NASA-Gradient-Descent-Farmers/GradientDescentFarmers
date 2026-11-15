@@ -29,7 +29,7 @@ class RotationEngine:
     """The engine bound to one panel run. `compare` takes the arguments of `compare.comparar_rotaciones`."""
 
     def __init__(self, run: Path, defaults: Mapping[str, Any] | None = None):
-        self.run = panel.resolve(run)
+        self.run = panel.use(run)            # select the panel now, so its tables can be read before a comparison
         self.defaults = dict(defaults or {})
 
     def compare(self, lugar: str, rotacion_actual, **kwargs) -> dict:

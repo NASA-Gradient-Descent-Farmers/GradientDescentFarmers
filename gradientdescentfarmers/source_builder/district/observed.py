@@ -205,7 +205,9 @@ def smap_years(start: date, end: date, bbox, cache_root: Path, hour: str = "13:3
         sl = f"[{rows[0]}:1:{rows[1]}][{cols[0]}:1:{cols[1]}]"
 
         def one(granule):
-            with opendap.dap4(sess, opendap.opendap_link(granule), [f"/Geophysical_Data/sm_rootzone{sl}"]) as f:
+            # Short timeout: a stalled request is retried instead of holding a worker for minutes.
+            with opendap.dap4(sess, opendap.opendap_link(granule), [f"/Geophysical_Data/sm_rootzone{sl}"],
+                              retries=8, timeout=60) as f:
                 rz = f["Geophysical_Data/sm_rootzone"][:]
             return granule_info(granule)[0], np.where(rz < 0, np.nan, rz).astype(np.float32)
 

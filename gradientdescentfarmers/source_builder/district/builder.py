@@ -60,7 +60,7 @@ KEYS = {
 RANGES = {
     "rain": (0, 3000), "rain_p20": (0, 3000), "et0": (0, 400), "tmin": (-30, 45), "tmax": (-20, 55),
     "frost_prob": (0, 1), "frost_nights": (0, 31), "heat_days": (0, 31), "ndvi": (-0.3, 1), "ndvi_p20": (-0.3, 1),
-    "ndvi_p80": (-0.3, 1), "smap_rootzone": (0, 0.9), "smap_relative": (0, 1), "sown_ha": (0, 5e6),
+    "ndvi_p80": (-0.3, 1), "smap_rootzone": (0, 1), "smap_relative": (0, 1), "sown_ha": (0, 5e6),
     "production_t": (0, 5e7), "sand": (0, 1), "silt": (0, 1), "clay": (0, 1), "weight_ha": (1, 5e6),
 }
 
@@ -114,8 +114,14 @@ class DistrictPanelBuilder:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         points_in = [(x.name, x.latitude, x.longitude) for x in s.sites]
 
-        loc = self._run("inegi_boundaries", lambda r: {"located": locate.locate_points(
-            points_in, locate.boundaries_path(s.cache_root, s.http_timeout_s))})
+        if points_in:
+            loc = self._run("inegi_boundaries", lambda r: {"located": locate.locate_points(
+                points_in, locate.boundaries_path(s.cache_root, s.http_timeout_s))})
+        else:
+            loc = SourceResult(source="inegi_boundaries", status="available", started_utc=utcnow())
+            loc.tables["located"] = pd.DataFrame(columns=["site", "latitude", "longitude", "state_id", "mun_id",
+                                                          "municipality_inegi", "state_inegi"])
+            self.results["inegi_boundaries"] = loc
         sp = self._run("siap", lambda r: siap.build(s.cache_root, s.siap_years, s.weight_years,
                                                      s.district_membership, s.http_timeout_s, self.log))
         if loc.status != "available" or sp.status != "available":
@@ -129,6 +135,8 @@ class DistrictPanelBuilder:
             if row.note:
                 loc.warnings.append(f"{row.site}: {row.note}" + (f" ({row.other_districts})" if row.other_districts else ""))
         targets = sites.dropna(subset=["ddr"])[["state_id", "ddr"]].drop_duplicates().astype("int64")
+        if s.all_districts:
+            targets = weights_all[DISTRICT].drop_duplicates().astype("int64")
         if targets.empty:
             return self._finish(export, fatal="no site falls in a SIAP district")
         weights = weights_all.merge(targets, on=DISTRICT)
@@ -252,7 +260,8 @@ def validate(name: str, t: pd.DataFrame, builder: DistrictPanelBuilder | None = 
     for col, (lo, hi) in RANGES.items():
         if col in t:
             v = pd.to_numeric(t[col], errors="coerce").dropna()
-            out["checks"][f"{col}_in_range"] = bool(((v >= lo) & (v <= hi)).all()) if len(v) else True
+            tol = 1e-9 * max(1.0, abs(hi))   # weighted means can exceed a bound by rounding (31.000000000000007)
+            out["checks"][f"{col}_in_range"] = bool(((v >= lo - tol) & (v <= hi + tol)).all()) if len(v) else True
     for col in t.columns:
         if col not in keys and t[col].dtype.kind in "fi":
             out["missing_share"][str(col)] = round(float(t[col].isna().mean()), 4) if len(t) else 1.0

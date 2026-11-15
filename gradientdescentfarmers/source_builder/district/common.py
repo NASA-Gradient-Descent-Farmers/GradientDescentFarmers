@@ -11,7 +11,7 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 REFERENCE = Path(__file__).with_name("reference")
 UNIT = ["state_id", "mun_id"]
@@ -30,7 +30,8 @@ class Site(BaseModel):
 class DistrictSettings(BaseModel):
     """Everything a district panel run depends on. Defaults reproduce the field-shift panel's windows."""
     model_config = ConfigDict(extra="forbid")
-    sites: list[Site] = Field(min_length=1)
+    sites: list[Site] = Field(default_factory=list)
+    all_districts: bool = False                               # every SIAP district, not only the sites' districts
     output_root: Path
     cache_root: Path
     sources: dict[str, bool] = Field(default_factory=dict)   # source -> enabled; missing keys mean enabled
@@ -52,6 +53,12 @@ class DistrictSettings(BaseModel):
     box_margin_deg: float = 0.5
     http_timeout_s: int = Field(default=120, ge=5, le=600)
     workers: int = Field(default=4, ge=1, le=12)
+
+    @model_validator(mode="after")
+    def _need_targets(self):
+        if not self.sites and not self.all_districts:
+            raise ValueError("give at least one site, or set all_districts")
+        return self
 
     def enabled(self, source: str) -> bool:
         return self.sources.get(source, True)
@@ -107,14 +114,29 @@ def bbox_for(points: pd.DataFrame, margin: float) -> tuple[float, float, float, 
 def boxes_for(points: pd.DataFrame, margin: float, gap_deg: float = 3.0) -> list[tuple[tuple, pd.DataFrame]]:
     """Group points that are close together into separate boxes, so far-apart districts do not force
     one huge box (Guanajuato and Sonora would otherwise span 9 x 10 degrees)."""
-    groups: list[list[int]] = []
-    for i, (la, lo) in enumerate(zip(points["lat"], points["lon"])):
-        for g in groups:
-            if any(abs(la - points["lat"].iloc[j]) < gap_deg and abs(lo - points["lon"].iloc[j]) < gap_deg for j in g):
-                g.append(i)
+    # Connected components: two points are linked when both coordinates are within gap_deg. Joining whole
+    # components (not the first matching group) keeps a national run to one or two boxes instead of many
+    # overlapping ones, each of which would be downloaded separately.
+    lat, lon = points["lat"].to_numpy(), points["lon"].to_numpy()
+    parent = list(range(len(points)))
+
+    def root(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    order = np.argsort(lon)
+    for a_pos, a in enumerate(order):
+        for b in order[a_pos + 1:]:
+            if lon[b] - lon[a] >= gap_deg:
                 break
-        else:
-            groups.append([i])
+            if abs(lat[a] - lat[b]) < gap_deg:
+                parent[root(a)] = root(b)
+    groups: dict[int, list[int]] = {}
+    for i in range(len(points)):
+        groups.setdefault(root(i), []).append(i)
+    groups = list(groups.values())
     out = []
     for g in groups:
         sub = points.iloc[g]

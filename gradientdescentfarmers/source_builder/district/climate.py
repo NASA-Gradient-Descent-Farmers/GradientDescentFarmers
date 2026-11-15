@@ -120,12 +120,25 @@ def fetch_power_cells(cells: list[tuple[float, float]], s: DistrictSettings, run
     from ..core.transport import CachedHTTP
 
     http = CachedHTTP(Path(s.cache_root), timeout=min(s.http_timeout_s, 300), retries=3, ttl_hours=24 * 365 * 5)
+
+    def one(cell):
+        lat, lon = cell
+        last = None
+        for attempt in range(4):
+            try:
+                payload = get_power(power_context(lat, lon, s, http, run_dir))
+                return cell, payload.tables["weather_daily"].set_index("date").sort_index()
+            except Exception as exc:          # transient API errors; the HTTP cache keeps finished cells
+                last = exc
+                time.sleep(5 * 2 ** attempt)
+        raise RuntimeError(f"POWER cell {lat},{lon}: {last!r}")
+
     out = {}
-    for lat, lon in cells:
-        payload = get_power(power_context(lat, lon, s, http, run_dir))
-        daily = payload.tables["weather_daily"].set_index("date").sort_index()
-        out[(lat, lon)] = daily
-        log(f"POWER cell {lat:+.3f},{lon:+.3f}: {len(daily):,} days")
+    with ThreadPoolExecutor(min(s.workers, 4)) as pool:   # POWER asks for moderate concurrency
+        for k, (cell, daily) in enumerate(pool.map(one, cells), 1):
+            out[cell] = daily
+            if k % 50 == 0 or k == len(cells):
+                log(f"POWER: {k}/{len(cells)} cells")
     return out
 
 
@@ -231,6 +244,31 @@ def apply_correction(frame: pd.DataFrame, ratios: pd.DataFrame) -> pd.DataFrame:
     return out.drop(columns=["ratio_season", "ratio_off"])
 
 
+# --- Quality control ---------------------------------------------------------------------------------
+
+RAIN_OUTLIER_IQR = 20.0      # monthly rain this many interquartile ranges above the month's upper quartile...
+RAIN_OUTLIER_MM = 200.0      # ...and above 200 mm is treated as a data error
+
+
+def flag_rain_outliers(yearly: pd.DataFrame) -> pd.DataFrame:
+    """Set implausible monthly rain to missing and flag it (`rain_flagged`).
+
+    POWER's corrected precipitation has spurious months in early 1991 and early 1992 over western and central
+    Mexico: daily values of 100-300 mm for weeks in the dry season. Checked against CHIRPS for the 184
+    municipality-months this rule catches nationally: median POWER 1,651 mm vs CHIRPS 40 mm (January 1991),
+    662 vs 5 (February 1991), 369 vs 70 (January 1992). Field-shift's 1982-2025 trend table contained them.
+    The bar is per municipality and calendar month (interquartile range at least 10 mm), so real extremes
+    such as the 2010 hurricanes are kept. Only years outside the 2001-2025 normals window were affected.
+    """
+    out = yearly.copy()
+    g = out.groupby([*UNIT, "month"])["rain"]
+    q1, q3 = g.transform(lambda s: s.quantile(0.25)), g.transform(lambda s: s.quantile(0.75))
+    bad = (out["rain"] > q3 + RAIN_OUTLIER_IQR * (q3 - q1).clip(lower=10.0)) & (out["rain"] > RAIN_OUTLIER_MM)
+    out["rain_flagged"] = bad
+    out.loc[bad, "rain"] = np.nan
+    return out
+
+
 # --- Build -----------------------------------------------------------------------------------------
 
 def build_municipal(points: pd.DataFrame, s: DistrictSettings, run_dir: Path, log=print):
@@ -259,6 +297,15 @@ def build_municipal(points: pd.DataFrame, s: DistrictSettings, run_dir: Path, lo
 def build(points: pd.DataFrame, weights: pd.DataFrame, s: DistrictSettings, run_dir: Path, log=print):
     """All climate tables plus a CHIRPS status: (tables, chirps_ok, chirps_error)."""
     normals, yearly, cells = build_municipal(points, s, run_dir, log)
+    yearly = flag_rain_outliers(yearly)
+    n_flagged = int(yearly["rain_flagged"].sum())
+    if n_flagged:
+        # Rain normals again from the cleaned yearly values, so a flagged month inside 2001-2025 does not
+        # inflate them (mean and 20th percentile of monthly totals, as in `monthly`).
+        window = yearly[yearly["year"].between(*s.normal_years)].groupby([*UNIT, "month"])["rain"]
+        clean = pd.DataFrame({"rain": window.mean(), "rain_p20": window.quantile(0.2)}).reset_index()
+        normals = normals.drop(columns=["rain", "rain_p20"]).merge(clean, on=[*UNIT, "month"], how="left")
+        log(f"rain QC: {n_flagged} municipality-months set to missing (years {sorted(set(yearly.loc[yearly.rain_flagged, 'year']))})")
     chirps_ok, chirps_error, chirps = False, None, None
     if s.enabled("chirps"):
         try:
@@ -272,7 +319,7 @@ def build(points: pd.DataFrame, weights: pd.DataFrame, s: DistrictSettings, run_
     if not chirps_ok:
         normals["rain_corrected"], yearly["rain_corrected"] = False, False
     normals = normals[[*UNIT, "month", *NORMAL_COLUMNS, "rain_corrected"]]
-    yearly = yearly[[*UNIT, "year", "month", *YEAR_COLUMNS, "rain_corrected"]]
+    yearly = yearly[[*UNIT, "year", "month", *YEAR_COLUMNS, "rain_corrected", "rain_flagged"]]
     tables = {
         "climate_municipal": normals,
         "climate_municipal_years": yearly,

@@ -40,7 +40,7 @@ class DistrictPanelSourceBuilder(SourceBuilder):
         for p in (output, cache):
             if not p.is_relative_to(root):
                 raise ValueError("District panel output and cache must be under the repository's data/ folder")
-        return DistrictSettings.model_validate({**dict(config.get("settings", {})), "sites": config["sites"],
+        return DistrictSettings.model_validate({**dict(config.get("settings", {})), "sites": config.get("sites", []),
                                                 "output_root": output, "cache_root": cache,
                                                 "sources": dict(config.get("sources", {}))})
 
@@ -51,6 +51,7 @@ class DistrictPanelSourceBuilder(SourceBuilder):
         if config.get("run") is not True:
             from .common import SOURCES
             return {"build_state": "preview", "sites": [x.model_dump() for x in settings.sites],
+                    "all_districts": settings.all_districts,
                     "sources": {k: settings.enabled(k) for k in SOURCES},
                     "output_root": str(settings.output_root), "cache_root": str(settings.cache_root),
                     "note": "Preview only: pass run=True (CLI: --run) to download data and build the panel"}

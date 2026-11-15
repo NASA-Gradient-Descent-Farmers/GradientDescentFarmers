@@ -82,6 +82,8 @@ ET0 uses POWER's daily 2 m wind (`et0_wind: "power"`, default) or the FAO-56 def
 
 Keys: (`state_id`, `mun_id` | `ddr`), `year`, `month`. Columns: `rain`, `et0`, `tmin`, `tmax`, `frost_nights`, `heat_days` (definitions as 5.3); municipal table also `rain_corrected`. Field-shift's yearly table covered 2001–2025 with rain and ET0 only, and its trends came from a separate May–October table that omits irrigated municipalities. This table replaces both.
 
+**Rain quality control.** Monthly rain more than 20 interquartile ranges above the municipality's upper quartile for that calendar month (IQR at least 10 mm) and above 200 mm is set to missing, with `rain_flagged` true. Nationally this removes 184 municipality-months, all in January–February 1991 and January 1992, where POWER has spurious dry-season rain: CHIRPS medians for the same municipality-months are 40, 5 and 70 mm against POWER's 1,651, 662 and 369. Field-shift's 1982–2025 trend table contained these months.
+
 ### 5.5 Rain correction (CHIRPS)
 
 Per municipality, the ratio of CHIRPS v2.0 to POWER mean rain over 2001–2025, for May–October and for November–April (clipped to 0.3–3; the November–April ratio only where POWER's mean exceeds 20 mm), applied to that municipality's rain **in every year**. One fixed ratio per season keeps the 1982–2025 series free of a step at 1999, when CHIRPS starts.
