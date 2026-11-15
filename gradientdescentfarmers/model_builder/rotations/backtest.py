@@ -293,8 +293,9 @@ def report_md(summary, pairs):
     return "\n".join(lines)
 
 
-def run(cutoff: int, national: int, jobs: int, out: Path):
-    full = panel.resolve(REPO / "resources" / "district_panel_national")
+def run(cutoff: int, national: int, jobs: int, out: Path, panel_path: str | None = None):
+    from .panel_store import local
+    full = panel.resolve(local(panel_path) if panel_path else REPO / "resources" / "district_panel_national")
     panel.use(full)
     demo = demo_cases()
     nat = national_cases(national, cutoff, exclude={"Cortazar", "Los Mochis", "Cajeme"}) if national else []
@@ -323,8 +324,9 @@ def main(argv=None):
     parser.add_argument("--national", type=int, default=30, help="random districts besides the demo cases (0: demo only)")
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--out", default=str(OUT))
+    parser.add_argument("--panel", help="panel run: a folder or gs://<bucket>/district_panel (default: the committed national panel)")
     args = parser.parse_args(argv)
-    summary = run(args.cutoff, args.national, args.jobs, Path(args.out))
+    summary = run(args.cutoff, args.national, args.jobs, Path(args.out), args.panel)
     print(json.dumps(summary, ensure_ascii=False, indent=1))
 
 

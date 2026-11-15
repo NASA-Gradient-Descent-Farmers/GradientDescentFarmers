@@ -19,7 +19,7 @@ import type { RotationsByLocation } from '../lib/rotations.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { environmentBubbles, type EnvironmentTopic } from './environmentAnswers.ts'
 import { locatedNote, rotationBubbles, type RotationTopic } from './rotationAnswers.ts'
-import { districtAnswer, type DistrictAnswer, type DistrictIndex, type DistrictInputs, type PriorityId } from '../lib/district.ts'
+import { districtAnswerFor, type DistrictAnswer, type DistrictIndex, type DistrictInputs, type DistrictPlace, type PriorityId } from '../lib/district.ts'
 import type { Narrator } from '../llm/client.ts'
 import type { FollowUp } from '../llm/prompt.ts'
 import { districtBubbles } from './districtAnswers.ts'
@@ -42,7 +42,15 @@ export interface ChatState {
   location: DemoLocationId | null
   /** What the farmer told the district engine in this chat (current rotation, water, priority). Only that engine reads it. */
   district?: DistrictInputs
+  /**
+   * A place anywhere in Mexico (handed over by the simple farmer view, /campo) when it is not one of the demo places: the
+   * chat then answers from the district engine alone. Choosing a demo place replaces it.
+   */
+  national?: { label: string; place: DistrictPlace }
 }
+
+/** The chat's stand-in for a national place: no demo id, so no WOFOST run or observed panel is looked up for it. */
+const nationalStandIn = (label: string): DemoLocation => ({ id: 'national' as DemoLocationId, name: label, latitude: 0, longitude: 0, results: null })
 
 /** The questions only the district engine asks. */
 export type DistrictQuestion = 'districtRotation' | 'districtPriority' | 'districtRegime'
@@ -417,11 +425,15 @@ async function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoL
 // ---- the district engine and the summary of both engines ----
 
 /** The district engine's answer for this chat's place and answers, or null (no index, no place, a file missing). */
+const districtPlaceOf = (state: ChatState, place: DemoLocation, env: Env): DistrictPlace | undefined =>
+  state.national && !state.location ? state.national.place : env.district?.index.lugares[place.id]
+
 async function districtFor(state: ChatState, place: DemoLocation, env: Env): Promise<DistrictAnswer | null> {
-  if (!env.district) return null
+  const where = districtPlaceOf(state, place, env)
+  if (!env.district || !where) return null
   try {
     const { water, goal, previous } = state.situation
-    return await districtAnswer(place.id, env.district.index, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api, translate: env.district.translate })
+    return await districtAnswerFor(where, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api, translate: env.district.translate })
   } catch {
     return null
   }
@@ -461,10 +473,10 @@ export function followUpOf(text: string, t: T): FollowUp | null {
 
 const PRIORITY_ORDER: PriorityId[] = ['ingreso', 'riesgo', 'agua', 'suelo', 'erosion', 'plagas', 'forraje']
 
-function districtAsk(question: DistrictQuestion, answer: DistrictAnswer, place: DemoLocation, env: Env): BotBubble {
+function districtAsk(question: DistrictQuestion, answer: DistrictAnswer, state: ChatState, place: DemoLocation, env: Env): BotBubble {
   const { t } = env
   if (question === 'districtRotation') {
-    const options = env.district!.index.lugares[place.id]?.regimenes[answer.inputs.agua] ?? []
+    const options = districtPlaceOf(state, place, env)?.regimenes[answer.inputs.agua] ?? []
     return { text: t('whatsapp.district.askRotation', { regime: t(`district.regime.${answer.inputs.agua}`) }), options: options.map((o) => ({ label: o.etiqueta })) }
   }
   if (question === 'districtPriority') {
@@ -479,7 +491,7 @@ function readDistrictAnswer(question: DistrictQuestion, text: string, state: Cha
   const { t } = env
   const own = state.district ?? {}
   if (question === 'districtRotation') {
-    const regimes = env.district!.index.lugares[place.id]?.regimenes ?? {}
+    const regimes = districtPlaceOf(state, place, env)?.regimenes ?? {}
     for (const options of Object.values(regimes)) {
       const hit = options?.find((o) => fold(o.etiqueta) === q || fold(o.rotacion) === q)
       if (hit) return { ...own, rotacion: hit.id }
@@ -529,7 +541,7 @@ async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation,
     case 'regime': {
       if (!answer) return { state: base, bubbles: none }
       const question: DistrictQuestion = id === 'rotation' ? 'districtRotation' : id === 'priority' ? 'districtPriority' : 'districtRegime'
-      return { state: { ...base, pending: question }, bubbles: [districtAsk(question, answer, place, env)] }
+      return { state: { ...base, pending: question }, bubbles: [districtAsk(question, answer, state, place, env)] }
     }
   }
   return withFollowUps({ state: base, bubbles, showsResults: true }, answer, env, [id])
@@ -538,6 +550,8 @@ async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation,
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
 export async function reply(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
+  // naming a demo place leaves a national place handed over by the farmer view
+  if (state.national && readLocation(text)) state = { ...state, national: undefined }
   if (env.district) {
     const turn = await districtReply(text, state, env)
     if (turn) return turn
@@ -580,12 +594,19 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
 
 /** The district engine's part of a reply: a follow-up button, or the answer to a district question. Null when it is neither. */
 async function districtReply(text: string, state: ChatState, env: Env): Promise<Turn | null> {
-  const place = state.location ? demoLocation(state.location) : null
+  const national = state.national && !state.location ? nationalStandIn(state.national.label) : null
+  const place = state.location ? demoLocation(state.location) : national
   if (place && state.pending && DISTRICT_QUESTIONS.includes(state.pending)) {
     const inputs = readDistrictAnswer(state.pending as DistrictQuestion, text, state, place, env)
     if (inputs) return summaryTurn({ ...state, pending: null, focus: null, district: inputs }, place, env, 'summary', '')
   }
   const id = followUpOf(text, env.t)
+  if (!id && national) {
+    // a national place answers everything from the district engine: the model takes the question when it can, else the
+    // written summary
+    const asked = env.narrate ? await summaryTurn(state, national, env, 'question', text) : null
+    return asked && asked.bubbles.length > 0 ? asked : summaryTurn({ ...state, pending: null, focus: null }, national, env, 'summary', text)
+  }
   if (!id) return null
   if (!place) return { state: { ...state, pending: 'location', focus: 'plant' }, bubbles: [locationAsk(env.t)] }
   return followUpTurn(id, state, place, env)

@@ -10,7 +10,8 @@ import { llmEnabled, makeNarrator, probeNarrator, type Narrator } from '../llm/c
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
 import { richText } from './format.tsx'
-import { appRoot } from './route.ts'
+import { appRoot, WA_HANDOFF_KEY } from './route.ts'
+import type { DistrictInputs, DistrictPlace } from '../lib/district.ts'
 import { converse, TYPING_MS } from './session.ts'
 import { WhatsAppMark } from './WhatsAppMark.tsx'
 import './whatsapp.css'
@@ -27,6 +28,25 @@ const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare', 'climate', 'soil', '
 
 const clock = (lang: 'es' | 'en') => new Date().toLocaleTimeString(lang === 'en' ? 'en-GB' : 'es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+/** What the simple farmer view (/campo) hands over: a demo place id, or a place anywhere with its district, and its answers. */
+interface Handoff {
+  demoId?: string
+  national?: { label: string; place: DistrictPlace }
+  inputs: DistrictInputs
+}
+
+function readHandoff(raw: string | null): Handoff | null {
+  if (!raw) return null
+  if (DEMO_LOCATIONS.some((d) => d.id === raw)) return { demoId: raw, inputs: {} }
+  try {
+    const value = JSON.parse(raw) as Handoff
+    if (!value || typeof value !== 'object' || (!value.demoId && !value.national?.place?.regimenes)) return null
+    return { demoId: value.demoId, national: value.national, inputs: value.inputs ?? {} }
+  } catch {
+    return null
+  }
+}
 
 /** ?lang=en (or es) in the address picks the chat's language, e.g. /demo/whatsapp?lang=en for English-speaking reviewers. */
 function langFromAddress(): 'en' | 'es' | undefined {
@@ -111,6 +131,11 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
   const generation = useRef(0)
   const nextId = useRef(1)
   const endRef = useRef<HTMLDivElement>(null)
+  // the latest env for the handoff in begin(), without restarting the chat when the env changes
+  const envRef = useRef(env)
+  useEffect(() => {
+    envRef.current = env
+  }, [env])
 
   const add = useCallback((from: Message['from'], bubble: BotBubble | { text: string }) => {
     const options = 'options' in bubble ? bubble.options : undefined
@@ -129,6 +154,26 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
         await sleep(i === 0 ? 300 : Math.round(typingMs * 0.8))
         if (mine !== generation.current) return
         add('bot', bubble)
+      }
+      // arriving from the simple farmer view (/campo) at a demo place: open the chat there, with its planting question
+      let handoff: string | null = null
+      try {
+        handoff = sessionStorage.getItem(WA_HANDOFF_KEY)
+        sessionStorage.removeItem(WA_HANDOFF_KEY)
+      } catch {
+        // no storage: the chat starts at the greeting, as always
+      }
+      const start = readHandoff(handoff)
+      if (start) {
+        // the farmer's own answers (water, last crop, priority) and, outside the demo places, their district
+        chat.current = { ...chat.current, district: start.inputs, ...(start.national ? { national: start.national } : {}) }
+        const demoPlace = DEMO_LOCATIONS.find((d) => d.id === start.demoId)
+        for (const text of [...(demoPlace ? [demoPlace.name] : []), t('whatsapp.suggestions.plant')]) {
+          if (mine !== generation.current) return
+          add('user', { text })
+          chat.current = await converse(text, chat.current, envRef.current, { typing: (on) => mine === generation.current && setTyping(on), show: (bubble) => add('bot', bubble), wait: sleep, alive: () => mine === generation.current }, typingMs)
+        }
+        if (mine === generation.current) setLocation(chat.current.location)
       }
     } finally {
       if (mine === generation.current) {

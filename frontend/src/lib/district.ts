@@ -280,11 +280,22 @@ export async function districtAnswer(
   base: string,
   options: { fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T } = {},
 ): Promise<DistrictAnswer | null> {
+  const place = index.lugares[placeId]
+  if (!place) return null
+  return districtAnswerFor(place, own, app, base, options)
+}
+
+/** The same, for any district the caller already has (a demo place, or one of the national export: campo/national.ts). */
+export async function districtAnswerFor(
+  place: DistrictPlace,
+  own: DistrictInputs,
+  app: AppAnswers,
+  base: string,
+  options: { fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T } = {},
+): Promise<DistrictAnswer | null> {
   const fetcher = options.fetcher ?? fetch
   // the engine writes Spanish; in English the page passes its translation of the data (lib/dataI18n.ts)
   const tr = options.translate ?? (<T,>(value: T) => value)
-  const place = index.lugares[placeId]
-  if (!place) return null
   const inputs = effectiveInputs(place, own, app)
   const option = place.regimenes[inputs.agua]?.find((o) => o.id === inputs.rotacion)
   if (!option) return null

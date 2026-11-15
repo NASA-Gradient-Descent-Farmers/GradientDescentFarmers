@@ -23,3 +23,10 @@ export function appRoot({ pathname }: Where): string {
   if (trimmed.endsWith(DEMO_PATH)) return trimmed.slice(0, -DEMO_PATH.length) + '/'
   return pathname.replace(/[^/]*$/, '') || '/'
 }
+
+/** The simple farmer view (/campo) leaves the farmer's demo place here so the chat can open at it (WhatsAppDemo.tsx). */
+export const WA_HANDOFF_KEY = 'yolia-wa-handoff'
+
+/** The simple farmer view: /campo, #/campo, or #campo (hosts that pass only a plain hash). */
+export const CAMPO_PATH = '/campo'
+export const isCampo = ({ pathname, hash }: Where): boolean => tail(pathname).endsWith(CAMPO_PATH) || ['/campo', 'campo'].includes(tail(hash.replace(/^#/, '')))

@@ -9,6 +9,7 @@ import { landingEn } from './landing.en.ts'
 import { nearEn } from './near.en.ts'
 import { envEn } from './env.en.ts'
 import { districtEn } from './district.en.ts'
+import { campoEn } from './campo.en.ts'
 
 export const en = {
   assistant: assistantEn,
@@ -20,6 +21,7 @@ export const en = {
   near: nearEn,
   env: envEn,
   district: districtEn,
+  campo: campoEn,
   app: {
     title: 'YoliA',
     tagline: 'NASA data and a crop model',

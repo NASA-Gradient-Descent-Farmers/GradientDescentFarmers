@@ -65,6 +65,9 @@ class RotationModelBuilder(ModelBuilder):
             target = DEFAULT_PANEL
         if isinstance(source, Mapping) and source.get("build_state") == "failed" and not config.get("panel"):
             raise ValueError(f"The district panel run failed: {source.get('fatal')}")
+        if isinstance(target, str) and target.startswith("gs://"):   # a run in Cloud Storage: downloaded once, then local
+            from .panel_store import local
+            target = local(target)
         return RotationEngine(Path(target), config.get("defaults"))
 
 
