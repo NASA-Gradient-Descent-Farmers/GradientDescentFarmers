@@ -19,8 +19,11 @@ import numpy as np
 
 from . import panel
 
-# Plant-available water per metre of soil, mm. Round values inside the ranges of FAO-56 (Allen et al. 1998),
-# Table 19; they were already the tool's assumption (indicators.Place.soil_water_mm_m). Verify against the table.
+# Plant-available water per metre of soil, mm. Checked on 15 Nov 2026 against FAO-56 (Allen et al. 1998) Table 19
+# (field capacity and wilting point ranges, p. 300): the difference of the range midpoints is ~75 mm/m for sand,
+# ~120 for sandy loam and ~130 for loam, and ~140 for clay (clay's range reaches 200). "arenoso" 70 and "franco" 120
+# sit at those midpoints; "arcilloso" 170 is inside clay's range but above its midpoint. Used only for crops sown on
+# residual moisture.
 AVAILABLE_WATER = {"arenoso": 70.0, "franco": 120.0, "arcilloso": 170.0}
 LABELS = {"arenoso": "arenoso (suelto, se seca pronto)", "franco": "franco (ni suelto ni pesado)",
           "arcilloso": "arcilloso (pesado, guarda humedad)"}

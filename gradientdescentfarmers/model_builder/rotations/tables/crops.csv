@@ -1,7 +1,7 @@
 key,nombre,familia,uso,leguminosa,siap,ms_producto,kc_ini,kc_med,kc_fin,d_ini,d_des,d_med,d_fin,t_ref,t_base,raiz_m,n_producto_kg_t,ndfa,nhi,res_pendiente,res_intercepto,raiz_ratio,n_residuo,helada,calor,sequia,forraje_residuo,notas
 maize,maíz,Poaceae,grano,0,Maíz grano,0.88,0.3,1.2,0.35,20,35,40,30,22.0,10.0,1.2,14.0,,,1.03,0.61,0.22,0.006,0,1,1,0.5,Sensible a helada y a calor >35 °C en floración
 sorghum,sorgo,Poaceae,grano,0,Sorgo grano,0.89,0.3,1.05,0.55,20,35,40,30,22.0,10.0,1.5,15.0,,,0.88,1.33,0.22,0.007,0,2,2,0.5,Tolerante a sequía y calor; comparte plagas con maíz (gusano cogollero)
-wheat,trigo,Poaceae,grano,0,Trigo grano,0.89,0.3,1.15,0.3,20,25,60,30,15.0,0.0,1.2,20.0,,,1.51,0.52,0.24,0.006,2,0,1,0.4,Cultivo de invierno o de temporal en zonas altas
+wheat,trigo,Poaceae,grano,0,Trigo grano,0.89,0.3,1.15,0.3,20,50,60,30,15.0,0.0,1.2,20.0,,,1.51,0.52,0.24,0.006,2,0,1,0.4,Cultivo de invierno o de temporal en zonas altas
 barley,cebada,Poaceae,grano,0,Cebada grano,0.89,0.3,1.15,0.25,15,25,50,30,15.0,0.0,1.2,17.0,,,0.98,0.59,0.22,0.007,2,0,1,0.45,Común en el altiplano; mercado ligado a maltería
 oats,avena (grano),Poaceae,grano,0,Avena grano,0.89,0.3,1.15,0.25,15,25,50,30,15.0,0.0,1.0,17.0,,,0.91,0.89,0.25,0.007,2,0,1,0.5,
 oats_forage,avena forrajera,Poaceae,forraje,0,Avena forrajera en verde,0.25,0.3,1.1,0.9,15,25,40,10,15.0,0.0,1.0,5.0,,,0.1,0.3,0.54,0.01,2,0,1,1.0,Se cosecha verde; producción reportada en peso fresco
