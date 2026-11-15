@@ -24,6 +24,7 @@ GLDAS_VARIABLES = {"texture_class": ("texture", "GLDAS_soiltex"), "sand": ("frac
 GLDAS_FILL = -9999.0
 GLDAS_PRODUCT = "GLDAS soil texture (Noah, 0.25 deg) and soil fractions"
 IGBP_DOI = "10.3334/ORNLDAAC/569"
+IGBP_COLLECTION = "C2216863098-ORNL_CLOUD"
 IGBP_PRODUCT = "IGBP-DIS SoilData surface products (5 arc-min), ORNL DAAC"
 IGBP_LAYERS = {"pawc": "profile_available_water_capacity", "soilcarb": "soil_carbon_density"}
 COLUMNS = ["texture_class", "sand", "silt", "clay", "profile_available_water_capacity", "soil_carbon_density"]
@@ -89,16 +90,17 @@ def _grid_value(header, grid, lat, lon):
 
 
 def igbp(points: pd.DataFrame, cache_root: Path) -> pd.DataFrame:
-    from ..core.auth import login_earthdata
+    from ..core import opendap
 
-    earthaccess = login_earthdata()
     folder = Path(cache_root) / "igbp"
     folder.mkdir(parents=True, exist_ok=True)
-    granules = earthaccess.search_data(doi=IGBP_DOI)
     key = lambda g: g["umm"]["GranuleUR"].split(".")[1]
-    wanted = [g for g in granules if key(g) in IGBP_LAYERS and not (folder / f"{key(g)}.dat").is_file()]
-    if wanted:
-        earthaccess.download(wanted, str(folder))
+    if not all((folder / f"{k}.dat").is_file() for k in IGBP_LAYERS):
+        sess = opendap.session()
+        for g in opendap.search(concept_id=IGBP_COLLECTION):
+            if key(g) in IGBP_LAYERS and not (folder / f"{key(g)}.dat").is_file():
+                path = opendap.download(g, folder, sess)
+                path.replace(folder / f"{key(g)}.dat")
     out = points[UNIT].copy().astype("int64")
     for k, col in IGBP_LAYERS.items():
         header, grid = _read_ascii_grid(folder / f"{k}.dat")

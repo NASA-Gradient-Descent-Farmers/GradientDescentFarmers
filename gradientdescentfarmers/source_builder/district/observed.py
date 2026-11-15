@@ -97,11 +97,10 @@ def fetch_cropland(bboxes: list, cache_root: Path, year: int = 2015) -> dict:
             todo.append(bbox)
     if not todo:
         return out
-    import earthaccess
     from pyhdf.SD import SD, SDC
 
     granules = opendap.search("MCD12C1", "061", (f"{year}-01-01", f"{year}-12-31"))
-    files = earthaccess.download(granules[:1], str(folder))
+    files = [opendap.download(granules[0], folder, opendap.session())]
     hdf = SD(str(files[0]), SDC.READ)
     try:
         for bbox in todo:

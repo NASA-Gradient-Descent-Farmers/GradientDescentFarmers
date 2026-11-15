@@ -36,9 +36,9 @@ print(result["build_state"], result["output_dir"])
 
 ## Earthdata (NDVI, SMAP, IGBP soil)
 
-These need a NASA Earthdata login. Put `EARTHDATA_TOKEN`, or `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD`, in `gradientdescentfarmers/source_builder/.env` (ignored by Git), the same file the rest of `source_builder` uses. In your Earthdata profile, approve the **LP DAAC**, **NSIDC** and **ORNL DAAC** applications, or the first download fails. Without a login those sources are marked `missing` and the rest of the panel is still built.
+These need NASA Earthdata credentials. The simplest is a token: generate one in your Earthdata profile ("Generate Token") and put `EARTHDATA_TOKEN=...` in `gradientdescentfarmers/source_builder/.env` (ignored by Git), the same file the rest of `source_builder` uses. With a token, every request carries it as a bearer header, so the run never depends on the Earthdata Login host, which sometimes resets connections. `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` also work (through earthaccess, with retries). If a download is refused, approve the **LP DAAC**, **NSIDC** and **ORNL DAAC** applications in your profile. Without credentials those sources are marked `missing` and the rest of the panel is still built.
 
-SMAP is the slow one: one request per day per box, about 4,000 per box for 2015–2025. Start it early; it resumes from the cache if interrupted.
+SMAP is the slow one: one request per day per box, about 4,000 per box for 2015–2025, roughly 15 minutes per box. NDVI takes a few minutes, plus a one-time 1.2 GB land-cover download. Everything is cached, and SMAP resumes by year if interrupted. A full first build for the three sites took about 45 minutes.
 
 ## Using the tables with the field-shift engine
 

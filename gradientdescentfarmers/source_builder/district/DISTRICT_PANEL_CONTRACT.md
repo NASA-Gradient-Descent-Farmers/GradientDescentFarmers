@@ -130,7 +130,8 @@ Run with `district_membership: "primary"` and `et0_wind: "fao_default"` against 
 | GLDAS soil | identical |
 | `municipality_districts` (national) | 2,438 of 2,446 equal; 8 ties broken by sown area instead of arbitrarily; none in the target districts |
 | Rain | within 1% where field-shift corrected it (monthly vs daily CHIRPS files). **Different in 6 irrigated municipalities** (Ahome, Bácum, Cajeme, San Ignacio Río Muerto and 2 more) that field-shift never corrected because its CHIRPS table came from the rainfed yield panel: CHIRPS puts their rain 16–38% below POWER |
-| NDVI, SMAP, IGBP | not checked here: need an Earthdata login |
+| NDVI, SMAP, IGBP soil (municipal) | identical (checked with an Earthdata token, full 2003–2025 NDVI and 2015–2025 SMAP) |
+| NDVI, SMAP (district, default `shared` run) | differ by up to 0.05 NDVI and 0.03 relative moisture: the shared-membership rule, not the data |
 
 The field-shift engine (`comparar_rotaciones`) runs on the panel for all three districts and gives the same alternatives and income differences as on field-shift's data; priority scores differ by at most 1 point (the rain correction).
 
