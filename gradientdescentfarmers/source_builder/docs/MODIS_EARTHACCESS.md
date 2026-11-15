@@ -1,55 +1,50 @@
-# MODIS NASA Earthdata / `earthaccess` — Guanajuato
+# MODIS mediante NASA Earthdata y earthaccess
 
-The ORNL REST `/bands` endpoints timed out on the local network. This alternate
-data path uses NASA CMR and **LP DAAC**, via `earthaccess` (not Earth Engine).
-The source is explicitly configured as `modis_provider: earthaccess`.
+El proveedor `modis_provider="earthaccess"` consulta NASA CMR y LP DAAC para
+MOD13Q1.061, MOD11A2.061 y MOD16A2GF.061. El ejemplo integral lo configura en
+`resources/guanajuato_integrated_settings.json`.
 
-## Scientific method
+## Método
 
-1. CMR spatial/temporal search for MOD13Q1.061, MOD11A2.061 and MOD16A2GF.061.
-2. Download native HDF4 granules with `earthaccess` into
-   `data/cache/earthdata/modis/<product>/recovery/attempt-*/`. Cache validation
-   uses the native HDF4 SD datasets via pyhdf, without GDAL; originals
-   are never overwritten.
-3. Project longitude/latitude (20.4243195, -101.1466639) to the native
-   MODLAND sinusoidal grid using pyproj, verify the HDF4 tile h/v against
-   the coordinate, then read one pixel per SDS using pyhdf.SD.
-4. Preserve the **raw integer science bands AND QA bands**. Run the same
-   `standardize_mod13`, `standardize_mod11`, `standardize_mod16` logic as
-   the existing ORNL provider (native scales, bits, masked variables).
-5. Export original file names, source, QA validation, units and run manifest.
+1. Buscar gránulos por punto y ventana temporal.
+2. Filtrar por fecha de adquisición: CMR puede devolver una composición que
+   se solapa con la ventana pero empieza antes de ella.
+3. Reutilizar HDF4 válidos o descargarlos en nuevas carpetas
+   `data/cache/earthdata/modis/<producto>/recovery/attempt-*/`.
+4. Proyectar el punto WGS84 a MODLAND sinusoidal, comprobar el tile y leer
+   un píxel por capa con `pyhdf.SD`.
+5. Conservar ciencia y QA nativas y aplicar `standardize_mod13`,
+   `standardize_mod11` y `standardize_mod16`.
 
-**Important:** `earthaccess` is a CMR/search/download library, not an HDF4
-raster reader. Native HDF4 sampling needs **pyhdf** and **pyproj**, not the GDAL HDF4
-plugin. Install via `python -m pip install -e '.[source,source-test,source-modis]'`
-or `conda install -c conda-forge pyhdf` if macOS pip cannot resolve a wheel.
-HDF4 is a distinct format from the HDF5 used for GPM and SMAP.
-
-## Discovery notebook
-
-Open `gradientdescentfarmers/source_builder/discovery.ipynb` and run the
-geolocation check first. Download is disabled until RUN_LIVE is explicitly
-set to True. Start with only one MOD13Q1 granule, check SDS names, raw band
-values, h/v tile, and QA before requesting the other products.
-
-## Pilot
-
-Install as for SourceBuilder and run:
+`earthaccess` hace la búsqueda y descarga; `pyhdf` lee HDF4 y `pyproj` resuelve
+la geolocalización. Rasterio sigue siendo necesario para SoilGrids, pero su
+controlador HDF4 no es requisito para MODIS.
 
 ```bash
+python -m pip install -e '.[source,source-test,source-modis]'
 python -m gradientdescentfarmers.source_builder \
-  --config resources/guanajuato_modis_earthaccess.json \
-  --run
+  --config resources/guanajuato_integrated.json --run
 ```
 
-This pilot limits each product to **2 granules** so it is NOT a
-two-year complete MODIS series. `build_state` is expected to be partial
-when a bounded query returns usable observations, even if QA passes.
-Increase `modis_max_granules` only after validating file format, raw
-bands, QA flags and the spatial sample. Full 2024–2025 products can involve
-dozens of tiles per product and considerable download size.
+Ese comando ejecuta **todas las fuentes del preset integral**. El preset piloto
+de dos gránulos se retiró. Para un diagnóstico acotado, duplicar la configuración
+según el README, habilitar solo los tres productos MODIS y reducir
+`modis_max_granules`; esa prueba no demuestra una serie completa. Mantener su
+salida separada de los runs aprobados.
 
-For concurrent Earthdata GPM/SMAP errors inspect:
-`data/guanajuato_smoke/guanajuato_valle_demo/runs/5508cf72d72d40f4/availability.json`.
-The top-level `build_state=failed` alone cannot identify search,
-authentication, HDF5 download or extraction errors.
+## Inspección y ejemplo auditado
+
+El notebook vigente es `notebooks/guanajuato_pipeline_validation.ipynb`, con
+adquisición desactivada por defecto. `core/modis_earthaccess.py` también expone
+`list_science_datasets(path)` para inspeccionar capas y dimensiones sin cargar
+arrays completos. El notebook de discovery anterior se retiró.
+
+El run `67b66942681a4214` tiene calendarios 2024–2025 completos: 46/92/92
+composiciones. Pares utilizables tras QA: 41 NDVI/EVI, 67 LST día/noche y
+79 ET/PET. Los faltantes de QA permanecen como tales; el inventario completo
+no garantiza que cada observación sea utilizable.
+
+Revisar `availability.json`, `validation.json`, `provenance.json` y
+`handoff_report.json` del mismo run para diferenciar búsqueda, autenticación,
+descarga, extracción y calidad. Ver el [README general](../README.md) para
+adaptar el punto y el periodo.

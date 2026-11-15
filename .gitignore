@@ -8,8 +8,9 @@
 __pycache__/
 *.pyc
 
-# Raw / downloaded data
-data/
+# Generated data stays local; keep its directory guide in Git.
+/data/*
+!/data/README.md
 
 # LaTeX build files
 *.aux

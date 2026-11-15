@@ -60,16 +60,12 @@ git pull --ff-only origin daniel-sourcebuilder
 python -m pip install -e '.[source,source-test,source-modis]'
 python -m pytest tests/source_builder tests/test_scaffold.py -q
 
-# Optional diagnostic only: this small smoke cannot prove a full GPM day.
-python -m gradientdescentfarmers.source_builder \
-  --config resources/guanajuato_smoke.json --run
-
 # Start a new integrated run only when a fresh acquisition is needed.
 python -m gradientdescentfarmers.source_builder \
   --config resources/guanajuato_integrated.json --run
 ```
 
-Output is always versioned in `data/integrated_guanajuato/guanajuato_valle_demo/runs/<run_id>/`. Older baseline, WorldBank, MODIS-pilot and smoke runs are untouched. Original Earthdata HDF/HDF4 cache is reused where valid; large downloads may require substantial free local disk space. Do not delete HDF files if a run is interrupted: the recovery workflow preserves valid granules.
+Output is versioned in `data/integrated_guanajuato/guanajuato_valle_demo/runs/<run_id>/`. Older baseline, WorldBank, MODIS-pilot and smoke runs were archived under `data/archive/`, with verified restoration instructions. The retired JSON presets are available in Git history; the three current Guanajuato JSON files are the input, integrated settings and integrated entry point. Original Earthdata HDF/HDF4 cache is reused where valid; large downloads may require substantial free local disk space. See the [data directory guide](../../../data/README.md).
 
 Run one acquisition at a time when sharing this cache. Existing valid granules
 are reused, but the builder does not implement a process lock. A canceled run

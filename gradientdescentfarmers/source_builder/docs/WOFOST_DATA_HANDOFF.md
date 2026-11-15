@@ -106,7 +106,7 @@ La ruta de cada archivo es `<RUN_DIR>/standardized/<nombre>.csv`, a menos que el
 
 ## 4. Dónde están los runs ya reportados
 
-Estos paths son **locales a la Mac que ejecutó el pipeline**; se mencionan para identificar el origen, no para indicar que todo su contenido ya está sincronizado al repositorio:
+Estos paths son **locales a la Mac que ejecutó el pipeline**. Las primeras cuatro filas son rutas históricas: esos runs están respaldados en `data/archive/`, con instrucciones de restauración. El último es el dataset vigente. Ver la [guía de data](../../../data/README.md).
 
 | Run ID | Directorio bajo `data/` | Resultado conocido |
 |---|---|---|
@@ -114,9 +114,9 @@ Estos paths son **locales a la Mac que ejecutó el pipeline**; se mencionan para
 | `78aa647095a849ce` | `worldbank_recovery/guanajuato_valle_demo/runs/78aa647095a849ce/` | World Bank disponible, aislado |
 | `befdd22931504ee0` | `modis_earthaccess/guanajuato_valle_demo/runs/befdd22931504ee0/` | 2 compuestos por producto; MOD13/16 QA completa de esas 2 filas, MOD11 50%; **NO** serie histórica completa |
 | `2d18a644f624482e` | `guanajuato_smoke/guanajuato_valle_demo/runs/2d18a644f624482e/` | GPM `partial` (smoke de 2 granulos) y SMAP `available`; autenticación y acceso reales funcionando |
-| `<RUN_ID>` | `integrated_guanajuato/guanajuato_valle_demo/runs/<RUN_ID>/` | **Planeado**: un solo run con todas las fuentes habilitadas y manifiesto común. Pendiente de ejecutar/verificar |
+| `67b66942681a4214` | `integrated_guanajuato/guanajuato_valle_demo/runs/67b66942681a4214/` | Integral ejecutado y auditado; calendarios completos y faltantes QA MODIS conservados |
 
-**`data/` está ignorado en `.gitignore`.** Hacer `git pull` **no descarga los CSV**. Habrá que compartir por un canal interno el directorio completo de un `RUN_ID` (ZIP, carpeta compartida o GCS), más el identificador exacto, sin incluir archivos `.env` ni credenciales. Mantener juntos manifiestos y tablas. No subir datos sensibles de agricultores al repositorio público.
+**Los datasets de `data/` están ignorados en `.gitignore`; solo se versiona su README.** Hacer `git pull` **no descarga los CSV**. La entrega está en el prefijo GCS indicado en la sección 8; mantener juntos manifiestos y tablas del mismo run, sin incluir `.env` ni credenciales.
 
 ## 5. Código mínimo para consumir una tabla (verificar SHA-256)
 
@@ -201,11 +201,7 @@ git pull --ff-only origin daniel-sourcebuilder
 python -m pip install -e '.[source,source-test,source-modis]'
 python -m pytest tests/source_builder tests/test_scaffold.py -q
 
-# Prueba GPM completa: un día, 48 intervalos (NO todos los días 2024–2025)
-python -m gradientdescentfarmers.source_builder \
-  --config resources/guanajuato_full_day.json --run
-
-# Cuando el día GPM esté verificado, run integral:
+# Nueva adquisición integral, solo cuando sea necesaria; incluye un día GPM.
 python -m gradientdescentfarmers.source_builder \
   --config resources/guanajuato_integrated.json --run
 

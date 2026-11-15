@@ -1,6 +1,6 @@
 # Contrato de datos — FarmProfileBuilder V2 (Fase 1)
 
-**Estado:** documentación del código existente (rama `feature/farmadapt-bootstrap`), no especificación de WOFOST ni promesa de recomendaciones agrícolas. Actualizar conjuntamente con `farmadapt/schema.py`, `settings.py` y `builder.py`.
+**Estado:** contrato del código existente en `gradientdescentfarmers/source_builder/core/`. Actualizar conjuntamente con `schema.py`, `settings.py` y `builder.py`; la especificación del modelo WOFOST se prepara por separado.
 
 ## 1. Límite de responsabilidades
 
@@ -12,14 +12,14 @@ FarmProfileBuilder
                      ↓
 FarmProfile (manifiesto) + tablas separadas + QA + provenance + readiness
                      ↓
-[Fase 2, no implementada] Feasibility / CropCatalog / WOFOST / RotationPlanner
+FeasibilityAssessment (prerrequisitos) → [pendiente] CropCatalog / WOFOST / RotationPlanner
 ```
 
 El builder **no** selecciona cultivos, no predice rendimiento, no demuestra aptitud agronómica, no optimiza rentabilidad y no simula cultivos asociados.
 
 ## 2. Entrada — FarmerInput (Pydantic)
 
-Referencia normativa: `farmadapt/schema.py:FarmerInput`.
+Referencia normativa: `gradientdescentfarmers/source_builder/core/schema.py:FarmerInput`.
 
 | Grupo | Campos actuales | Validaciones/semántica |
 |---|---|---|
@@ -34,18 +34,18 @@ Los objetivos actuales son `profit`, `downside_risk`, `water`, `soil_health` y `
 
 ## 3. Configuración — BuilderSettings
 
-Referencia normativa: `farmadapt/settings.py:BuilderSettings`.
+Referencia normativa: `gradientdescentfarmers/source_builder/core/settings.py:BuilderSettings`.
 
 - `output_root`, `cache_root`: rutas **locales** `pathlib.Path`; no son URIs `gs://`.
 - `source_overrides`: selección explícita de proveedores, con prioridad respecto al modo `basic/advanced`.
 - Ventanas `weather_start/end`, `modis_start/end`, `gpm_start/end`, `smap_start/end`, `cmip_start/end`; distintos conjuntos **no comparten necesariamente las mismas fechas**.
 - Control de límites: `http_timeout_s`, `retries`, `max_workers`, `gpm_max_granules`, `smap_max_granules`, `soil_max_requests`.
 - `cache_enabled`, `cache_ttl_hours`, `soil_scope`, `export_format`, `input_files_root`, umbrales de variables climáticas, opciones Earth Engine.
-- `configs/quick_baseline.json` habilita el conjunto básico y deshabilita GPM/SMAP por override. El conjunto básico incluye POWER, SRTM, SoilGrids, MODIS (3) y World Bank.
+- El conjunto básico predeterminado incluye POWER, SRTM, SoilGrids, MODIS (3) y World Bank. El ejemplo vigente `resources/guanajuato_integrated_settings.json` añade GPM/SMAP mediante overrides explícitos; `resources/guanajuato_integrated.json` enlaza esos settings y el input del predio.
 
 ## 4. Salida — FarmProfile
 
-Referencia normativa: `farmadapt/schema.py:FarmProfile`.
+Referencia normativa: `gradientdescentfarmers/source_builder/core/schema.py:FarmProfile`.
 
 | Campo | Qué contiene | Precaución |
 |---|---|---|
@@ -107,6 +107,9 @@ Documentos siguientes:
 - [CROP_SHIFT_REQUIREMENTS.md](CROP_SHIFT_REQUIREMENTS.md): umbrales de evidencia para explorar, simular y recomendar.
 - [WOFOST_TRANSITION.md](WOFOST_TRANSITION.md): contratos/adaptadores técnicos a implementar.
 
-## 7. Evidencia de verificación (noviembre 2026)
+## 7. Registro histórico de la migración
+
+Los resultados siguientes corresponden a una etapa previa. El ejemplo vigente,
+ejecutado y auditado, está en [GUANAJUATO_INTEGRATED_RUN.md](GUANAJUATO_INTEGRATED_RUN.md).
 
 En el Mac del desarrollador pasaron **39/39 pruebas automatizadas** antes de la ampliación reciente de aislamiento por run (confirmada después mediante ejecución manual). Las integraciones externas para las cuatro regiones **no están completadas**. En Texcoco, `nasa_power` y `srtm` fueron `available`; tres MODIS `partial`; SoilGrids `error` por conectividad en el manifiesto auditado. Existe un CSV histórico de SoilGrids con 12 observaciones, **no declarado** en dicho manifiesto. No debe tratarse como parte de la ejecución actual.
