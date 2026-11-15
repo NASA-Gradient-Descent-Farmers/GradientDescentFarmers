@@ -71,7 +71,7 @@ describe.each(ids)('%s in English', (id) => {
 describe('in a conversation', () => {
   it('opens in English, asks for the location in English, and answers the question that waited', async () => {
     const opening = flat(greeting(en.t))
-    expect(opening).toContain('Hi, I am YolIA')
+    expect(opening).toContain('Hi, I am YoliA')
     expect(opening).not.toMatch(SPANISH)
     const asked = await reply('What should I plant?', EMPTY_CHAT, en)
     expect(flat(asked.bubbles)).toContain('Which location should I check?')
@@ -90,7 +90,7 @@ describe('in a conversation', () => {
   it('greeting twice does not break: with no location chosen, it greets again', async () => {
     const first = await reply('Hello', EMPTY_CHAT, en)
     const second = await reply('Hello again', first.state, en)
-    expect(flat(second.bubbles)).toContain('Hi, I am YolIA')
+    expect(flat(second.bubbles)).toContain('Hi, I am YoliA')
   })
 
   it('never claims validation or a success rate, in either language', async () => {

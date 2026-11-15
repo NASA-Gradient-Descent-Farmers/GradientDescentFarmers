@@ -1,4 +1,4 @@
-// The simulated accounts of this phone: a name and the way the person uses YolIA (Agricultor or Técnico). There is no
+// The simulated accounts of this phone: a name and the way the person uses YoliA (Agricultor or Técnico). There is no
 // password and no server; this is only enough to tell users apart now and to be swapped for real accounts later (the
 // pieces that read "who is signed in" go through useAccount, never through this storage directly).
 

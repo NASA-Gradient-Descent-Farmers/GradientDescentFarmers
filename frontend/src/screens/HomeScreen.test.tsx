@@ -18,10 +18,10 @@ const words = (html: string) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' 
 describe('the home page', () => {
   const html = render('es')
 
-  it('greets, says what YolIA is, and offers the way into the app', () => {
+  it('greets, says what YoliA is, and offers the way into the app', () => {
     expect(words(html)).toContain('¡Hola! Bienvenido a')
     expect(words(html)).toContain('satélites de la NASA')
-    expect(html).toMatch(/<button[^>]*>Entrar a YolIA<\/button>/)
+    expect(html).toMatch(/<button[^>]*>Entrar a YoliA<\/button>/)
   })
 
   it('does not list the places, and does not mention Texcoco', () => {
@@ -29,11 +29,12 @@ describe('the home page', () => {
     expect(words(html)).toContain('Rotaciones de cultivos con satélites de la NASA')
   })
 
-  it('has the WhatsApp simulation as one floating button, not as buttons in the page', () => {
+  it('has WhatsApp as one floating button, not as buttons in the page, and does not call it a simulation', () => {
     const links = html.match(/<a [^>]*href="#\/demo\/whatsapp"[^>]*>/g) ?? []
     expect(links).toHaveLength(1)
     expect(links[0]).toContain('class="wa-fab"')
-    expect(links[0]).toContain('aria-label="Abrir la simulación de WhatsApp (simulación, no es WhatsApp real)"')
+    expect(links[0]).toContain('aria-label="Abrir el chat de WhatsApp"')
+    expect(html).not.toMatch(/simulaci[oó]n|simulation/i)
     expect(html).toContain('class="wa-mark"')
     expect(words(html)).toContain('Probar por WhatsApp')
   })

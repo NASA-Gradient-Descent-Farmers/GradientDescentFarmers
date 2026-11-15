@@ -22,7 +22,7 @@ const RESET_WORDS = new Set(['reiniciar', 'reinicio', 'reset', 'inicio', 'empeza
 export const copyFor = (lang: Lang) =>
   lang === 'en'
     ? {
-        site: (url: string) => `More about YolIA: ${url}`,
+        site: (url: string) => `More about YoliA: ${url}`,
         choose: 'Reply with the number or type your answer:',
         textOnly: 'For now I can only read text messages. Write your question, or type *menu* to start over.',
         failed: 'I could not process your message. Try again, or type *menu* to start over.',
@@ -31,7 +31,7 @@ export const copyFor = (lang: Lang) =>
         switched: 'Okay, I will continue in English.',
       }
     : {
-        site: (url: string) => `Más información de YolIA: ${url}`,
+        site: (url: string) => `Más información de YoliA: ${url}`,
         choose: 'Responde con el número o escribe tu respuesta:',
         textOnly: 'Por ahora solo puedo leer mensajes de texto. Escríbeme tu pregunta, o escribe *menu* para empezar de nuevo.',
         failed: 'No pude procesar tu mensaje. Inténtalo de nuevo, o escribe *menu* para empezar de nuevo.',

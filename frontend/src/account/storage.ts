@@ -1,4 +1,4 @@
-// Everything a person saves in YolIA (their parcel, answers, conversations, pin) is kept under keys that carry their
+// Everything a person saves in YoliA (their parcel, answers, conversations, pin) is kept under keys that carry their
 // account's id, so several people can use one phone without seeing each other's data. The modules that save things ask
 // `scopedKey` for the real key at the moment they read or write; the signed-in account is set once, at sign-in.
 //

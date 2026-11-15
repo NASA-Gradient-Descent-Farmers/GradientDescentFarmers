@@ -1,7 +1,7 @@
 // Sign-in and the account menu. Accounts are a simulation (a name, no password), and the screens say so.
 
 export const accountEs = {
-  intro: 'Entra con tu nombre para que YolIA guarde tu parcela y tus respuestas.',
+  intro: 'Entra con tu nombre para que YoliA guarde tu parcela y tus respuestas.',
   signIn: {
     title: 'Entrar',
     lede: 'Elige tu cuenta.',
@@ -16,7 +16,7 @@ export const accountEs = {
     another: 'Crear otra cuenta',
     name: 'Tu nombre',
     namePlaceholder: 'Por ejemplo: Ana',
-    modeQuestion: '¿Cómo vas a usar YolIA?',
+    modeQuestion: '¿Cómo vas a usar YoliA?',
     submit: 'Crear cuenta y entrar',
     errors: {
       empty: 'Escribe tu nombre.',

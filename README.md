@@ -12,7 +12,7 @@ heuristic proxies. Each implementation installs through its own optional extras.
 
 ## Web app and WhatsApp demo
 
-`frontend/` is the YolIA web app (React + Vite, Spanish first). It needs only Node 22.12 or newer: no Python, backend or API key, because
+`frontend/` is the YoliA web app (React + Vite, Spanish first). It needs only Node 22.12 or newer: no Python, backend or API key, because
 the model results it shows are committed in `frontend/public/data/`.
 
 ```bash

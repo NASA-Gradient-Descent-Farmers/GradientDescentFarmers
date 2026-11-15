@@ -6,7 +6,7 @@ try {
   const config = loadConfig()
   const server = createWebhook(config, loadResults())
   server.listen(config.port, () => {
-    console.log(`YolIA WhatsApp webhook listening on http://localhost:${config.port}${WEBHOOK_PATH}`)
+    console.log(`YoliA WhatsApp webhook listening on http://localhost:${config.port}${WEBHOOK_PATH}`)
     console.log(`Twilio must call: ${config.webhookUrl}`)
   })
 } catch (error) {

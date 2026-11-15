@@ -1,4 +1,4 @@
-// The farmer's conversation with YolIA. The reply is decided here, from the question and what we already know: a
+// The farmer's conversation with YoliA. The reply is decided here, from the question and what we already know: a
 // question about planting asks first for whatever is missing (the parcel, then the four answers), then runs the
 // planner; everything else is answered from the models' own results or declined honestly. Nothing is invented:
 // there is no text here that states an agricultural fact, only questions, pointers and the cards the models fill.

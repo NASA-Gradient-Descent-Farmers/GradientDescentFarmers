@@ -6,7 +6,7 @@ export interface Config {
   authToken: string
   /** The exact public URL Twilio is configured to call (the tunnel URL + /whatsapp). Signatures are computed over it. */
   webhookUrl: string
-  /** The YolIA website, linked from the replies. */
+  /** The YoliA website, linked from the replies. */
   siteUrl: string
   /** How long an idle conversation is remembered, in minutes. */
   sessionMinutes: number

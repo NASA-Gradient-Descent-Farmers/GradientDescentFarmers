@@ -64,9 +64,11 @@ describe('webhook authentication', () => {
 describe('incoming messages', () => {
   it('opens a new conversation with the welcome, the three locations as numbered options, and the website link', async () => {
     const reply = await say(base, 'whatsapp:+5215500000010', 'Hola')
-    assert.match(reply, /soy YolIA/)
+    assert.match(reply, /soy YoliA/)
     assert.match(reply, /1\. Guanajuato\n2\. Sinaloa\n3\. Sonora/)
-    assert.match(reply, /simulación|demostración/i)
+    // the chat is YoliA on WhatsApp: it introduces itself and says the locations are reference points, never a simulation
+    assert.match(reply, /ubicaciones de referencia/)
+    assert.doesNotMatch(reply, /simulaci[oó]n|demostraci[oó]n/i)
     assert.ok(reply.includes(config.siteUrl))
   })
 

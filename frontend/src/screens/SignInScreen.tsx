@@ -10,8 +10,8 @@ import { useI18n } from '../i18n/index.tsx'
 import type { Version } from '../lib/version.ts'
 
 /**
- * The front page: "¡Hola! Bienvenido a YolIA." and a way in. Accounts are simulated (a name, no password): pick one of the
- * accounts on this phone, or create one and choose how it will use YolIA.
+ * The front page: "¡Hola! Bienvenido a YoliA." and a way in. Accounts are simulated (a name, no password): pick one of the
+ * accounts on this phone, or create one and choose how it will use YoliA.
  */
 export function SignInScreen({ onBack }: { onBack?: () => void }) {
   const { t } = useI18n()

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Twilio WhatsApp Sandbox webhook for YolIA. Runs the frontend's conversation engine (frontend/src/whatsapp) server-side.",
+  "description": "Twilio WhatsApp Sandbox webhook for YoliA. Runs the frontend's conversation engine (frontend/src/whatsapp) server-side.",
   "engines": {
     "node": ">=22.9"
   },

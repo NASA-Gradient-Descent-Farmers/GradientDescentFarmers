@@ -31,7 +31,7 @@ interface Props {
 }
 
 /**
- * Preguntar a YolIA: a conversation that answers from the data the service published for the parcel's place (its rotation run
+ * Preguntar a YoliA: a conversation that answers from the data the service published for the parcel's place (its rotation run
  * and environmental package) and nothing else. A question about planting first asks, one by one with large buttons, for whatever
  * is still missing; then the answer is built from the place's rotation options, ranked by what matters to the farmer and scaled
  * to their hectares. The reply is chosen in chat.ts from plain rules (there is no language model here yet), so every sentence is

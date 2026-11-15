@@ -12,11 +12,12 @@ const html = renderToStaticMarkup(
 )
 const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
 
-describe('the simulator screen', () => {
-  it('is labelled as a simulation, in the header area and in the banner', () => {
-    expect(text).toContain('Simulación · no es WhatsApp real')
-    expect(text).toContain('SIMULACIÓN')
-    expect(text).toMatch(/no se envía nada a WhatsApp/i)
+describe('the chat screen', () => {
+  it('is the chat, not a labelled simulation: it shows "en línea", a plain link to the site, and no simulation wording', () => {
+    expect(text).toContain('YoliA')
+    expect(text).toContain('en línea')
+    expect(text).toContain('Abrir el sitio de YoliA')
+    expect(text).not.toMatch(/simulaci[oó]n|simulation|no es WhatsApp real|no se envía nada/i)
   })
 
   it('shows the WhatsApp mark on the avatar, as a decorative icon that assistive technology skips', () => {
@@ -27,12 +28,12 @@ describe('the simulator screen', () => {
     for (const question of ['¿Qué me conviene sembrar?', '¿Qué pasa si llueve poco?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?']) expect(text).toContain(question)
   })
 
-  it('has a message box with a send button (off until something is typed), a reset button and a link to the YolIA site', () => {
+  it('has a message box with a send button (off until something is typed), a reset button and a link to the YoliA site', () => {
     expect(html).toContain('type="text"')
     expect(html).toMatch(/<button[^>]*class="wa-send"[^>]*disabled/)
     expect(html).toContain('aria-label="Enviar"')
     expect(html).toContain('aria-label="Reiniciar la conversación"')
-    expect(html).toMatch(/<a href="\/" class="wa-site">Abrir el sitio de YolIA/)
+    expect(html).toMatch(/<a href="\/" class="wa-site">Abrir el sitio de YoliA/)
   })
 
   it('is labelled for assistive technology, and needs no key or network to render', () => {
@@ -58,9 +59,10 @@ describe('the language toggle', () => {
     const words = english.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
     expect(english).toMatch(/aria-label="Language"/)
     expect(english).toMatch(/aria-pressed="true"[^>]*>EN<\/button>/)
-    expect(words).toContain('Simulation · not real WhatsApp')
+    expect(words).toContain('online')
+    expect(words).toContain('Open the YoliA site')
     expect(words).toContain('What should I plant?')
-    expect(words).not.toMatch(/Simulación|¿Qué me conviene/)
+    expect(words).not.toMatch(/Simulación|simulation|¿Qué me conviene/i)
   })
 })
 

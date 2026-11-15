@@ -186,10 +186,11 @@ describe('honesty: no invented figures', () => {
 })
 
 describe('the first messages', () => {
-  it('say it is a simulation and that the parcel is an example', () => {
+  it('introduce YoliA, say the locations are reference points, and never call the chat a simulation', () => {
     const text = flat(greeting(t))
-    expect(text).toContain('simulación')
+    expect(text).toContain('YoliA')
     expect(text).toContain('ubicaciones de referencia')
+    expect(text).not.toMatch(/simulaci[oó]n|demostraci[oó]n/i)
     expect(FIELDS).toHaveLength(4)
   })
 })

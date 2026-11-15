@@ -1,18 +1,16 @@
-// Copy of the WhatsApp simulator (/demo/whatsapp). The answers themselves reuse the farmer.* sentences; this is only the
-// chat's frame. It says plainly that this is a simulation.
+// Copy of the WhatsApp chat (/demo/whatsapp and the Twilio webhook). The answers themselves reuse the farmer.* sentences; this
+// is only the chat's frame.
 
 export const whatsappEs = {
-  title: 'YolIA',
-  status: 'Simulación · no es WhatsApp real',
-  badge: 'SIMULACIÓN',
-  banner: 'Simulación de cómo sería YolIA por WhatsApp. No se envía nada a WhatsApp ni a internet: todo se calcula en este teléfono con los resultados del modelo.',
-  welcome: 'Hola, soy YolIA. Te ayudo a decidir qué sembrar con datos de la NASA y un modelo de cultivos. Esta es una simulación.',
-  demoParcel: 'Esta demostración tiene tres ubicaciones de referencia: Guanajuato, Sinaloa y Sonora. Son puntos de referencia, no parcelas verificadas.',
+  title: 'YoliA',
+  status: 'en línea',
+  welcome: 'Hola, soy YoliA. Te ayudo a decidir qué sembrar con datos de la NASA y un modelo de cultivos.',
+  demoParcel: 'YoliA tiene tres ubicaciones de referencia: Guanajuato, Sinaloa y Sonora. Son puntos de referencia, no parcelas verificadas.',
   nextStep: 'Ya puedes preguntarme. Por ejemplo: ¿Qué me conviene sembrar?',
   askLocation: '¿En cuál ubicación quieres que lo revise? Elige Guanajuato, Sinaloa o Sonora.',
   locationSet: 'Ubicación: {name} ({coords}).',
-  referencePoint: 'Es un punto de referencia para la demostración, no una parcela verificada.',
-  experimental: 'Datos experimentales de demostración: estos resultados vienen de un modelo calculado en El Batán, Texcoco, y no están calibrados para esta ubicación. Sirven solo para ver cómo funcionaría YolIA.',
+  referencePoint: 'Es un punto de referencia, no una parcela verificada.',
+  experimental: 'Datos experimentales de demostración: estos resultados vienen de un modelo calculado en El Batán, Texcoco, y no están calibrados para esta ubicación. Sirven solo para ver cómo funcionaría YoliA.',
   unavailable: 'Datos no disponibles para {name}. Todavía no hay resultados del modelo para esta ubicación, y no uso los de otra para no darte cifras que no corresponden.',
   // Environmental data of the place (NASA and other public sources gathered by the source builder)
   env: {
@@ -82,13 +80,13 @@ export const whatsappEs = {
     noProbability: 'No hay un porcentaje de éxito calibrado.',
     noFertilizer: 'Para decidir tu dosis de abono, lo mejor es probar en un pedazo de tu parcela o consultar a un técnico.',
   },
-  locationLabel: 'Ubicación de la demostración',
+  locationLabel: 'Ubicación',
   noLocation: 'Elige una ubicación',
   statusRotations: 'Resultados experimentales de rotación',
-  statusExperimental: 'Datos experimentales de demostración',
+  statusExperimental: 'Datos experimentales',
   statusUnavailable: 'Datos no disponibles',
   notUnderstood: 'No te entendí bien. Puedes tocar una de las respuestas o escribirla de otra forma.',
-  typing: 'YolIA está escribiendo…',
+  typing: 'YoliA está escribiendo…',
   inputLabel: 'Escribe un mensaje',
   placeholder: 'Escribe un mensaje',
   send: 'Enviar',
@@ -105,9 +103,9 @@ export const whatsappEs = {
     soil: '¿Cómo es el suelo?',
     sources: '¿De dónde salen los datos?',
   },
-  openSite: 'Abrir el sitio de YolIA',
-  openSiteHint: 'Ver YolIA en su sitio agrícola',
+  openSite: 'Abrir el sitio de YoliA',
+  openSiteHint: 'Ver YoliA en su sitio agrícola',
   today: 'Hoy',
   you: 'Tú',
-  log: 'Conversación con YolIA',
+  log: 'Conversación con YoliA',
 }

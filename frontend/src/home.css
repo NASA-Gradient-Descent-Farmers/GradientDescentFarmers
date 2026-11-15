@@ -513,7 +513,7 @@
   animation: fade-up 0.8s 2.6s both;
 }
 
-/* ---- YolIA: the "IA" of the name, set apart in the second colour and italic ---- */
+/* ---- YoliA: the "IA" of the name, set apart in the second colour and italic ---- */
 .brand-ia .letter:nth-child(n + 4) {
   color: var(--verde);
   font-style: italic;

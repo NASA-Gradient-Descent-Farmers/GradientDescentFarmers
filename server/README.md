@@ -1,4 +1,4 @@
-# YolIA on WhatsApp: Twilio Sandbox webhook
+# YoliA on WhatsApp: Twilio Sandbox webhook
 
 A farmer writes to our Twilio WhatsApp Sandbox number; this server answers with the **same conversation engine as the
 web simulator** (`frontend/src/whatsapp/engine.ts`), on the same precomputed results (`frontend/public/data`). Nothing is
@@ -92,7 +92,7 @@ In the Console, **Messaging → Try it out → Send a WhatsApp message → Sandb
 
 Message the Sandbox number from your phone, for example:
 
-| You | YolIA |
+| You | YoliA |
 | --- | --- |
 | `Hola` | Welcome, and the three locations as a numbered list |
 | `1` | Location: Guanajuato (coordinates), and that rotation results and data exist for it |

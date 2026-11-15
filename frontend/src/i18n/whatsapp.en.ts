@@ -1,17 +1,15 @@
-// English copy of the WhatsApp simulator; it must have the same keys as whatsapp.es.ts.
+// English copy of the WhatsApp chat; it must have the same keys as whatsapp.es.ts.
 
 export const whatsappEn = {
-  title: 'YolIA',
-  status: 'Simulation · not real WhatsApp',
-  badge: 'SIMULATION',
-  banner: 'A simulation of what YolIA could look like on WhatsApp. Nothing is sent to WhatsApp or the internet: everything is worked out on this device from the model results.',
-  welcome: 'Hi, I am YolIA. I help you decide what to plant using NASA data and a crop model. This is a simulation.',
-  demoParcel: 'This demo has three reference locations: Guanajuato, Sinaloa and Sonora. They are reference points, not verified plots.',
+  title: 'YoliA',
+  status: 'online',
+  welcome: 'Hi, I am YoliA. I help you decide what to plant using NASA data and a crop model.',
+  demoParcel: 'YoliA has three reference locations: Guanajuato, Sinaloa and Sonora. They are reference points, not verified plots.',
   nextStep: 'You can ask me now. For example: What should I plant?',
   askLocation: 'Which location should I check? Pick Guanajuato, Sinaloa or Sonora.',
   locationSet: 'Location: {name} ({coords}).',
-  referencePoint: 'This is a demonstration reference point, not a verified plot.',
-  experimental: 'Experimental demonstration data: these results come from a model computed at El Batán, Texcoco, and are not calibrated for this location. They only show how YolIA would work.',
+  referencePoint: 'This is a reference point, not a verified plot.',
+  experimental: 'Experimental demonstration data: these results come from a model computed at El Batán, Texcoco, and are not calibrated for this location. They only show how YoliA would work.',
   unavailable: 'Data unavailable for {name}. There are no model results for this location yet, and I do not use another location\'s so as not to give you figures that do not apply.',
   // Environmental data of the place (NASA and other public sources gathered by the source builder)
   env: {
@@ -82,12 +80,12 @@ export const whatsappEn = {
     noFertilizer: 'To decide your fertilizer dose, the best thing is to test it on a piece of your parcel or ask a technician.',
   },
   statusRotations: 'Experimental rotation results',
-  locationLabel: 'Demo location',
+  locationLabel: 'Location',
   noLocation: 'Pick a location',
-  statusExperimental: 'Experimental demonstration data',
+  statusExperimental: 'Experimental data',
   statusUnavailable: 'Data unavailable',
   notUnderstood: 'I did not quite understand. You can tap one of the answers or write it another way.',
-  typing: 'YolIA is typing…',
+  typing: 'YoliA is typing…',
   inputLabel: 'Type a message',
   placeholder: 'Type a message',
   send: 'Send',
@@ -104,9 +102,9 @@ export const whatsappEn = {
     soil: 'What is the soil like?',
     sources: 'Where does the data come from?',
   },
-  openSite: 'Open the YolIA site',
-  openSiteHint: 'See YolIA on its farming website',
+  openSite: 'Open the YoliA site',
+  openSiteHint: 'See YoliA on its farming website',
   today: 'Today',
   you: 'You',
-  log: 'Conversation with YolIA',
+  log: 'Conversation with YoliA',
 }

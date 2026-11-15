@@ -15,7 +15,7 @@ export const farmerEs = {
     welcome: 'Hola, {name}. Para darte una respuesta necesito conocer tu parcela. Son cinco preguntas cortas.',
     backHome: 'Volver al inicio',
   },
-  nav: { label: 'Menú principal', parcel: 'Mi parcela', plant: 'Qué sembrar', ask: 'Preguntar a YolIA', saved: 'Mis recomendaciones' },
+  nav: { label: 'Menú principal', parcel: 'Mi parcela', plant: 'Qué sembrar', ask: 'Preguntar a YoliA', saved: 'Mis recomendaciones' },
   common: {
     back: 'Atrás',
     next: 'Continuar',
@@ -177,12 +177,12 @@ export const farmerEs = {
       carbon: 'Carbono que queda en el suelo: ≈ {n} t por ha al año.',
       note: 'Son números del modelo, no mediciones de tu parcela.',
     },
-    actions: { save: 'Guardar esta recomendación', saved: 'Guardada', ask: 'Preguntarle a YolIA', edit: 'Cambiar mis respuestas' },
+    actions: { save: 'Guardar esta recomendación', saved: 'Guardada', ask: 'Preguntarle a YoliA', edit: 'Cambiar mis respuestas' },
   },
   chat: {
-    title: 'Preguntar a YolIA',
+    title: 'Preguntar a YoliA',
     lede: 'Pregunta como se lo preguntarías a un técnico. Si falta algo, te lo pregunto.',
-    intro: 'Hola, soy YolIA. Te ayudo a decidir qué sembrar con datos de la NASA y un modelo de cultivos. ¿Qué quieres saber?',
+    intro: 'Hola, soy YoliA. Te ayudo a decidir qué sembrar con datos de la NASA y un modelo de cultivos. ¿Qué quieres saber?',
     hello: 'Hola. ¿En qué te puedo ayudar con tu parcela?',
     suggested: 'Puedes preguntar:',
     suggestions: {
@@ -194,7 +194,7 @@ export const farmerEs = {
       climate: '¿Cómo es el clima?',
       soil: '¿Cómo es el suelo?',
     },
-    inputLabel: 'Tu pregunta para YolIA',
+    inputLabel: 'Tu pregunta para YoliA',
     placeholder: 'Escribe tu pregunta…',
     send: 'Enviar',
     mic: 'Hablar',
@@ -203,7 +203,7 @@ export const farmerEs = {
     restart: 'Empezar de nuevo',
     thinking: 'Revisando las opciones…',
     you: 'Tú',
-    bot: 'YolIA',
+    bot: 'YoliA',
     ask: {
       lead: 'Vamos a revisar qué opciones podrían funcionar en tu terreno. Primero dime:',
       parcel: '¿Dónde está tu parcela?',
@@ -215,7 +215,7 @@ export const farmerEs = {
       money: 'Esto es lo que el modelo calcula que podrías ganar. Recuerda que es una estimación, no una promesa:',
       rain: 'Esto es lo que muestra el modelo cuando llueve poco. Abajo, en riesgos, está el detalle:',
     },
-    outside: 'Para esta ubicación todavía no hay datos publicados. YolIA tiene datos de Sonora, Sinaloa y Guanajuato: elige uno de esos puntos en «Mi parcela» y te cuento qué hay. Prefiero no darte una recomendación que no pueda respaldar.',
+    outside: 'Para esta ubicación todavía no hay datos publicados. YoliA tiene datos de Sonora, Sinaloa y Guanajuato: elige uno de esos puntos en «Mi parcela» y te cuento qué hay. Prefiero no darte una recomendación que no pueda respaldar.',
     fertilizer: {
       general: 'Sobre el abono, te lo digo con franqueza: en este modelo el abono casi no sube el rendimiento, por eso sugiere poco o nada. Eso viene del modelo, no de un resultado de campo.',
       advice: 'Para decidir tu dosis, lo mejor es probar en un pedazo de tu parcela o consultar a un técnico.',
@@ -223,7 +223,7 @@ export const farmerEs = {
       none: 'Para tu parcela, el modelo no sugiere abono con nitrógeno.',
     },
     trust: {
-      intro: 'Te lo digo con franqueza: las cifras de YolIA sirven para comparar opciones, no para prometer una cosecha.',
+      intro: 'Te lo digo con franqueza: las cifras de YoliA sirven para comparar opciones, no para prometer una cosecha.',
       outro: 'Por eso, cada resultado dice que es una estimación y qué tan lejos está tu parcela de donde se probó el modelo.',
     },
     unknown: 'Eso no lo puedo responder todavía con seguridad. Solo trabajo con los datos de Sonora, Sinaloa y Guanajuato. Prueba con una de las preguntas de abajo, o escríbela de otra forma.',

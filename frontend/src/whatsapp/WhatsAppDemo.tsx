@@ -62,7 +62,7 @@ interface ChatProps {
   rotations?: RotationsByLocation
   /** Environmental packages for the places that have them; a place without one cannot answer about its climate or soil. */
   environment?: EnvironmentByLocation
-  /** The YolIA site this chat links to. */
+  /** The YoliA site this chat links to. */
   home: string
   typingMs?: number
 }
@@ -71,8 +71,8 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
   const { t, fmt, distance, lang, setLang } = useI18n()
   const env = useMemo<Env>(() => ({ data, rotations, environment, lang, t, fmt, distance }), [data, rotations, environment, lang, t, fmt, distance])
   useEffect(() => {
-    document.title = lang === 'en' ? 'YolIA · WhatsApp (simulation)' : 'YolIA · WhatsApp (simulación)'
-  }, [lang])
+    document.title = 'YoliA · WhatsApp'
+  }, [])
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)
@@ -159,7 +159,7 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
           </span>
           <div className="wa-who">
             <h1>
-              Yol<span className="wa-ia">IA</span>
+              Yol<span className="wa-ia">iA</span>
             </h1>
             <p>{t('whatsapp.status')}</p>
           </div>
@@ -176,8 +176,7 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
           </button>
         </header>
 
-        <div className="wa-banner" role="note">
-          <strong>{t('whatsapp.badge')}</strong> {t('whatsapp.banner')}{' '}
+        <div className="wa-sitebar">
           <a href={home} className="wa-site">
             {t('whatsapp.openSite')} →
           </a>

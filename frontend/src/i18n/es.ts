@@ -18,7 +18,7 @@ export const es: Dict = {
   near: nearEs,
   env: envEs,
   app: {
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'Datos de la NASA y un modelo de cultivos',
     home: 'Volver al inicio',
     techMode: 'Modo Técnico',
@@ -30,10 +30,10 @@ export const es: Dict = {
   welcome: {
     eyebrow: 'Texcoco · Estado de México · de temporal',
     hello: '¡Hola! Bienvenido a',
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'Rotaciones de temporal con satélites de la NASA y un modelo de cultivos.',
     hint: 'Toca la hoja para empezar',
-    leafLabel: 'Entrar a YolIA y elegir tu versión',
+    leafLabel: 'Entrar a YoliA y elegir tu versión',
     choose: '¿Cómo quieres entrar?',
     versions: {
       agricultor: {
@@ -54,11 +54,11 @@ export const es: Dict = {
   },
   home: {
     eyebrow: 'Texcoco · Estado de México · de temporal',
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'Rotaciones de temporal con satélites de la NASA y un modelo de cultivos.',
     hello: '¡Hola, agricultor!',
     ask: '¿Qué quieres saber?',
-    askLabel: 'Tu pregunta para YolIA',
+    askLabel: 'Tu pregunta para YoliA',
     askPlaceholder: 'Escribe tu pregunta…',
     askSend: 'Preguntar',
     orPick: 'O empieza con una de estas:',

@@ -19,7 +19,7 @@ export const en = {
   near: nearEn,
   env: envEn,
   app: {
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'NASA data and a crop model',
     home: 'Back to the start',
     techMode: 'Technical mode',
@@ -31,10 +31,10 @@ export const en = {
   welcome: {
     eyebrow: 'Texcoco · State of Mexico · rainfed',
     hello: 'Hello! Welcome to',
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'Rainfed crop rotations, from NASA satellites and a crop model.',
     hint: 'Touch the leaf to begin',
-    leafLabel: 'Enter YolIA and choose your version',
+    leafLabel: 'Enter YoliA and choose your version',
     choose: 'How do you want to come in?',
     versions: {
       agricultor: {
@@ -55,11 +55,11 @@ export const en = {
   },
   home: {
     eyebrow: 'Texcoco · State of Mexico · rainfed',
-    title: 'YolIA',
+    title: 'YoliA',
     tagline: 'Rainfed crop rotations, from NASA satellites and a crop model.',
     hello: 'Hello, farmer!',
     ask: 'What do you want to know?',
-    askLabel: 'Your question for YolIA',
+    askLabel: 'Your question for YoliA',
     askPlaceholder: 'Type your question…',
     askSend: 'Ask',
     orPick: 'Or start with one of these:',

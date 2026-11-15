@@ -7,7 +7,7 @@ export const assistantEs: AssistantDict = {
     badge: 'Modo demostración',
     title: 'Cómo funciona este asistente',
     body1:
-      'No hay un modelo de lenguaje conectado. YolIA lee tu pregunta con reglas sencillas (palabras clave), elige los modelos de este proyecto que hacen falta y los ejecuta de verdad.',
+      'No hay un modelo de lenguaje conectado. YoliA lee tu pregunta con reglas sencillas (palabras clave), elige los modelos de este proyecto que hacen falta y los ejecuta de verdad.',
     body2:
       'Los números salen de los modelos. Las frases de cada resumen son plantillas rellenadas con esos números: no las escribió una IA.',
     body3:
@@ -219,7 +219,7 @@ export const assistantEs: AssistantDict = {
   },
   message: {
     you: 'Tú',
-    assistant: 'YolIA',
+    assistant: 'YoliA',
     understood: 'Lo que entendí',
     consulted: 'Modelos consultados',
     added: 'Añadí {model}: tu parcela está a {km} km de El Batán y necesito su clima para saber si el planificador aplica.',

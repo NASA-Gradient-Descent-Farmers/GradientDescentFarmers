@@ -1,6 +1,6 @@
 // Voice input, when the phone's browser has it (Chrome on Android does; some others do not). The browser's own service turns
 // speech into text and may send the audio to its vendor's servers: the farmer taps the microphone each time, and nothing is
-// recorded by YolIA. Where it is missing, the button is simply not shown.
+// recorded by YoliA. Where it is missing, the button is simply not shown.
 
 interface SpeechResultLike {
   isFinal: boolean

@@ -7,7 +7,7 @@ export const assistantEn = {
     badge: 'Demo mode',
     title: 'How this assistant works',
     body1:
-      'No language model is connected. YolIA reads your question with simple keyword rules, picks the models of this project that are needed and really runs them.',
+      'No language model is connected. YoliA reads your question with simple keyword rules, picks the models of this project that are needed and really runs them.',
     body2:
       'The numbers come from the models. The sentences in each summary are templates filled in with those numbers: an AI did not write them.',
     body3:
@@ -219,7 +219,7 @@ export const assistantEn = {
   },
   message: {
     you: 'You',
-    assistant: 'YolIA',
+    assistant: 'YoliA',
     understood: 'What I understood',
     consulted: 'Models consulted',
     added: 'I added {model}: your field is {km} km from El Batán and I need its climate to tell whether the planner applies.',

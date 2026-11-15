@@ -80,7 +80,8 @@ describe('location recognition', () => {
     it(`"${text}" selects ${name} with its exact coordinates`, async () => {
       const reply = await say(base, `whatsapp:+52155${String(Math.abs(hash(text))).slice(0, 7).padStart(7, '0')}`, text)
       assert.ok(reply.includes(`Ubicación: ${name} (${coords})`), reply)
-      assert.match(reply, /punto de referencia para la demostración, no una parcela verificada/)
+      assert.match(reply, /punto de referencia, no una parcela verificada/)
+      assert.doesNotMatch(reply, /simulaci[oó]n|demostraci[oó]n/i)
     })
   }
 
@@ -109,7 +110,7 @@ describe('rotation results for each place', () => {
       assert.ok(plant.includes(bestOption(rotations, 'rainfed')!.descriptionEs), plant)
       assert.match(plant, /Confianza baja/)
       assert.match(plant, /no es ganancia/)
-      assert.match(plant, /Más información de YolIA: https:\/\/yolia\.example\/site/)
+      assert.match(plant, /Más información de YoliA: https:\/\/yolia\.example\/site/)
       assert.doesNotMatch(plant, /Datos no disponibles|qué sembraste|Datos experimentales de demostración/)
     })
 
@@ -178,16 +179,16 @@ describe('English', () => {
   it('a conversation opened in English stays in English: location, questions, links and hints', async () => {
     const me = 'whatsapp:+14155550101'
     const greeting = await say(base, me, 'Hello')
-    assert.match(greeting, /Hi, I am YolIA/)
+    assert.match(greeting, /Hi, I am YoliA/)
     assert.match(greeting, /Reply with the number or type your answer/)
     assert.match(greeting, /Prefer Spanish\? Type \*español\*/)
-    assert.match(greeting, /More about YolIA: https:\/\/yolia\.example\/site/)
+    assert.match(greeting, /More about YoliA: https:\/\/yolia\.example\/site/)
     assert.doesNotMatch(greeting, SPANISH)
     assert.match(await say(base, me, '3'), /Location: Sonora/)
     for (const question of ['What should I plant?', 'How much will I harvest?', 'What if it rains little?', 'How reliable is this data?', 'What is the climate like?', 'Where does the data come from?']) {
       const answer = await say(base, me, question)
       assert.doesNotMatch(answer, SPANISH, question)
-      assert.match(answer, /More about YolIA/, question)
+      assert.match(answer, /More about YoliA/, question)
     }
   })
 
@@ -213,11 +214,11 @@ describe('English', () => {
     await say(base, from, 'Hola')
     const switched = await say(base, from, 'english')
     assert.match(switched, /Okay, I will continue in English/)
-    assert.match(switched, /Hi, I am YolIA/)
+    assert.match(switched, /Hi, I am YoliA/)
     assert.match(await say(base, from, 'Sinaloa'), /Location: Sinaloa/)
     const back = await say(base, from, 'español')
     assert.match(back, /Listo, seguiré en español/)
-    assert.match(back, /Hola, soy YolIA/)
+    assert.match(back, /Hola, soy YoliA/)
   })
 
   it('a clear English question in a Spanish conversation switches it; a bare place name does not', async () => {
@@ -232,8 +233,8 @@ describe('English', () => {
     const from = 'whatsapp:+14155550104'
     await say(base, from, 'Hello')
     const again = await say(base, from, 'Hello again')
-    assert.match(again, /Hi, I am YolIA/)
-    assert.match(await say(base, from, 'menu'), /Hi, I am YolIA/)
+    assert.match(again, /Hi, I am YoliA/)
+    assert.match(await say(base, from, 'menu'), /Hi, I am YoliA/)
   })
 
   it('the numbers are the same in both languages', async () => {

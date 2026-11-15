@@ -7,7 +7,7 @@ import '../landing.css'
 const STEPS = [0, 1, 2] as const
 
 /**
- * The home page, shown before signing in: what YolIA is and the way into the app. The WhatsApp simulation is a floating
+ * The home page, shown before signing in: what YoliA is and the way into the app. The WhatsApp simulation is a floating
  * button in the bottom right; it opens its own page, which says on arrival that it is not real WhatsApp.
  */
 export function HomeScreen({ onStart }: { onStart: () => void }) {
