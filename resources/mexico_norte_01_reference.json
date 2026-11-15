@@ -1,0 +1,11 @@
+{
+  "farm_id": "mexico_norte_01",
+  "mode": "basic",
+  "latitude": 25.763611,
+  "longitude": -108.861389,
+  "country_iso3": "MEX",
+  "fields": [{"field_id": "reference_plot_demo", "area_ha": 1, "boundary_geojson": null}],
+  "irrigation": "unknown",
+  "language": "es",
+  "farmer_notes": "User-provided coordinate for the GCP integration trial. The required 1 ha area is a synthetic placeholder, not observed acreage. No crop, yield, field boundary, irrigation or management has been verified."
+}

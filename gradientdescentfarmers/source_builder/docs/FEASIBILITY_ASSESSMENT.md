@@ -1,6 +1,6 @@
 # FeasibilityAssessment — preflight de crop shifts
 
-**Implementado en:** `farmadapt/feasibility.py`. Es una evaluación de requisitos, no un modelo de rendimiento ni una certificación agronómica.
+**Implementado en:** `gradientdescentfarmers/source_builder/core/feasibility.py`. Es una evaluación de requisitos, no un modelo de rendimiento ni una certificación agronómica.
 
 ## Política conservadora
 
@@ -19,7 +19,7 @@ Para el modo actual, la autorización de simulación presupone un escenario de c
 ## Ejemplo desde un run exportado (offline)
 
 ```python
-from farmadapt.feasibility import (
+from gradientdescentfarmers.source_builder.core.feasibility import (
     ScenarioSpec, VerifiedInputs, assess_exported_profile,
     require_optimization_approval, OptimizationBlocked,
 )
@@ -31,7 +31,7 @@ scenario = ScenarioSpec(
     evaluate_profit=True,
 )
 report = assess_exported_profile(
-    "data/texcoco_demo/runs/RUN_ID",
+    "data/processed/MI_FARM_ID/runs/MI_RUN_ID",
     scenario,
     VerifiedInputs(),
 )
@@ -43,7 +43,7 @@ except OptimizationBlocked as exc:
     print("No se ejecutará optimización:", exc)
 ```
 
-Reemplaza `RUN_ID` por un run real que ya existe. El código lee el manifiesto y verifica archivos/hash; **no descarga datos ni ejecuta WOFOST/NSGA-II**.
+Reemplaza el path por un run real que ya existe y usa un `field_id` declarado en su input. El código lee el manifiesto y verifica archivos/hash; **no descarga datos ni ejecuta WOFOST/NSGA-II**.
 
 Los campos `verified` están en `False` por defecto. Un perfil de Texcoco con POWER disponible y SoilGrids fallido **no** recibe automáticamente permiso para simular ni para optimizar.
 
@@ -64,4 +64,4 @@ La función `require_optimization_approval` falla con `OptimizationBlocked` cuan
 - Un resultado con `optimization_allowed=True` no garantiza éxito agrícola ni reemplaza revisión de un especialista; únicamente satisface **esta lista preliminar de prerrequisitos**.
 - Persistir y versionar el assessment con hashes del escenario, parámetros y modelo antes de activarlo como gate productivo.
 
-Relacionado: [CROP_SHIFT_REQUIREMENTS.md](CROP_SHIFT_REQUIREMENTS.md), [WOFOST_TRANSITION.md](WOFOST_TRANSITION.md), [PENDING_TASKS_TRACKER.md](PENDING_TASKS_TRACKER.md).
+Relacionado: [CROP_SHIFT_REQUIREMENTS.md](CROP_SHIFT_REQUIREMENTS.md), [WOFOST_TRANSITION.md](WOFOST_TRANSITION.md).

@@ -3,7 +3,7 @@
 **Proyecto:** GradientDescentFarmers / FarmAdapt · **Módulo:** `gradientdescentfarmers/source_builder/`  
 **Farm ID:** `guanajuato_valle_demo` · **Punto de referencia:** 20.4243195, -101.1466639 (Guanajuato, México)  
 **Contrato:** `FarmProfile` versión 2.0.0, con `run_id`, tablas separadas, QA, unidades, procedencia y SHA-256.  
-**Estado:** las pruebas offline del código se aprobaron; el run **integral** todavía no se ha reportado como ejecutado. Esta guía sirve para que el equipo WOFOST avance en paralelo.
+**Estado (2026-11-14):** run integral `67b66942681a4214` ejecutado y auditado: integridad y QA ambiental aprobadas. `build_state=partial` conserva faltantes de QA en MODIS; los calendarios están completos y no hay fuentes habilitadas con error. La preparación de entradas PCSE sigue a cargo del equipo WOFOST.
 
 > **Importante:** Guanajuato es una ubicación de referencia, no una parcela georreferenciada. El campo de **1 ha es un placeholder sintético** requerido por el esquema. No hay especie, variedad, fecha de siembra, rendimiento, riego ni costos observados que podamos afirmar como datos reales.
 
@@ -106,7 +106,7 @@ La ruta de cada archivo es `<RUN_DIR>/standardized/<nombre>.csv`, a menos que el
 
 ## 4. Dónde están los runs ya reportados
 
-Estos paths son **locales a la Mac que ejecutó el pipeline**; se mencionan para identificar el origen, no para indicar que todo su contenido ya está sincronizado al repositorio:
+Estos paths son **locales a la Mac que ejecutó el pipeline**. Las primeras cuatro filas son rutas históricas: esos runs están respaldados en `data/archive/`, con instrucciones de restauración. El último es el dataset vigente. Ver la [guía de data](../../../data/README.md).
 
 | Run ID | Directorio bajo `data/` | Resultado conocido |
 |---|---|---|
@@ -114,9 +114,9 @@ Estos paths son **locales a la Mac que ejecutó el pipeline**; se mencionan para
 | `78aa647095a849ce` | `worldbank_recovery/guanajuato_valle_demo/runs/78aa647095a849ce/` | World Bank disponible, aislado |
 | `befdd22931504ee0` | `modis_earthaccess/guanajuato_valle_demo/runs/befdd22931504ee0/` | 2 compuestos por producto; MOD13/16 QA completa de esas 2 filas, MOD11 50%; **NO** serie histórica completa |
 | `2d18a644f624482e` | `guanajuato_smoke/guanajuato_valle_demo/runs/2d18a644f624482e/` | GPM `partial` (smoke de 2 granulos) y SMAP `available`; autenticación y acceso reales funcionando |
-| `<RUN_ID>` | `integrated_guanajuato/guanajuato_valle_demo/runs/<RUN_ID>/` | **Planeado**: un solo run con todas las fuentes habilitadas y manifiesto común. Pendiente de ejecutar/verificar |
+| `67b66942681a4214` | `integrated_guanajuato/guanajuato_valle_demo/runs/67b66942681a4214/` | Integral ejecutado y auditado; calendarios completos y faltantes QA MODIS conservados |
 
-**`data/` está ignorado en `.gitignore`.** Hacer `git pull` **no descarga los CSV**. Habrá que compartir por un canal interno el directorio completo de un `RUN_ID` (ZIP, carpeta compartida o GCS), más el identificador exacto, sin incluir archivos `.env` ni credenciales. Mantener juntos manifiestos y tablas. No subir datos sensibles de agricultores al repositorio público.
+**Los datasets de `data/` están ignorados en `.gitignore`; solo se versiona su README.** Hacer `git pull` **no descarga los CSV**. La entrega está en el prefijo GCS indicado en la sección 8; mantener juntos manifiestos y tablas del mismo run, sin incluir `.env` ni credenciales.
 
 ## 5. Código mínimo para consumir una tabla (verificar SHA-256)
 
@@ -201,11 +201,7 @@ git pull --ff-only origin daniel-sourcebuilder
 python -m pip install -e '.[source,source-test,source-modis]'
 python -m pytest tests/source_builder tests/test_scaffold.py -q
 
-# Prueba GPM completa: un día, 48 intervalos (NO todos los días 2024–2025)
-python -m gradientdescentfarmers.source_builder \
-  --config resources/guanajuato_full_day.json --run
-
-# Cuando el día GPM esté verificado, run integral:
+# Nueva adquisición integral, solo cuando sea necesaria; incluye un día GPM.
 python -m gradientdescentfarmers.source_builder \
   --config resources/guanajuato_integrated.json --run
 
@@ -234,7 +230,26 @@ El equipo de datos entregará como mínimo el directorio versionado `runs/<RUN_I
 
 ## 8. Estado de los runs y límites
 
-A fecha de esta guía, los resultados confirmados por la ejecución local son: POWER/SRTM/SoilGrids disponibles en el baseline, World Bank recuperado, MODIS piloto en las tres colecciones y **smoke GPM `partial` + SMAP `available`** (run `2d18a644f624482e`). Ningún resultado del **GPM 48/48** ni del **run integrado** se ha confirmado todavía. No presentar como entregables finales archivos que no se hayan auditado realmente.
+El run integral **`67b66942681a4214`** pasó la auditoría el 14 de noviembre de 2026:
+
+- **Integridad y QA:** hashes correctos y las 16 tablas exportadas con QA aprobada.
+- **POWER / terreno / suelo:** 731 días consecutivos de 2024–2025, cinco muestras SRTM y las 24 combinaciones SoilGrids del piloto.
+- **MODIS:** calendarios completos de 46/92/92 composiciones; pares utilizables tras QA: 41 NDVI/EVI, 67 LST día/noche y 79 ET/PET. `partial` describe estos faltantes de calidad, sin imputación.
+- **GPM / SMAP / World Bank:** un día UTC con 48/48 intervalos válidos, snapshot SMAP de dos gránulos y 192 registros de contexto nacional.
+- **Commit de adquisición:** `396f2968e81678a099e13d104e2ac3fd077db06d`. Se conserva `e07e32b` como referencia del intento interrumpido; el código de adquisición y su configuración integral no cambiaron entre ambos.
+
+Directorio local: `data/integrated_guanajuato/guanajuato_valle_demo/runs/67b66942681a4214/`.
+Destino de entrega: `gs://data_dump_samples/farm_profiles/guanajuato_valle_demo/runs/67b66942681a4214/`.
+El paquete contiene el manifiesto original, tablas, reportes QA, procedencia de
+ejecución y `SHA256SUMS`. `gcs_upload_receipt.json` confirma la transferencia
+solo después de verificar el SHA-256 de todos los archivos remotos. Ver el
+[inventario del run](GUANAJUATO_INTEGRATED_RUN.md).
+
+El smoke histórico `2d18a644f624482e` sigue siendo parcial para GPM y no debe
+confundirse con este run integral. La entrega ambiental aprobada todavía no
+incluye un `WeatherDataProvider` PCSE, parámetros de cultivar/sitio, plan futuro
+de manejo ni la hidráulica/agua inicial de WLP. No constituye una simulación
+ni una validación de rendimientos.
 
 El aviso deprecado `DataGranule.size()` de `earthaccess` es un `FutureWarning` de la biblioteca, **no** un error de archivo, fuente ni QA.
 
@@ -253,4 +268,4 @@ El aviso deprecado `DataGranule.size()` de `earthaccess` es un `FutureWarning` d
 
 Ante restricciones de almacenamiento, **priorizar** [GUANAJUATO_WOFOST_LIGHT_RUN.md](GUANAJUATO_WOFOST_LIGHT_RUN.md).
 Esta guía contiene el comando limitado a NASA POWER, SRTM y SoilGrids, el gate científico `wofost_source_report.json`
-y la subida de un solo run versionado a GCS. Las fuentes MODIS/GPM/SMAP permanecen pendientes para integración complementaria.
+y la subida de un solo run versionado a GCS. MODIS/GPM/SMAP están excluidos de esa alternativa ligera; sí están incluidos en el run integral auditado descrito arriba.

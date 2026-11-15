@@ -2,6 +2,14 @@
 
 Base template for the NASA Space Apps project. Requires Python 3.10 or higher and does not install ML libraries: each implementation can choose its own framework.
 
+The implemented environmental pipeline is documented in
+[FarmProfileBuilder](gradientdescentfarmers/source_builder/README.md). The
+[rotation MVP](gradientdescentfarmers/rotations_service/README.md) adds real
+PCSE/WOFOST simulations, regional SIAP gross-income scenarios and Pareto
+selection using farmer priorities, locally and on GCP. Its results are
+exploratory and require local calibration; soil and pesticide indicators are
+heuristic proxies. Each implementation installs through its own optional extras.
+
 ## Structure
 
 ```text

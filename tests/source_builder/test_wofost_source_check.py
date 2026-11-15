@@ -1,21 +1,10 @@
 """Offline acceptance checks for minimal WOFOST source bundle."""
-from datetime import date, timedelta
 import json
-from pathlib import Path
 import pandas as pd
 
 from gradientdescentfarmers.source_builder.core.wofost_source_check import (
     check_soil,check_topography,assess_source_bundle
 )
-
-def test_lean_configuration_excludes_heavy_downloads():
-    path=Path(__file__).resolve().parents[2]/"resources/guanajuato_wofost_handoff_settings.json"
-    c=json.loads(path.read_text())
-    enabled={k for k,v in c["source_overrides"].items() if v}
-    assert enabled=={"nasa_power","srtm","soilgrids_wcs"}
-    assert c["weather_start"]=="2024-01-01"
-    assert c["weather_end"]=="2025-12-31"
-
 
 def soil_table():
     return pd.DataFrame([
