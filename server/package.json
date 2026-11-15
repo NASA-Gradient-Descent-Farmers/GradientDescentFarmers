@@ -1,0 +1,16 @@
+{
+  "name": "yolia-whatsapp-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Twilio WhatsApp Sandbox webhook for YolIA. Runs the frontend's conversation engine (frontend/src/whatsapp) server-side.",
+  "engines": { "node": ">=22.6" },
+  "scripts": {
+    "start": "node --experimental-strip-types --env-file-if-exists=.env src/index.ts",
+    "test": "node --experimental-strip-types --test \"test/*.test.ts\"",
+    "typecheck": "../frontend/node_modules/.bin/tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "twilio": "^5.3.0"
+  }
+}

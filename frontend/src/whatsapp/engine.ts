@@ -335,7 +335,7 @@ export interface Turn {
 }
 
 /** Topics that need a location: everything about the models' results. */
-const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text))
+export const needsLocation = (text: string) => focusOf(text) !== null || ['trust', 'fertilizer'].includes(classify(text))
 
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
 export async function reply(text: string, state: ChatState, env: Env): Promise<Turn> {
