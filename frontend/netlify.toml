@@ -1,0 +1,22 @@
+# Netlify settings for the web app. In the Netlify UI: base directory "frontend", build command "npm run build",
+# publish directory "dist". Nothing here is a secret, and the app needs no environment variables.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 needs Node 20.19+ or 22.12+; frontend/package.json "engines" says >=22.12.
+  NODE_VERSION = "22"
+
+# Built assets have content hashes in their names, so they can be cached for good.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The data files keep their names when they are refreshed: revalidate them.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

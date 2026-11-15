@@ -1,0 +1,3 @@
+# Netlify: the app is one page that decides what to show from the address, so any path that is not a real file
+# (such as /demo/whatsapp) gets index.html. Real files (assets, data/*.json, favicon) are served as they are.
+/*    /index.html   200

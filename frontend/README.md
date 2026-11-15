@@ -109,6 +109,103 @@ The last of the guided questions is what matters most: **earn more**, **use wate
 
 Figures are exact (to the peso), not rounded further. `src/farmer/ui/ZoneAnswer.test.tsx` checks these against the files. Nothing in the app answers from the old Texcoco planner in "Qué sembrar" or the assistant; Técnico keeps its dashboard (Asistente, Planificador, Por parcela), whose Planificador is the Texcoco-fitted tool and says so in its own model selector.
 
+**Privacy.** The pin is stored only in this browser (`localStorage`). NASA POWER is sent the location rounded to 0.1° (about 11 km, finer than its weather cell, so nothing is lost), and the map tiles come from OpenStreetMap and NASA GIBS, which see the area being viewed. The page says this next to the map.
+
+## Assistant
+
+The Técnico assistant. Instead of four separate tools, the user asks in their own words and the assistant picks the project's models that the question needs, runs them, and explains what they returned. (The Agricultor assistant is the simpler one described above.)
+
+**This is a demo assistant, and it says so on screen.** No language model or chat backend exists in this repo. Two things are therefore *not* done by an AI, and the interface labels both:
+
+- *Reading the question* is keyword rules in Spanish and English (`src/assistant/interpret.ts`). What it understood (a price, a scenario, a crop model) is shown back as "Lo que entendí" chips, and a question it cannot place gets "No sé qué modelo usar para eso" and suggestions, never a guess.
+- *The summary* ("En pocas palabras") is templates filled in with numbers from the results (`src/assistant/compose.ts`), each sentence tagged with the model it speaks for, or "Combinado" when it sets two models against each other (for example whether the risk model's bootstrap interval backs the planner's choice). It is captioned as written by a template. Every number in it comes from a model result shown on the same page.
+
+There is no streaming (nothing here can stream), so while the models work the page shows the real state of each one (waiting, working, done, failed), not a typing effect.
+
+| Model | Kind | What it runs | Needs |
+|---|---|---|---|
+| Strategy planner (NSGA + WOFOST) | computed in the browser | scores 4,284 strategies from `grid.json` (the port of the Python planner) | nothing |
+| Climate (NASA POWER) | asked of NASA now | the pin's rain, temperature and coldest night against El Batán's | internet, the pin |
+| Rotation risk and scenarios | saved results | paired-year bootstrap and Monte Carlo over WOFOST runs (`data/exploration/risk`) | nothing |
+| SIAP calibration check | saved results | calibrated WOFOST against observed Texcoco yields, with two baselines (`calibration.json`) | nothing |
+| Trees, forests, XGBoost and ensembles | saved results | holdout scores against simulated and observed yield | nothing |
+| Reinforcement learning (CropGym) | not built | listed as planned, not usable | - |
+
+The stored results come from `models.json`, exported from the project's modelling results, with the hash of every source file; the models panel shows each model's purpose, inputs, source and limits. Models can be chosen automatically from the question or picked by hand ("Elegir yo"); several can be combined, each answers on its own, and a combined statement is added only when both results exist. A model that fails (no pin, no connection) shows what happened and a retry for that model alone, the other results stay, and the question is kept. Conversations are saved in this browser only (20 conversations, trimmed to fit), and the planner's inputs (crop model, priority, prices and costs) live in the same panel and can also be said in the question ("el haba a 5,000 pesos"). "Abrir en el planificador completo" opens the full planner with the same settings.
+
+**Plugging in a real language model.** `src/assistant/backend.ts` is the seam. A backend provides `interpret(message, settings, options)` (which models, which settings; an LLM could do this with tool calling over `models.ts`; `options.farm` carries the farmer's answers to the questions, and the `Interpretation` returned must carry them on so the planner honours them) and optionally `narrate(outcomes, interpretation, language)` (the summary; when present it replaces the template and the page says who wrote it). What a backend needs: an endpoint that takes the message, the conversation and the current settings and returns an `Interpretation`; and, for narration, text that only restates numbers present in the outcomes it was given. The models and their results do not change. Streaming would need a backend that streams, plus a change to show partial text in `AssistantMessageView`.
+
+## Screens
+
+The planner is also a page of its own.
+
+**Strategy planner.** Pick a crop model (calibrated to SIAP, or standard WOFOST), say how much each objective matters, and the app shows the trade-off curve of rotation, fertilizer and stover decisions and suggests a compromise. Click a point (or a table row) to see its plan.
+
+**Live prices.** Grain prices, other costs, the nitrogen price and the stover price are editable. Changing one re-scores all 4,284 strategies in the browser (about 50 ms) and recomputes the curve and the suggestion; when the new figures change the suggestion, the plan card says what it was at the original figures. SIAP's latest price per crop is listed next to each grain price. How it works:
+
+- `grid.json` holds the WOFOST season outcomes the planner scores from (design years 2006–2021, every rotation at each fertilizer scale, both parameter sets). `src/lib/planner.ts` is a port of the Python planner's `Grid` / `Planner` / `brute_force`.
+- `src/lib/front.ts` ports the Python planner's `pareto_front` and `choose`. A weight of 0 narrows the five-objective front to the other objectives (exact, up to ties; tested against re-scoring the whole lattice).
+- Tests check the port against the Python: the live front must equal the front the Python planner saved (`src/lib/fixtures/reference_fronts.json`) strategy by strategy, the four compromises of the NSGA results write-up must come out, and so must its picks when the faba bean and stover prices change.
+- Prices, production costs, the nitrogen price and the stover price are the planner's placeholders (only grain prices are sourced), and the two crop models disagree about fertilizer; the app says so on every screen.
+
+## Run it
+
+From this folder (`frontend/`):
+
+```bash
+npm ci           # exact versions from package-lock.json
+npm run dev      # http://localhost:5173 (the home page; the WhatsApp simulation is at /demo/whatsapp)
+npm test         # planner and front logic against the Python results, translation key parity
+npm run lint
+npm run build    # type-check and build to dist/ (assets and data are served from the site root)
+```
+
+Needs Node 22.12 or newer (`nvm use` picks it up from the repository's `.nvmrc`). No backend, API key or Python is needed: everything the app reads is committed in `public/data/`. The build in `dist/` is plain static files, so any static host that serves the app at the root of a site can serve it. To host it under a sub-folder, build with `VITE_BASE=./ npm run build` (relative paths; use the `#/demo/whatsapp` link form) or `VITE_BASE=/folder/ npm run build`.
+
+## Deploying to Netlify
+
+In Netlify: branch `main`, base directory `frontend`, build command `npm run build`, publish directory `dist` (the same values are in `netlify.toml`, together with `NODE_VERSION = "22"` and cache headers). The app needs no environment variables and no secrets: everything it reads is in `public/data/` and ends up in `dist/data/`, fetched from the site root (`/data/...`). `public/_redirects` sends any path that is not a real file (for example `/demo/whatsapp`) to `index.html`, because the app picks its page from the address; files such as `dist/assets/*` and `dist/data/*.json` are served as they are. Only the map tiles (OpenStreetMap, NASA GIBS) and the NASA POWER climate service are fetched from other hosts, from the visitor's browser.
+
+## Data
+
+`public/data/` holds what the app reads. `meta.json`, `grid.json` and `models.json` are exports of the project's Python modelling results (the planner grid, the saved fronts, the rotation-risk, calibration and ensemble scores). To refresh them, replace the three files, and `src/lib/fixtures/reference_fronts.json` which the tests compare against, with a new export; the exporter refuses fronts that were not computed from the current planner grid. `municipios.json` is a one-off extract used by the place search (see above) and is not regenerated. Nothing in this folder changes the science: if the models change, replace the JSON, and the tests say whether the planner port still agrees with them.
+
+## Layout
+
+```text
+public/data/        JSON exported from the project's modelling results (meta.json, grid.json, models.json) and municipios.json (place search)
+src/lib/            types, JSON loading, planner scoring, Pareto front and compromise choice, number formats,
+                    distance, NASA climate, coverage verdict, saved pin, the farmer's answers as model inputs (farm.ts)
+src/lib/fixtures/   Python's saved fronts, for the port's tests only
+src/i18n/           en.ts is the source of truth for keys; es.ts must match (tested)
+src/components/     scatter chart (SVG), plan card, weights panel, front table
+src/account/        simulated accounts: users (tested), per-account storage keys, provider and context, the account menu
+src/screens/        the sign-in page, the map step and the full planner (Técnico)
+src/farmer/         Agricultor: answers, recommendation, saved list, chat rules, municipality search, location, voice (+ tests)
+src/farmer/ui/      the Agricultor home (FarmerHome), the guided questions, the chat, the parcel tools for Técnico (ParcelTools), the recommendation card (full and brief)
+src/assistant/      the assistant: model registry, question parser, runners, summaries, history, backend seam
+src/assistant/ui/   chat page, message view, result cards, models panel, history, the guidance card
+src/onboarding/     the questions: answers and their storage, readers for typed text, what Continue does, summary wording
+src/onboarding/ui/  one screen per question, the summary and the page that runs them
+src/hooks/          the pin's coverage verdict and NASA climate
+src/theme.css       the design system (orange, black, white), sign-in, account menu and every Agricultor style; remaps the old palette names
+src/home.css        old home-page styles (unrouted) and the original palette names
+src/where.css       the map step
+src/assistant.css   the Técnico pages (assistant and full planner); colours come from index.css
+src/onboarding.css  the questions, the guidance card and the "Tu campo" card
+```
+
+Charts in Técnico use the same orange, black and white (rotation = marker shape, nitrogen lost = an orange ramp, suggested plan = an orange ring). The app is light only.
+
+## WhatsApp simulator (`/demo/whatsapp`)
+
+A WhatsApp-style chat that shows how YolIA could answer a farmer by text message. It is a **simulation**: nothing is sent to
+WhatsApp, Twilio or any API, and it needs no key, internet or language model. It reuses the farmer assistant's rules
+(`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
+the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). All three places answer from their rotation run (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence) and their environmental package. The simulator asks nothing first: pick a place and ask. If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
+
+A parcel pinned within 25 km of Sinaloa's or Sonora's run point (the app's own "inside" distance; `nearRotationSite` in `src/lib/rotations.ts`) gets those rotation results on **Qué sembrar** (`src/farmer/ui/RotationPlant.tsx`) instead of the "outside the model zone" refusal, with a notice on the parcel page. They are per hectare and do not depend on the parcel questions. Pins farther away keep the refusal: the results say nothing about them.
+
 ### Daniel's data in the app (`public/data/environment/` and `public/data/rotations/`)
 
 Two files per place come from the data service (`gradientdescentfarmers/source_builder` and `rotations_service`), both private in GCS (`gdfarming-farm-data`, `gdfarming-farm-rotations`):
