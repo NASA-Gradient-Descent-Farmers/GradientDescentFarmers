@@ -1,0 +1,106 @@
+{
+ "corte": 2019,
+ "entrenamiento": "2003-2019",
+ "prueba": "2020-2025",
+ "casos": {
+  "total": 50,
+  "con_error": 0
+ },
+ "ingreso_vs_actual": {
+  "demo": {
+   "n_afirmaciones": 392,
+   "n_pares_distintos": 50,
+   "direccion_acierta": 0.9,
+   "direccion_acierta_claras": 0.9,
+   "n_claras": 30,
+   "direccion_acierta_no_claras": 0.9,
+   "spearman_pred_real": 0.9039487124652286,
+   "error_absoluto_mediano_mxn": 9002.304019925323,
+   "diferencia_real_mediana_abs_mxn": 12685.781122275579,
+   "claras_n": 233,
+   "linea_base_mayoria": 0.52,
+   "direccion_acierta_pred_grande": 1.0,
+   "n_pred_grande": 26,
+   "direccion_acierta_pred_chica": 0.7916666666666666,
+   "n_pred_chica": 24
+  },
+  "nacional": {
+   "n_afirmaciones": 584,
+   "n_pares_distintos": 77,
+   "direccion_acierta": 0.922077922077922,
+   "direccion_acierta_claras": 0.98,
+   "n_claras": 50,
+   "direccion_acierta_no_claras": 0.8148148148148148,
+   "spearman_pred_real": 0.8994163731005836,
+   "error_absoluto_mediano_mxn": 2404.2441022041767,
+   "diferencia_real_mediana_abs_mxn": 5912.442486684235,
+   "claras_n": 382,
+   "linea_base_mayoria": 0.7792207792207793,
+   "direccion_acierta_pred_grande": 1.0,
+   "n_pred_grande": 29,
+   "direccion_acierta_pred_chica": 0.875,
+   "n_pred_chica": 48
+  },
+  "todos": {
+   "n_afirmaciones": 976,
+   "n_pares_distintos": 127,
+   "direccion_acierta": 0.9133858267716536,
+   "direccion_acierta_claras": 0.95,
+   "n_claras": 80,
+   "direccion_acierta_no_claras": 0.851063829787234,
+   "spearman_pred_real": 0.8965471280876083,
+   "error_absoluto_mediano_mxn": 4171.0712833465805,
+   "diferencia_real_mediana_abs_mxn": 9039.711754972433,
+   "claras_n": 615,
+   "linea_base_mayoria": 0.6771653543307087,
+   "direccion_acierta_pred_grande": 1.0,
+   "n_pred_grande": 55,
+   "direccion_acierta_pred_chica": 0.8472222222222222,
+   "n_pred_chica": 72
+  }
+ },
+ "prioridad": {
+  "demo/ingreso": {
+   "n": 17,
+   "alternativa_top_fue_mejor_o_igual": 0.7647058823529411,
+   "empates": 0,
+   "estrictamente_mejor": 0.7647058823529411,
+   "cuando_dijo_mejor_n": 13,
+   "cuando_dijo_mejor_acierta": 1.0
+  },
+  "demo/riesgo": {
+   "n": 16,
+   "alternativa_top_fue_mejor_o_igual": 1.0,
+   "empates": 16,
+   "estrictamente_mejor": 0.0,
+   "cuando_dijo_mejor_n": 13,
+   "cuando_dijo_mejor_acierta": 1.0
+  },
+  "nacional/ingreso": {
+   "n": 28,
+   "alternativa_top_fue_mejor_o_igual": 0.8928571428571429,
+   "empates": 0,
+   "estrictamente_mejor": 0.8928571428571429,
+   "cuando_dijo_mejor_n": 25,
+   "cuando_dijo_mejor_acierta": 0.96
+  },
+  "nacional/riesgo": {
+   "n": 28,
+   "alternativa_top_fue_mejor_o_igual": 1.0,
+   "empates": 26,
+   "estrictamente_mejor": 0.07142857142857142,
+   "cuando_dijo_mejor_n": 21,
+   "cuando_dijo_mejor_acierta": 1.0
+  }
+ },
+ "no_comprobable_con_datos_observados": [
+  "agua",
+  "nitrogeno",
+  "carbono",
+  "erosion",
+  "plagas",
+  "forraje"
+ ],
+ "linea_base": "coin flip 50%; majority baseline per group in linea_base_mayoria",
+ "errores": []
+}

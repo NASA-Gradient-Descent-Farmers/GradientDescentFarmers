@@ -1,0 +1,1011 @@
+grupo,caso,prioridades,alternativa,pred,clara,condicional,real,años_prueba,acierta
+demo,guanajuato/riego/maiz,[],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,[],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,[],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['agua'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['agua'],Menos agua de riego: sorgo – maíz,-558.4322010063062,False,False,-6886.949722941063,8,True
+demo,guanajuato/riego/maiz,['agua'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['erosion'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['erosion'],Menos agua de riego: sorgo – maíz,-558.4322010063062,False,False,-6886.949722941063,8,True
+demo,guanajuato/riego/maiz,['erosion'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['forraje'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['forraje'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['forraje'],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['ingreso'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['ingreso'],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['plagas'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['plagas'],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['plagas'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['riesgo'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz,['riesgo'],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['suelo'],Con cultivo de invierno: maíz – garbanzo,5588.679952509463,True,False,19674.461545822443,8,True
+demo,guanajuato/riego/maiz,['suelo'],Con leguminosa: maíz – frijol,-5779.874243731857,False,True,-10934.077642262902,8,True
+demo,guanajuato/riego/maiz,['suelo'],Milpa: milpa (maíz-frijol-calabaza),3913.23823233575,False,True,10120.704030942265,6,True
+demo,guanajuato/riego/maiz_trigo,[],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,[],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,[],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['agua'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['agua'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['agua'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['erosion'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['erosion'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['erosion'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['forraje'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['forraje'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['forraje'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['ingreso'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['ingreso'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['ingreso'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['plagas'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['plagas'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['plagas'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['riesgo'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['riesgo'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['riesgo'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_trigo,['suelo'],Menos agua de riego: sorgo – maíz,-23069.71486492437,True,False,-51219.60538326966,8,True
+demo,guanajuato/riego/maiz_trigo,['suelo'],Con leguminosa: maíz – frijol,-28291.15690764992,False,True,-55266.7333025915,8,True
+demo,guanajuato/riego/maiz_trigo,['suelo'],Milpa: milpa (maíz-frijol-calabaza) – trigo,3913.23823233575,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,[],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,[],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,[],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['agua'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['agua'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['agua'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['erosion'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['erosion'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['erosion'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['forraje'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['forraje'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['forraje'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['ingreso'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['ingreso'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['ingreso'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['plagas'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['plagas'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['plagas'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['riesgo'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['riesgo'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/maiz_cebada,['riesgo'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['suelo'],Menos agua de riego: sorgo – maíz,-21050.185189223164,True,False,-43196.30821613713,8,True
+demo,guanajuato/riego/maiz_cebada,['suelo'],Con leguminosa: maíz – frijol,-26271.62723194871,False,True,-47243.436135458964,8,True
+demo,guanajuato/riego/maiz_cebada,['suelo'],Milpa: milpa (maíz-frijol-calabaza) – cebada,3913.2382323357497,False,True,10120.704030942261,6,True
+demo,guanajuato/riego/sorgo_cebada,[],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,[],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,[],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['agua'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['agua'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['agua'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['erosion'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['erosion'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['erosion'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['forraje'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['forraje'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['forraje'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['ingreso'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['ingreso'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['plagas'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['plagas'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['plagas'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['riesgo'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo_cebada,['riesgo'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['suelo'],Menos agua de riego: maíz – sorgo,-19933.320787210552,True,False,-29422.408770255,8,True
+demo,guanajuato/riego/sorgo_cebada,['suelo'],Con leguminosa: sorgo – frijol,-25713.195030942406,False,True,-40356.4864125179,8,True
+demo,guanajuato/riego/sorgo_cebada,['suelo'],Milpa: milpa (maíz-frijol-calabaza),-15461.650353868494,False,True,-13397.17605492853,6,True
+demo,guanajuato/riego/sorgo,[],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,[],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,[],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['agua'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['agua'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['agua'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['erosion'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['erosion'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['erosion'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['forraje'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['forraje'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['forraje'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['ingreso'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['ingreso'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['plagas'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['plagas'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['plagas'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['riesgo'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/riego/sorgo,['riesgo'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['suelo'],Con cultivo de invierno: sorgo – garbanzo,5588.679952509463,True,False,19674.46154582245,8,True
+demo,guanajuato/riego/sorgo,['suelo'],Con leguminosa: sorgo – frijol,-5221.442042725551,False,True,-4047.1279193218415,8,True
+demo,guanajuato/riego/sorgo,['suelo'],Milpa: milpa (maíz-frijol-calabaza),5030.102634348363,False,True,23053.74583364533,6,True
+demo,guanajuato/temporal/maiz,[],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,[],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,[],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['agua'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['agua'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['agua'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['erosion'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['erosion'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['forraje'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['forraje'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['ingreso'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['ingreso'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['plagas'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['plagas'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['riesgo'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['riesgo'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/maiz,['suelo'],Con cultivo de invierno: maíz – garbanzo,3566.3254346893928,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz,['suelo'],Con leguminosa: maíz – frijol,-730.3997683333043,True,False,-13.350228798090939,8,True
+demo,guanajuato/temporal/maiz,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2303.313141324912,True,False,4976.436087213559,6,True
+demo,guanajuato/temporal/sorgo,[],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,[],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,[],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['agua'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['agua'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['agua'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['erosion'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['erosion'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['erosion'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['forraje'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['forraje'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['forraje'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['ingreso'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['ingreso'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['plagas'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['plagas'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['plagas'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['riesgo'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['riesgo'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/sorgo,['suelo'],Con cultivo de invierno: sorgo – garbanzo,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/sorgo,['suelo'],Con leguminosa: sorgo – frijol,-1324.221272833756,True,False,1023.5997135748758,8,False
+demo,guanajuato/temporal/sorgo,['suelo'],Milpa: milpa (maíz-frijol-calabaza),1115.6701323240081,False,False,6851.659959986376,6,True
+demo,guanajuato/temporal/maiz_frijol,[],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,[],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,[],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['agua'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['agua'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['agua'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['erosion'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['erosion'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['erosion'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['forraje'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['forraje'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['forraje'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['ingreso'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['ingreso'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['ingreso'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['plagas'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['plagas'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['plagas'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['riesgo'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['riesgo'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['riesgo'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,guanajuato/temporal/maiz_frijol,['suelo'],Con cultivo de invierno: maíz – garbanzo – frijol,3566.325434689393,True,False,10326.625400566547,8,True
+demo,guanajuato/temporal/maiz_frijol,['suelo'],Milpa: milpa (maíz-frijol-calabaza) – frijol,1151.6565706624558,True,False,2488.2180436067797,6,True
+demo,guanajuato/temporal/maiz_frijol,['suelo'],Más tolerante a sequía: sorgo – maíz,1324.2212728337558,True,False,-1023.5997135748755,8,False
+demo,sinaloa/riego/maiz,[],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,[],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,[],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['agua'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['agua'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['agua'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['erosion'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['erosion'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['erosion'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['forraje'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['forraje'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['forraje'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['ingreso'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['ingreso'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['ingreso'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['plagas'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['plagas'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['plagas'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['riesgo'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['riesgo'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['riesgo'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/maiz,['suelo'],Con leguminosa: maíz – frijol,-3312.1419543148313,True,False,-16510.67796695365,8,True
+demo,sinaloa/riego/maiz,['suelo'],Con cultivo de verano: sorgo – maíz,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/maiz,['suelo'],Con leguminosa: maíz – garbanzo,-4645.150441763132,False,True,-17974.948530639045,8,True
+demo,sinaloa/riego/sorgo_maiz,[],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['agua'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['erosion'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['forraje'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['ingreso'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['plagas'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['riesgo'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/sorgo_maiz,['suelo'],Con forraje: sorgo – sorgo forrajero,-37747.98362577284,False,True,-84819.48866264813,5,True
+demo,sinaloa/riego/frijol,[],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,[],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,[],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['agua'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['agua'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['agua'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['erosion'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['erosion'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['erosion'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['forraje'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['forraje'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['forraje'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['ingreso'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['ingreso'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['ingreso'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['plagas'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['plagas'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['plagas'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['riesgo'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['riesgo'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['riesgo'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/frijol,['suelo'],Con cultivo de verano: sorgo – frijol,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/frijol,['suelo'],Más ingreso: frijol – maíz,3312.1419543148304,True,False,16510.67796695365,8,True
+demo,sinaloa/riego/frijol,['suelo'],Con leguminosa: frijol – garbanzo,-1333.0084874483007,True,False,-1464.2705636853943,8,True
+demo,sinaloa/riego/trigo,[],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,[],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,[],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['agua'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['agua'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['agua'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['erosion'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['erosion'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['erosion'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['forraje'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['forraje'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['forraje'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['ingreso'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['ingreso'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['ingreso'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['plagas'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['plagas'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['plagas'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['riesgo'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['riesgo'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['riesgo'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/riego/trigo,['suelo'],Con leguminosa: trigo – frijol,4672.8552081046155,True,False,973.1302147937431,8,True
+demo,sinaloa/riego/trigo,['suelo'],Con cultivo de verano: sorgo – trigo,20678.111303450725,True,False,37943.160381881265,6,True
+demo,sinaloa/riego/trigo,['suelo'],Más ingreso: trigo – maíz,7984.997162419447,True,False,17483.808181747394,8,True
+demo,sinaloa/temporal/ajonjoli,[],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['agua'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['erosion'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['forraje'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['ingreso'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['plagas'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['riesgo'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/ajonjoli,['suelo'],Con leguminosa: ajonjolí – cacahuate,3920.594950937662,True,False,2120.8390016957082,6,True
+demo,sinaloa/temporal/sorgo,[],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['agua'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['erosion'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['forraje'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['ingreso'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['plagas'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['riesgo'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/sorgo,['suelo'],Con leguminosa: sorgo – cacahuate,5860.649463753256,True,False,2891.6426816700637,6,True
+demo,sinaloa/temporal/cacahuate,[],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['agua'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['erosion'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['forraje'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['ingreso'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['plagas'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['riesgo'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sinaloa/temporal/cacahuate,['suelo'],Más tolerante a sequía: ajonjolí – cacahuate,-3920.594950937662,True,False,-2120.839001695708,6,True
+demo,sonora/riego/trigo,[],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,[],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,[],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['agua'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['agua'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['agua'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['erosion'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['erosion'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['erosion'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['forraje'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['forraje'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['forraje'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['ingreso'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['ingreso'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['ingreso'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['plagas'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['plagas'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['plagas'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['riesgo'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['riesgo'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['riesgo'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/trigo,['suelo'],Con cultivo de verano: soya – trigo,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo,['suelo'],Con leguminosa: trigo – garbanzo,2307.651876514372,True,False,-4344.505500210011,8,False
+demo,sonora/riego/trigo,['suelo'],Con leguminosa: trigo – frijol,-2456.549535379192,False,True,-3629.677708585241,8,True
+demo,sonora/riego/soya_trigo,[],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,[],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,[],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['agua'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['agua'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['agua'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['erosion'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['erosion'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['erosion'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['forraje'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['forraje'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['forraje'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['ingreso'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['ingreso'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['plagas'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['plagas'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['plagas'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['riesgo'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['riesgo'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/soya_trigo,['suelo'],Más ingreso: soya – maíz,-19868.50503703015,True,False,-36512.41974483259,8,True
+demo,sonora/riego/soya_trigo,['suelo'],Menos agua de riego: sorgo – soya,-22935.563564850287,True,False,-45481.40829164341,8,True
+demo,sonora/riego/soya_trigo,['suelo'],Milpa: milpa (maíz-frijol-calabaza),-11519.545293702417,False,True,-10835.7682455159,5,True
+demo,sonora/riego/maiz,[],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,[],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,[],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['agua'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['agua'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['agua'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['erosion'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['erosion'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['erosion'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['forraje'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['forraje'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['forraje'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['ingreso'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['ingreso'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['ingreso'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['plagas'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['plagas'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['plagas'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['riesgo'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['riesgo'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['riesgo'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/maiz,['suelo'],Con cultivo de verano: soya – maíz,14718.249179096692,True,False,26657.100232172364,8,True
+demo,sonora/riego/maiz,['suelo'],Con leguminosa: maíz – garbanzo,3489.4074959163436,True,False,-12302.170850822007,8,False
+demo,sonora/riego/maiz,['suelo'],Con leguminosa: maíz – frijol,-1274.7939159772193,False,False,-11587.343059197236,8,True
+demo,sonora/riego/trigo_maiz,[],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,[],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,[],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['agua'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['agua'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['agua'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['erosion'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['erosion'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['erosion'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['forraje'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['forraje'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['forraje'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['ingreso'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['ingreso'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['ingreso'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['plagas'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['plagas'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['plagas'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['riesgo'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['riesgo'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['riesgo'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/riego/trigo_maiz,['suelo'],Con cultivo de verano: soya – trigo – maíz,14718.249179096692,True,False,26657.100232172368,8,True
+demo,sonora/riego/trigo_maiz,['suelo'],Con leguminosa: trigo – garbanzo,3489.407495916343,True,False,-12302.170850822007,8,False
+demo,sonora/riego/trigo_maiz,['suelo'],Con leguminosa: trigo – frijol,-1274.7939159772206,False,True,-11587.34305919724,8,True
+demo,sonora/temporal/sorgo,[],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['agua'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['erosion'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['forraje'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['ingreso'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['plagas'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['riesgo'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+demo,sonora/temporal/sorgo,['suelo'],Más ingreso: sorgo – maíz,336.7582277603947,False,False,3711.036049171272,6,True
+nacional,Durango/Durango/riego/maize,[],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,[],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['agua'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['agua'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['erosion'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['erosion'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['forraje'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['forraje'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['ingreso'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['ingreso'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['plagas'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['plagas'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['riesgo'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Durango/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['riesgo'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['suelo'],Con leguminosa: maíz – frijol,-5052.291941149046,True,False,-10003.2507850562,8,True
+nacional,Durango/Durango/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),3532.176523217703,True,False,8884.497181908804,6,True
+nacional,Durango/Durango/riego/maize,['suelo'],Con cultivo de invierno: maíz – avena forrajera,9270.307280156334,True,False,11210.442699655367,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,[],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['agua'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['erosion'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['forraje'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['ingreso'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['plagas'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['riesgo'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['suelo'],Con cultivo de invierno: maíz – avena forrajera,10670.78233286401,True,False,11781.979562951783,8,True
+nacional,Durango/Santiago Papasquiaro/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),3572.2011530602545,True,False,13985.061130619515,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,[],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,[],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['agua'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),5572.53741798957,True,False,13554.887539801717,5,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['erosion'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['erosion'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['forraje'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['forraje'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['ingreso'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['ingreso'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['plagas'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['plagas'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['riesgo'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['riesgo'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['suelo'],Con leguminosa: maíz – cacahuate,10786.69646898683,True,False,9140.568559753041,6,True
+nacional,San Luis Potosí/Rioverde/riego/maize,['suelo'],Con cultivo de invierno: maíz – frijol,13969.830287168572,True,False,19916.142840403216,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,[],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,[],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,[],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['agua'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['agua'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['agua'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['erosion'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['erosion'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['forraje'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['forraje'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['ingreso'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['ingreso'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['plagas'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['plagas'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['riesgo'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['riesgo'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['suelo'],Con cultivo de invierno: sorgo – cártamo,2654.272995914459,True,False,2580.573842959997,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['suelo'],Con leguminosa: sorgo – frijol,562.7973356180213,False,True,652.1835845340302,8,True
+nacional,Tamaulipas/Victoria/temporal/sorghum,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2585.6951868400547,False,True,2439.287639631409,5,True
+nacional,Chiapas/Pichucalco/temporal/maize,[],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,[],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['agua'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['agua'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['erosion'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['forraje'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['plagas'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['suelo'],Con cultivo de invierno: maíz – frijol,7454.299034926802,True,False,8142.980936691707,8,True
+nacional,Chiapas/Pichucalco/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2700.5352118869528,True,False,2757.6435325861908,6,True
+nacional,Chiapas/Pichucalco/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,1076.992087239244,True,False,931.9257520381186,8,True
+nacional,Tlaxcala/Huamantla/temporal/maize,[],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,[],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['agua'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['agua'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['erosion'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['erosion'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['forraje'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['forraje'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['ingreso'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['ingreso'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['plagas'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['plagas'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['riesgo'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['riesgo'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['suelo'],Con leguminosa: maíz – haba,1245.7340079939124,False,True,1683.6174937737544,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['suelo'],Más ingreso: maíz – calabaza (semilla),5426.196001536474,False,True,8589.003505315492,6,True
+nacional,Tlaxcala/Huamantla/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),3165.842888181745,False,True,5278.5283605232535,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,[],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,[],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['agua'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['agua'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['erosion'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['forraje'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['plagas'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,1400.6973462989456,True,False,3004.4998736906077,8,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2882.6888386001506,True,False,5348.39076164058,6,True
+nacional,Oaxaca/Valles Centrales/temporal/maize,['suelo'],Con cultivo de invierno: maíz – garbanzo,8311.128169629294,False,True,12371.96063808318,8,True
+nacional,Michoacán/Sahuayo/riego/maize,[],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,[],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['agua'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['agua'],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['erosion'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['erosion'],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['forraje'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['forraje'],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['ingreso'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['ingreso'],Con cultivo de invierno: maíz – frijol,22638.858919357775,False,True,29923.730032269155,8,True
+nacional,Michoacán/Sahuayo/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['plagas'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['plagas'],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['riesgo'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['riesgo'],Con cultivo de invierno: maíz – frijol,22638.858919357775,False,True,29923.730032269155,8,True
+nacional,Michoacán/Sahuayo/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Michoacán/Sahuayo/riego/maize,['suelo'],Menos agua de riego: sorgo – maíz,-584.8567761768359,False,False,1121.2306074420285,8,False
+nacional,Michoacán/Sahuayo/riego/maize,['suelo'],Con leguminosa: maíz – frijol,857.532818171241,False,True,-14128.379021639068,6,False
+nacional,Michoacán/Sahuayo/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),6454.947809133982,False,True,7143.714173337881,6,True
+nacional,Tlaxcala/Huamantla/riego/maize,[],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['agua'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['erosion'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['forraje'],Con cultivo de invierno: maíz – avena forrajera,7306.9504363109445,True,False,8881.031355776176,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['forraje'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['ingreso'],Con cultivo de invierno: maíz – avena forrajera,7306.9504363109445,True,False,8881.031355776176,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['plagas'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['riesgo'],Con cultivo de invierno: maíz – avena forrajera,7306.9504363109445,True,False,8881.031355776176,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['riesgo'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Tlaxcala/Huamantla/riego/maize,['suelo'],Con leguminosa: maíz – frijol,-4157.079569167168,True,False,-13098.806258829629,8,True
+nacional,Nuevo León/Galeana/temporal/maize,[],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,[],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['agua'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['agua'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['erosion'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['forraje'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['plagas'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Nuevo León/Galeana/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,304.5119575131895,False,False,2317.8253528018477,8,True
+nacional,Nuevo León/Galeana/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2399.1561949980523,True,False,4906.306621433862,6,True
+nacional,Nuevo León/Galeana/temporal/maize,['suelo'],Con cultivo de invierno: maíz – trigo,5587.018255132949,False,True,5523.6000267873005,4,True
+nacional,Puebla/Zacatlán/riego/maize,[],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['agua'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['erosion'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['forraje'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['ingreso'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['plagas'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['riesgo'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Puebla/Zacatlán/riego/maize,['suelo'],Con leguminosa: maíz – frijol,2639.4278297060996,True,False,-1699.3316857640275,5,False
+nacional,Puebla/Zacatlán/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),5984.966534293617,True,False,10190.863180540944,3,True
+nacional,Sonora/Hermosillo/riego/wheat,[],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,[],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['agua'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['agua'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['erosion'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['erosion'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['forraje'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['forraje'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['ingreso'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['ingreso'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['plagas'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['plagas'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['riesgo'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Sonora/Hermosillo/riego/wheat,['riesgo'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['suelo'],Con leguminosa: trigo – garbanzo,1951.3627094132532,True,False,-5946.082857345672,8,False
+nacional,Sonora/Hermosillo/riego/wheat,['suelo'],Con cultivo de verano: frijol – trigo,31655.808536886256,True,False,44553.636224263915,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,[],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,[],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['agua'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['agua'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['erosion'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['erosion'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['forraje'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['forraje'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['ingreso'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['ingreso'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['plagas'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['plagas'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['riesgo'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['riesgo'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Tamaulipas/Control/temporal/sorghum,['suelo'],Con cultivo de verano: soya – sorgo,3991.96253381241,False,True,6769.435055865922,3,True
+nacional,Tamaulipas/Control/temporal/sorghum,['suelo'],Con forraje: sorgo forrajero – sorgo,6183.047304252102,False,True,10420.079117568746,8,True
+nacional,Michoacán/La Piedad/riego/maize,[],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,[],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['agua'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['agua'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['erosion'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['erosion'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['forraje'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['forraje'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['ingreso'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['ingreso'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['plagas'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['plagas'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['riesgo'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['riesgo'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Michoacán/La Piedad/riego/maize,['suelo'],Menos agua de riego: sorgo – maíz,814.5175316166914,False,False,-5227.762180775892,8,False
+nacional,Michoacán/La Piedad/riego/maize,['suelo'],Con cultivo de invierno: maíz – garbanzo,7100.397963178545,False,True,19935.74944308264,8,True
+nacional,Chihuahua/El Carmen/riego/maize,[],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,[],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['agua'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['agua'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['erosion'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['erosion'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['forraje'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['forraje'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['ingreso'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['ingreso'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['plagas'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['plagas'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['riesgo'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['riesgo'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Chihuahua/El Carmen/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['suelo'],Con leguminosa: maíz – cacahuate,1816.3523070029562,False,False,853.8037263266033,4,True
+nacional,Chihuahua/El Carmen/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),3904.71151165103,True,False,9034.170032906562,6,True
+nacional,Chihuahua/El Carmen/riego/maize,['suelo'],Con cultivo de invierno: maíz – trigo,18760.30008790568,True,False,27505.597502533412,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,[],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,[],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,[],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['agua'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['agua'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['agua'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['erosion'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['erosion'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['erosion'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['forraje'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['forraje'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['forraje'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['ingreso'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['ingreso'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['plagas'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['plagas'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['plagas'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['riesgo'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['riesgo'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['suelo'],Con leguminosa: cebada – frijol,-744.7237519106162,True,False,-1809.2461468456163,8,True
+nacional,Hidalgo/Pachuca/temporal/barley,['suelo'],Milpa: milpa (maíz-frijol-calabaza),440.06542464827464,True,False,-2670.4599547258435,6,False
+nacional,Hidalgo/Pachuca/temporal/barley,['suelo'],Más ingreso: cebada – avena (grano),-42.32804952541013,False,False,-1754.6268233626997,8,True
+nacional,Michoacán/Morelia/riego/maize,[],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,[],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['agua'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['agua'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['erosion'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['erosion'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['forraje'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['forraje'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['ingreso'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['ingreso'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['plagas'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['plagas'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['riesgo'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['riesgo'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Michoacán/Morelia/riego/maize,['suelo'],Menos agua de riego: sorgo – maíz,531.2555730297349,True,False,-3265.31855363088,8,False
+nacional,Michoacán/Morelia/riego/maize,['suelo'],Con cultivo de invierno: maíz – garbanzo,10631.657982781711,False,True,12332.929387410595,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,[],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['agua'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,-183.55304054437892,False,False,-13.887599501707882,8,True
+nacional,Querétaro/San Juan del Río/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2179.620306999903,True,False,3750.022944312184,6,True
+nacional,México/Zumpango/temporal/maize,[],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['agua'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,México/Zumpango/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,980.3912058538187,True,False,-1138.3664153150644,8,False
+nacional,México/Zumpango/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2967.589929760255,True,False,3911.487853699356,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,[],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['agua'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['erosion'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['forraje'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['plagas'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['suelo'],Con cultivo de invierno: maíz – frijol,9667.282868985318,True,False,9367.026379412973,8,True
+nacional,Oaxaca/Tuxtepec/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2437.5275553803,True,False,3810.962801998068,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,[],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,[],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['agua'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['agua'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['erosion'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['erosion'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['forraje'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['forraje'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['ingreso'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['ingreso'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['plagas'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['plagas'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['riesgo'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['riesgo'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Nayarit/Ahuacatlán/temporal/maize,['suelo'],Con leguminosa: maíz – cacahuate,8267.104134874764,True,False,15138.541002265489,6,True
+nacional,Nayarit/Ahuacatlán/temporal/maize,['suelo'],Más tolerante a sequía: sorgo – maíz,78.10008128515523,False,False,-4466.832507651902,5,False
+nacional,Zacatecas/Jalpa/temporal/maize,[],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,[],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['agua'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['agua'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['erosion'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['forraje'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['ingreso'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['plagas'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['riesgo'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Zacatecas/Jalpa/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,272.9143905174867,False,False,-3284.574022079478,8,False
+nacional,Zacatecas/Jalpa/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2657.435145459488,True,False,3775.9307598052287,6,True
+nacional,Zacatecas/Jalpa/temporal/maize,['suelo'],Más tolerante a sequía: sorgo – maíz,960.9825352662149,True,False,-414.73182521066025,7,False
+nacional,Chihuahua/Cuauhtémoc/riego/maize,[],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,[],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,[],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['agua'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['agua'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['erosion'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['erosion'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['forraje'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['forraje'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['ingreso'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['ingreso'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['plagas'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['plagas'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['riesgo'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['riesgo'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['suelo'],Con leguminosa: maíz – frijol,-5894.310604391638,False,True,-13163.030688660772,8,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),4041.5210000312627,False,True,8902.362747872323,6,True
+nacional,Chihuahua/Cuauhtémoc/riego/maize,['suelo'],Con cultivo de invierno: maíz – trigo,22643.716696469877,False,True,33593.58893853399,7,True
+nacional,Chihuahua/San Juanito/temporal/maize,[],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,[],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['agua'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['agua'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['erosion'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['forraje'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['plagas'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Chihuahua/San Juanito/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,135.20788079310577,True,False,774.0225650850382,8,True
+nacional,Chihuahua/San Juanito/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2138.8778045081226,True,False,4366.465666840163,6,True
+nacional,Chihuahua/San Juanito/temporal/maize,['suelo'],Con cultivo de invierno: maíz – trigo,2438.0530911786905,False,True,4311.5907596832185,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,[],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,[],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['agua'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['agua'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['erosion'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['forraje'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['ingreso'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['plagas'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['riesgo'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Villa Ocampo/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,1119.821780201427,True,False,1704.4405163245453,7,True
+nacional,Durango/Villa Ocampo/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2739.0584706445325,True,False,4578.629345978906,5,True
+nacional,Durango/Villa Ocampo/temporal/maize,['suelo'],Más tolerante a sequía: sorgo – maíz,1275.0096627441608,True,False,73.63555012944079,4,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,[],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,[],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['agua'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['agua'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['erosion'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['forraje'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['ingreso'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['plagas'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['riesgo'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,1606.7687944303211,True,False,1765.5715888246273,8,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2970.5138715213357,True,False,4630.970773086402,6,True
+nacional,Durango/Santiago Papasquiaro/temporal/maize,['suelo'],Más tolerante a sequía: sorgo – maíz,5649.611830579025,False,True,1954.7442879761306,8,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,[],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['agua'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,14.204131732861553,False,False,-61.07181218313248,7,False
+nacional,Zacatecas/Concepción del Oro/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),2169.993410073058,True,False,3386.4872235112052,5,True
+nacional,Michoacán/Zamora/riego/wheat,[],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,[],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,[],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['agua'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['agua'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['agua'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['erosion'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['erosion'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['erosion'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['forraje'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['forraje'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['forraje'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['ingreso'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['ingreso'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['ingreso'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['plagas'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['plagas'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['plagas'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['riesgo'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['riesgo'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['riesgo'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Michoacán/Zamora/riego/wheat,['suelo'],Con cultivo de verano: frijol – trigo,22160.980731506002,True,False,20454.344298226137,6,True
+nacional,Michoacán/Zamora/riego/wheat,['suelo'],Con leguminosa: trigo – garbanzo,-6013.555243227145,True,False,1207.4657870898857,6,False
+nacional,Michoacán/Zamora/riego/wheat,['suelo'],Con leguminosa: trigo – frijol,-600.6069094964366,False,False,1066.1827546413647,8,False
+nacional,Campeche/Champotón/temporal/maize,[],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,[],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,[],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['agua'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['agua'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['agua'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['erosion'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['erosion'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['erosion'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['forraje'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['forraje'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['forraje'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['ingreso'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['ingreso'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['ingreso'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['plagas'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['plagas'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['plagas'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['riesgo'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['riesgo'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['riesgo'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Campeche/Champotón/temporal/maize,['suelo'],Con leguminosa: maíz – soya,3645.046895586012,True,False,6349.68218273321,6,True
+nacional,Campeche/Champotón/temporal/maize,['suelo'],Con cultivo de invierno: maíz – frijol,8976.54949390425,True,False,12673.740437242901,8,True
+nacional,Campeche/Champotón/temporal/maize,['suelo'],Más ingreso: maíz – calabaza (semilla),3867.0668970795546,True,False,7030.811611375422,6,True
+nacional,Guanajuato/León/temporal/maize,[],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,[],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,[],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['agua'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['agua'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['agua'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['erosion'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['erosion'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['erosion'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['forraje'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['forraje'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['forraje'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['ingreso'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['ingreso'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['ingreso'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['plagas'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['plagas'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['plagas'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['riesgo'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['riesgo'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['riesgo'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
+nacional,Guanajuato/León/temporal/maize,['suelo'],Con leguminosa: maíz – frijol,-1122.5778391942533,True,False,-715.1435430476604,8,True
+nacional,Guanajuato/León/temporal/maize,['suelo'],Milpa: milpa (maíz-frijol-calabaza),1835.3805164352739,True,False,4446.861396627756,6,True
+nacional,Guanajuato/León/temporal/maize,['suelo'],Más tolerante a sequía: sorgo – maíz,1021.359330532816,True,False,-960.0580710401771,8,False
