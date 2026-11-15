@@ -86,7 +86,7 @@ export function FarmerHome({ data, pin, onPin, site, coverage }: Props) {
                 ← {t('farmer.setup.backHome')}
               </button>
             )}
-            <ParcelPage state={state} parcel={parcel} site={site} zone={zone} onParcel={setParcel} onSituation={patchSituation} onPlant={finishSetup} />
+            <ParcelPage state={state} parcel={parcel} site={site} onParcel={setParcel} onSituation={patchSituation} onPlant={finishSetup} />
           </>
         ) : (
           <>

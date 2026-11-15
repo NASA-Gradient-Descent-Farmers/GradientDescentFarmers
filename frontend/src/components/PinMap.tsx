@@ -2,6 +2,7 @@ import * as L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEffect, useRef } from 'react'
 import { INSIDE_KM } from '../lib/coverage.ts'
+import { DEMO_LOCATIONS } from '../lib/demoLocations.ts'
 import type { LatLon } from '../lib/geo.ts'
 
 export type MapLayer = 'street' | 'satellite'
@@ -16,10 +17,8 @@ const SATELLITE = {
   url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg',
   options: { maxNativeZoom: 8, maxZoom: 11, attribution: 'Imagery &copy; NASA EOSDIS GIBS' },
 }
-const MEXICO: L.LatLngBoundsExpression = [
-  [14.3, -118.6],
-  [32.9, -86.5],
-]
+/** The map opens on the predetermined places, with room around them. */
+const PLACES_BOUNDS = L.latLngBounds(DEMO_LOCATIONS.map((place) => [place.latitude, place.longitude] as [number, number]))
 const TILE_ERRORS_BEFORE_GIVING_UP = 6
 
 /** A teardrop pin in the brand orange with a leaf cut out of it. */
@@ -38,16 +37,13 @@ interface Props {
   value: LatLon | null
   onChange: (point: LatLon) => void
   layer: MapLayer
-  /** The one site the crop model is calibrated for, drawn with the radius inside which the planner applies. */
-  site: LatLon
-  siteLabel: string
   label: string
   onTilesFailed: (failed: boolean) => void
 }
 
 const toLatLon = ({ lat, lng }: L.LatLng): LatLon => ({ lat, lon: lng })
 
-export function PinMap({ value, onChange, layer, site, siteLabel, label, onTilesFailed }: Props) {
+export function PinMap({ value, onChange, layer, label, onTilesFailed }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const map = useRef<L.Map | null>(null)
   const marker = useRef<L.Marker | null>(null)
@@ -57,24 +53,28 @@ export function PinMap({ value, onChange, layer, site, siteLabel, label, onTiles
     latest.current = { onChange, onTilesFailed }
   })
 
-  // The map itself, the modeled site and the ways to place the pin.
+  // The map itself, the predetermined places and the ways to place the pin.
   useEffect(() => {
     const element = host.current
     if (!element) return
     const instance = L.map(element, { zoomControl: true, minZoom: 3, worldCopyJump: true })
-    instance.fitBounds(MEXICO)
-    L.circle([site.lat, site.lon], {
-      radius: INSIDE_KM * 1000,
-      color: '#ad4b25',
-      weight: 2,
-      dashArray: '6 6',
-      fillColor: '#c4582e',
-      fillOpacity: 0.12,
-      interactive: false,
-    }).addTo(instance)
-    L.circleMarker([site.lat, site.lon], { radius: 6, color: '#111111', weight: 2.5, fillColor: '#ffffff', fillOpacity: 1, interactive: false })
-      .bindTooltip(siteLabel, { permanent: true, direction: 'right', offset: [8, 0], className: 'cv-site-tip' })
-      .addTo(instance)
+    instance.fitBounds(PLACES_BOUNDS, { padding: [40, 40] })
+    // each predetermined place: the area its data covers, and a point with its name that places the pin when tapped
+    for (const place of DEMO_LOCATIONS) {
+      L.circle([place.latitude, place.longitude], {
+        radius: INSIDE_KM * 1000,
+        color: '#ad4b25',
+        weight: 2,
+        dashArray: '6 6',
+        fillColor: '#c4582e',
+        fillOpacity: 0.12,
+        interactive: false,
+      }).addTo(instance)
+      L.circleMarker([place.latitude, place.longitude], { radius: 8, color: '#111111', weight: 2.5, fillColor: '#ffffff', fillOpacity: 1, bubblingMouseEvents: false })
+        .bindTooltip(place.name, { permanent: true, direction: 'right', offset: [10, 0], className: 'cv-site-tip' })
+        .on('click', () => latest.current.onChange({ lat: place.latitude, lon: place.longitude }))
+        .addTo(instance)
+    }
     instance.on('click', (e: L.LeafletMouseEvent) => latest.current.onChange(toLatLon(e.latlng)))
     // From the keyboard: arrows move the map, Enter drops the pin at its centre.
     const dropAtCentre = (e: KeyboardEvent) => {
@@ -89,9 +89,7 @@ export function PinMap({ value, onChange, layer, site, siteLabel, label, onTiles
       marker.current = null
       tiles.current = null
     }
-    // The site never changes while the map is shown.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [site.lat, site.lon, siteLabel])
+  }, [])
 
   // The tile layer: swapped when the visitor changes layer.
   useEffect(() => {
@@ -116,7 +114,7 @@ export function PinMap({ value, onChange, layer, site, siteLabel, label, onTiles
       tileLayer.remove()
       tiles.current = null
     }
-  }, [layer, site.lat, site.lon, siteLabel])
+  }, [layer])
 
   // The pin follows `value`; a pin set from outside the map (or off screen) brings the map to it.
   useEffect(() => {

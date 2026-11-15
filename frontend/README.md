@@ -78,19 +78,17 @@ The first time a farmer picks a card (all but "¿Qué tan cierto es el modelo?",
 
 ## Where is your field?
 
-In Agricultor the map opens from "Marcar en el mapa" in Mi parcela; the full-screen version (with the climate card) opens from "cambiar" in the pin chip of the Técnico header. It was the second of the questions, "¿Dónde piensas sembrar?": a map where the farmer taps to drop a pin and drags it to adjust (or uses their location, or the Texcoco site). A returning farmer skips it. The map is Leaflet over OpenStreetMap, with a NASA GIBS "Blue Marble" satellite layer (about 500 m per pixel, for seeing the land around rather than the exact spot). The one site the crop model covers, El Batán, is drawn with a 25 km circle.
+In Agricultor the map opens from "Marcar en el mapa" in Mi parcela; the full-screen version opens from "cambiar" in the pin chip of the Técnico header. The farmer taps the map to drop a pin and drags it to adjust, uses their location, or taps one of the **predetermined places**.
 
-Every crop-model number in the app is for El Batán, so the pin gets an honest verdict instead of silently reusing Texcoco's numbers:
+The map opens on those places and draws each with the radius its data covers (25 km, the app's "inside" distance, `INSIDE_KM` in `src/lib/coverage.ts`):
 
-| Verdict | When | What the app says |
+| Place | Coordinates | What is published for it |
 |---|---|---|
-| inside | within 25 km of El Batán (about one NASA POWER weather cell) | the planner applies |
-| near | 25-100 km, and annual rain within 20% and mean temperature within 2 °C of El Batán's | a reference, not tuned to the field |
-| outside | beyond 100 km, or 25-100 km with a different climate | the numbers are Texcoco's: compare options, not figures for the field |
+| Sonora | 27.332202, -110.162783 | environmental profile and rotation run |
+| Sinaloa | 25.7636111, -108.8613889 | environmental profile and rotation run |
+| Guanajuato | 20.4243195, -101.1466639 | environmental profile only |
 
-Those thresholds are our judgment calls, not NASA's or the model's (`src/lib/coverage.ts`). A verdict other than "inside" also shows as a note on every planner page.
-
-**Climate from NASA.** For the pin and for El Batán the browser asks NASA POWER's climatology service for rain, mean temperature and the coldest night, and shows them side by side (a monthly rain chart with a table view). Checked against POWER's own daily data at El Batán: climatology rain gives 895 mm a year against 912 mm for 2011-2020, with the same monthly shape. One trap: climatology `T2M_MIN` is each month's *extreme*, not the average of the daily minimums (January at El Batán: -4.5 °C, against a mean of +4.3 °C and a lowest day of -3.5 °C in 2015-2024), so the app calls it "coldest night" and says so.
+They are defined once in `src/lib/demoLocations.ts`. Texcoco is not one of them and does not appear anywhere in picking a location. A pin within 25 km of a place gets what is published for it (`nearZone` in `src/lib/environment.ts`); a pin anywhere else is told there is no data there yet and which place is nearest (`ZoneNotice`, `nearestDemoLocation`). Nothing is filled in with results computed for another place. `src/lib/locationFlow.test.ts` fails if the text of this flow names Texcoco again.
 
 **Privacy.** The pin is stored only in this browser (`localStorage`). NASA POWER is sent the location rounded to 0.1° (about 11 km, finer than its weather cell, so nothing is lost), and the map tiles come from OpenStreetMap and NASA GIBS, which see the area being viewed. The page says this next to the map.
 

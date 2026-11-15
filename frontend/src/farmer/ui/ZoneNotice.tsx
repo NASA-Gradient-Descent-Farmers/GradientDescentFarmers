@@ -1,19 +1,20 @@
 import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
-import type { LatLon } from '../../lib/geo.ts'
+import { nearestDemoLocation } from '../../lib/demoLocations.ts'
 import { nearZone } from '../../lib/environment.ts'
-import type { Zone } from '../recommend.ts'
+import type { LatLon } from '../../lib/geo.ts'
 import { InfoIcon, WarnIcon } from './glyphs.tsx'
 
 /**
- * Whether the model applies where the parcel is, in words and an icon: the model was fitted with Texcoco fields only, and
- * being close does not make it right. A parcel near a point the rotations service has run (given as `point`) is told that
- * instead, because that is what the app will show for it.
+ * What exists for the parcel's pin, in words and an icon: rotation results and data for a place the data service has run,
+ * only data for one it has not run the rotation model for, or nothing, with the nearest place that has some. It says
+ * nothing until the published files have loaded.
  */
-export function ZoneNotice({ zone, point }: { zone: Zone | null; point?: LatLon | null }) {
+export function ZoneNotice({ point }: { point?: LatLon | null }) {
   const { t, distance } = useI18n()
   const published = useZoneData()
-  const site = point && published ? nearZone(point, published) : null
+  if (!point || !published) return null
+  const site = nearZone(point, published)
   if (site?.rotations) {
     const where = site.rotations.municipality ? t('near.notice.where', { municipality: site.rotations.municipality }) : ''
     return (
@@ -28,33 +29,29 @@ export function ZoneNotice({ zone, point }: { zone: Zone | null; point?: LatLon 
       </div>
     )
   }
-  const key = zone?.key ?? 'pending'
-  const status = zone?.status ?? 'unknown'
-  const planner = (
-    <div className={`callout zone-${status}`} role="status">
-      <span className="callout-icon">{status === 'inside' ? <InfoIcon /> : <WarnIcon />}</span>
+  if (site?.environment) {
+    return (
+      <div className="callout zone-near" role="status">
+        <span className="callout-icon">
+          <InfoIcon />
+        </span>
+        <div>
+          <strong>{t('near.noticeEnvironment.title')}</strong>
+          <p>{t('near.noticeEnvironment.body', { km: distance(site.km), place: site.name })}</p>
+        </div>
+      </div>
+    )
+  }
+  const nearest = nearestDemoLocation(point)
+  return (
+    <div className="callout zone-outside" role="status">
+      <span className="callout-icon">
+        <WarnIcon />
+      </span>
       <div>
-        <strong>{t(`farmer.zone.${key}.title`)}</strong>
-        <p>{t(`farmer.zone.${key}.body`, { km: distance(zone?.km ?? 0) })}</p>
+        <strong>{t('near.noData.title')}</strong>
+        <p>{t('near.noData.body', { place: nearest.place.name, km: distance(nearest.km) })}</p>
       </div>
     </div>
   )
-  // data from the environmental package but no rotation results here: say what exists, then what the planner says
-  if (site?.environment) {
-    return (
-      <>
-        <div className="callout zone-near" role="status">
-          <span className="callout-icon">
-            <InfoIcon />
-          </span>
-          <div>
-            <strong>{t('near.noticeEnvironment.title')}</strong>
-            <p>{t('near.noticeEnvironment.body', { km: distance(site.km), place: site.name })}</p>
-          </div>
-        </div>
-        {planner}
-      </>
-    )
-  }
-  return planner
 }

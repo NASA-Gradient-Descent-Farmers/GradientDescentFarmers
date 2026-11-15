@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import type { CoverageInfo } from '../../hooks/useCoverage.ts'
 import { useI18n } from '../../i18n/index.tsx'
 import type { LatLon } from '../../lib/geo.ts'
 import type { DashboardData } from '../../lib/types.ts'
-import { zoneOf, type Recommendation } from '../recommend.ts'
-import { loadSaved, storeSaved, withoutSaved, withSaved } from '../saved.ts'
+import type { Recommendation } from '../recommend.ts'
+import { loadSaved, storeSaved, withoutSaved } from '../saved.ts'
 import { isComplete, loadState, parcelAt, saveState, type FarmerState, type Parcel, type Situation } from '../state.ts'
 import { PinIcon, SavedIcon, SproutIcon } from './glyphs.tsx'
 import { ParcelPage } from './ParcelPage.tsx'
@@ -26,7 +25,6 @@ interface Props {
   onPin: (point: LatLon) => void
   /** The one site the crop model was fitted to. */
   site: LatLon
-  coverage: CoverageInfo | null
   /** Opens the assistant of this mode. */
   onAsk: () => void
 }
@@ -36,13 +34,12 @@ interface Props {
  * recommendations kept for later (Mis recomendaciones). These are the pages a first-time farmer is walked through; here they
  * are simply available. They read and write the same parcel and answers as the Agricultor home.
  */
-export function ParcelTools({ data, pin, onPin, site, coverage, onAsk }: Props) {
+export function ParcelTools({ data, pin, onPin, site, onAsk }: Props) {
   const { t } = useI18n()
   const [state, setState] = useState<FarmerState>(loadState)
   const [saved, setSaved] = useState<Recommendation[]>(loadSaved)
   const parcel = useMemo(() => parcelAt(state, pin), [state, pin])
   const [tab, setTab] = useState<Tab>(() => (parcelAt(state, pin) && isComplete(state.situation) ? 'plant' : 'parcel'))
-  const zone = useMemo(() => (coverage ? zoneOf(coverage.verdict, coverage.distanceKm) : null), [coverage])
   const region = useRef<HTMLDivElement>(null)
 
   useEffect(() => saveState(state), [state])
@@ -56,7 +53,6 @@ export function ParcelTools({ data, pin, onPin, site, coverage, onAsk }: Props) 
     [onPin],
   )
   const patchSituation = useCallback((patch: Situation) => setState((current) => ({ ...current, situation: { ...current.situation, ...patch } })), [])
-  const save = useCallback((rec: Recommendation) => setSaved((list) => withSaved(list, rec)), [])
   const remove = useCallback((id: string) => setSaved((list) => withoutSaved(list, id)), [])
 
   const go = (next: Tab) => {
@@ -76,10 +72,10 @@ export function ParcelTools({ data, pin, onPin, site, coverage, onAsk }: Props) 
       </nav>
       <div ref={region} tabIndex={-1} role="region" aria-label={t(`farmer.nav.${tab}`)} className="parcel-tools-body">
         {tab === 'parcel' && (
-          <ParcelPage state={state} parcel={parcel} site={site} zone={zone} onParcel={setParcel} onSituation={patchSituation} onPlant={() => go('plant')} />
+          <ParcelPage state={state} parcel={parcel} site={site} onParcel={setParcel} onSituation={patchSituation} onPlant={() => go('plant')} />
         )}
         {tab === 'plant' && (
-          <PlantPage data={data} state={state} parcel={parcel} zone={zone} saved={saved} onSave={save} onGoParcel={() => go('parcel')} onAsk={onAsk} />
+          <PlantPage parcel={parcel} onGoParcel={() => go('parcel')} onAsk={onAsk} />
         )}
         {tab === 'saved' && <SavedPage saved={saved} meta={data.meta} models={data.models} onRemove={remove} onGoPlant={() => go('plant')} />}
       </div>

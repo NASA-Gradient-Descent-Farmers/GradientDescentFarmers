@@ -110,7 +110,6 @@ function Workspace({ user }: { user: Account }) {
     page = data ? (
       <WhereScreen
         initial={pin}
-        site={site}
         onBack={(from) => go(before, from)}
         onConfirm={(point, from) => {
           changePin(point)
@@ -181,7 +180,7 @@ function Workspace({ user }: { user: Account }) {
           {!error && !data && <p className="status">{t('app.loading')}</p>}
           {data && route === 'planner' && <PlannerScreen key={plannerStart?.key ?? 0} data={data} start={plannerStart?.start} />}
           {data && route === 'parcel' && (
-            <ParcelTools data={data} pin={pin} onPin={changePin} site={site} coverage={coverage} onAsk={() => setRoute('assistant')} />
+            <ParcelTools data={data} pin={pin} onPin={changePin} site={site} onAsk={() => setRoute('assistant')} />
           )}
           {data && route === 'assistant' && (
             <AssistantPage

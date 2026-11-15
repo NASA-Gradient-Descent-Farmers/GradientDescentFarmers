@@ -37,7 +37,7 @@ export const farmerEn = {
     },
     place: {
       searchLabel: 'Your municipality or town',
-      searchPlaceholder: 'For example: Texcoco',
+      searchPlaceholder: 'For example: Bácum',
       searchHelp: 'We search by municipality. If your town is not listed, type your municipality or mark it on the map.',
       loadingPlaces: 'Loading the list of municipalities…',
       placesError: 'The list of municipalities could not be loaded. You can use your location or mark it on the map.',
@@ -88,14 +88,6 @@ export const farmerEn = {
       ctaHint: 'We check the options with what you told us.',
     },
   },
-  zone: {
-    inside: { title: 'You are inside the model area', body: 'The model was fitted with Texcoco fields and yours is {km} km from El Batán. Even so, soil and altitude may differ.' },
-    near: { title: 'You are near the model area', body: 'Your field is {km} km from El Batán with a similar climate, but the model was not tested there. Take it only as a reference.' },
-    nearUnchecked: { title: 'You are near the model area', body: 'Your field is {km} km from El Batán. We could not compare the climate, so take it only as a reference.' },
-    outsideClimate: { title: 'Your field is outside the model area', body: 'The climate {km} km from El Batán is different. The model was only fitted with Texcoco fields, so here we cannot give you a reliable recommendation.' },
-    outsideDistance: { title: 'Your field is outside the model area', body: 'It is {km} km from El Batán. The model was only fitted with Texcoco fields, so here we cannot give you a reliable recommendation.' },
-    pending: { title: 'Checking the climate of your area…', body: 'One moment. We are comparing the climate of your field with Texcoco’s.' },
-  },
   plant: {
     title: 'What to plant',
     question: 'What is it best for me to plant in my field next season?',
@@ -105,11 +97,6 @@ export const farmerEn = {
     go: 'Go to My field',
     loading: 'Checking the options for your field…',
     error: 'We could not work out the recommendation: {message}',
-    outsideTitle: 'Here we cannot recommend what to plant',
-    outsideBody: 'The model was only fitted with fields in Texcoco, State of Mexico. We prefer not to give a recommendation we cannot stand behind.',
-    showReference: 'See the Texcoco options as a reference',
-    hideReference: 'Hide the reference',
-    referenceNote: 'This is for Texcoco, not for your field.',
   },
   rec: {
     brief: { more: 'See all the details' },
@@ -225,7 +212,7 @@ export const farmerEn = {
       money: 'This is what the model works out you could earn. Remember it is an estimate, not a promise:',
       rain: 'This is what the model shows when it rains little. The detail is under risks below:',
     },
-    outside: 'Your field is {km} km from El Batán, outside the area where the model was tested. I prefer not to give you a recommendation I cannot stand behind. Under “What to plant” you can see the Texcoco options as a reference.',
+    outside: 'There is no published data for this location yet. YolIA has data for Sonora, Sinaloa and Guanajuato: pick one of those points in "My parcel" and I will tell you what there is. I would rather not give you a recommendation I cannot stand behind.',
     fertilizer: {
       general: 'About fertilizer, frankly: in this model fertilizer barely raises the yield, so it suggests little or none. That comes from the model, not from a field result.',
       advice: 'To decide your dose, the best thing is to try it on a small part of your field or ask a technician.',
@@ -236,7 +223,7 @@ export const farmerEn = {
       intro: 'Frankly: YolIA’s numbers are for comparing options, not for promising a harvest.',
       outro: 'That is why every result says it is an estimate and how far your field is from where the model was tested.',
     },
-    unknown: 'I cannot answer that with confidence yet. I only work with the climate, rotations and yields of Texcoco. Try one of the questions below, or put it another way.',
+    unknown: 'I cannot answer that with confidence yet. I only work with the data for Sonora, Sinaloa and Guanajuato. Try one of the questions below, or write it another way.',
     error: 'I could not work that out: {message}',
   },
   saved: {

@@ -3,7 +3,6 @@ import { useI18n } from '../../i18n/index.tsx'
 import type { LatLon } from '../../lib/geo.ts'
 import { currentPosition, GeoError, type GeoErrorCode } from '../geolocate.ts'
 import { placeLabel, type Place } from '../places.ts'
-import type { Zone } from '../recommend.ts'
 import { FIELDS, missing, validHectares, type Field, type FarmerState, type Goal, type Parcel, type Previous, type Situation } from '../state.ts'
 import { BigChoice } from './BigChoice.tsx'
 import { LocateIcon, MapIcon, PinIcon } from './glyphs.tsx'
@@ -22,7 +21,6 @@ interface Props {
   state: FarmerState
   parcel: Parcel | null
   site: LatLon | null
-  zone: Zone | null
   onParcel: (parcel: Parcel) => void
   onSituation: (patch: Situation) => void
   onPlant: () => void
@@ -34,7 +32,7 @@ const firstStep = (parcel: Parcel | null, situation: Situation): Step => (!parce
  * Mi parcela: where the field is, then four short questions, one at a time with large buttons, then a summary the farmer
  * can correct line by line. Choosing never moves on by itself: "Continuar" does, so nothing happens unexpectedly.
  */
-export function ParcelPage({ state, parcel, site, zone, onParcel, onSituation, onPlant }: Props) {
+export function ParcelPage({ state, parcel, site, onParcel, onSituation, onPlant }: Props) {
   const { t, coords } = useI18n()
   const { situation } = state
   const [step, setStep] = useState<Step>(() => firstStep(parcel, situation))
@@ -91,7 +89,7 @@ export function ParcelPage({ state, parcel, site, zone, onParcel, onSituation, o
             <strong>{situation.goal ? t(`farmer.parcel.goal.${situation.goal}.label`) : '—'}</strong>
           </SummaryRow>
         </dl>
-        {parcel && <ZoneNotice zone={zone} point={parcel.point} />}
+        {parcel && <ZoneNotice point={parcel.point} />}
         <button type="button" className="btn primary big block" onClick={onPlant} disabled={!parcel || missing(situation).length > 0}>
           {t('farmer.parcel.summary.cta')}
         </button>
@@ -111,7 +109,7 @@ export function ParcelPage({ state, parcel, site, zone, onParcel, onSituation, o
       <h2 className="step-q">{t(`farmer.parcel.steps.${step}.q`)}</h2>
       <p className="page-lede">{t(`farmer.parcel.steps.${step}.hint`)}</p>
 
-      {step === 'place' && <PlaceStep parcel={parcel} site={site} zone={zone} parcelText={parcelText} onParcel={onParcel} />}
+      {step === 'place' && <PlaceStep parcel={parcel} site={site} parcelText={parcelText} onParcel={onParcel} />}
 
       {step === 'previous' && (
         <BigChoice<Previous>
@@ -174,7 +172,7 @@ function SummaryRow({ label, onChange, children }: { label: string; onChange: ()
   )
 }
 
-function PlaceStep({ parcel, site, zone, parcelText, onParcel }: { parcel: Parcel | null; site: LatLon | null; zone: Zone | null; parcelText: (p: Parcel) => string; onParcel: (p: Parcel) => void }) {
+function PlaceStep({ parcel, site, parcelText, onParcel }: { parcel: Parcel | null; site: LatLon | null; parcelText: (p: Parcel) => string; onParcel: (p: Parcel) => void }) {
   const { t, coords } = useI18n()
   const [changing, setChanging] = useState(false)
   const [showMap, setShowMap] = useState(false)
@@ -209,7 +207,7 @@ function PlaceStep({ parcel, site, zone, parcelText, onParcel }: { parcel: Parce
             </p>
           </div>
         </div>
-        <ZoneNotice zone={zone} point={parcel.point} />
+        <ZoneNotice point={parcel.point} />
         <button type="button" className="btn secondary" onClick={() => setChanging(true)}>
           {t('farmer.common.change')}
         </button>
@@ -238,7 +236,7 @@ function PlaceStep({ parcel, site, zone, parcelText, onParcel }: { parcel: Parce
         </button>
       )}
       {site && showMap && (
-        <MapPicker site={site} initial={parcel?.point ?? null} onUse={(point) => chosen({ label: null, source: 'map', point })} onClose={() => setShowMap(false)} />
+        <MapPicker initial={parcel?.point ?? null} onUse={(point) => chosen({ label: null, source: 'map', point })} onClose={() => setShowMap(false)} />
       )}
       {parcel && (
         <button type="button" className="btn ghost" onClick={() => setChanging(false)}>

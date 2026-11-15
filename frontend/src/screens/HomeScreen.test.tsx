@@ -24,8 +24,9 @@ describe('the home page', () => {
     expect(html).toMatch(/<button[^>]*>Entrar a YolIA<\/button>/)
   })
 
-  it('is about the places that have data, not only Texcoco', () => {
-    expect(words(html)).toContain('Sonora · Sinaloa · Guanajuato · Texcoco')
+  it('is about the places that have data, and does not mention Texcoco', () => {
+    expect(words(html)).toContain('Sonora · Sinaloa · Guanajuato')
+    expect(words(html)).not.toMatch(/Texcoco|El Batán/)
     expect(words(html)).toContain('Rotaciones de cultivos con satélites de la NASA')
     expect(words(html)).not.toContain('de temporal con satélites')
   })

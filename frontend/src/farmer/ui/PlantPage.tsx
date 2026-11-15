@@ -1,161 +1,74 @@
-import { useEffect, useRef, useState } from 'react'
 import { useZoneData } from '../../hooks/useZoneData.ts'
 import { useI18n } from '../../i18n/index.tsx'
 import { nearZone } from '../../lib/environment.ts'
-import type { DashboardData } from '../../lib/types.ts'
-import { recommend, type Recommendation, type Zone } from '../recommend.ts'
-import { isComplete, missing, type FarmerState, type Parcel } from '../state.ts'
-import { CheckIcon } from './glyphs.tsx'
-import { RecommendationCard } from './RecommendationCard.tsx'
+import type { Parcel } from '../state.ts'
 import { EnvironmentPanel } from './EnvironmentPanel.tsx'
 import { RotationPlant } from './RotationPlant.tsx'
 import { ZoneNotice } from './ZoneNotice.tsx'
 
-type Run = { key: string; status: 'loading' | 'ready' | 'error'; rec?: Recommendation; message?: string }
-
 interface Props {
-  data: DashboardData
-  state: FarmerState
   parcel: Parcel | null
-  zone: Zone | null
-  saved: Recommendation[]
-  onSave: (rec: Recommendation) => void
   onGoParcel: () => void
   onAsk: () => void
 }
 
-const UNKNOWN_ZONE: Zone = { status: 'unknown', key: null, km: 0 }
-
 /**
- * Qué sembrar: the one question the whole app answers. It needs the parcel and the four answers; with them it asks the planner
- * (right in the browser, no connection needed) and draws the recommendation. Outside the zone the model was fitted for, it says
- * so first and shows nothing for the parcel; Texcoco's options are offered only as a clearly labelled reference.
+ * Qué sembrar: what the data service has published for the place the parcel is near. A parcel close to Sonora or Sinaloa gets
+ * the rotation options and the place's data; one close to Guanajuato gets the place's data and is told the rotation model has
+ * not been run there; anywhere else it says there is no data yet and where the nearest is. It never fills the gap with
+ * results computed for another place.
  */
-export function PlantPage(props: Props) {
-  const published = useZoneData()
-  const { parcel, onAsk } = props
-  // a parcel close to a point the data service has run gets what was published for it: the rotation results when there are
-  // some, and always the environmental data; anywhere else, the planner (or its refusal)
-  const zone = parcel && published ? nearZone(parcel.point, published) : null
-  if (zone?.rotations) return <RotationPlant zone={zone} rotations={zone.rotations} onAsk={onAsk} />
-  if (zone?.environment) {
-    return (
-      <>
-        <div className="page">
-          <EnvironmentPanel zone={zone} />
-        </div>
-        <PlannerPlantPage {...props} />
-      </>
-    )
-  }
-  return <PlannerPlantPage {...props} />
-}
-
-function PlannerPlantPage({ data, state, parcel, zone, saved, onSave, onGoParcel, onAsk }: Props) {
+export function PlantPage({ parcel, onGoParcel, onAsk }: Props) {
   const { t } = useI18n()
-  const { situation } = state
-  const ready = parcel !== null && isComplete(situation)
-  const outside = zone?.status === 'outside'
-  const [showReference, setShowReference] = useState(false)
-  const [attempt, setAttempt] = useState(0)
-  const [run, setRun] = useState<Run | null>(null)
+  const published = useZoneData()
+  const zone = parcel && published ? nearZone(parcel.point, published) : null
 
-  const key = ready ? JSON.stringify([parcel.point, situation, zone?.status ?? 'unknown', attempt]) : ''
-  const wanted = ready && (!outside || showReference)
-  const inputs = useRef({ data, parcel, situation, zone })
-  useEffect(() => {
-    inputs.current = { data, parcel, situation, zone } // the effect below runs on the key alone, with the latest inputs
-  })
-
-  useEffect(() => {
-    const { data: d, parcel: p, situation: s, zone: z } = inputs.current
-    if (!wanted || !p) return
-    let alive = true
-    setRun({ key, status: 'loading' })
-    recommend({ data: d, point: p.point, place: p.label, situation: s, zone: z ?? UNKNOWN_ZONE }).then(
-      (rec) => alive && setRun({ key, status: 'ready', rec }),
-      (error: unknown) => alive && setRun({ key, status: 'error', message: error instanceof Error ? error.message : String(error) }),
-    )
-    return () => {
-      alive = false
-    }
-  }, [wanted, key])
-
-  const current = run && run.key === key ? run : null
-  const lacking = [...(parcel ? [] : ['parcel']), ...missing(situation)].map((item) => t(`farmer.plant.items.${item}`))
+  if (zone?.rotations) return <RotationPlant zone={zone} rotations={zone.rotations} onAsk={onAsk} />
 
   return (
     <div className="page">
       <h1 className="page-title">{t('farmer.plant.title')}</h1>
       <p className="page-question">{t('farmer.plant.question')}</p>
 
-      {!ready && (
+      {!parcel && (
         <div className="empty-card">
           <h2>{t('farmer.plant.needTitle')}</h2>
-          <p>{t('farmer.plant.needBody', { items: lacking.join(', ') })}</p>
+          <p>{t('farmer.plant.needBody', { items: t('farmer.plant.items.parcel') })}</p>
           <button type="button" className="btn primary big block" onClick={onGoParcel}>
             {t('farmer.plant.go')}
           </button>
         </div>
       )}
 
-      {ready && outside && (
-        <>
-          <ZoneNotice zone={zone} />
-          <div className="empty-card">
-            <h2>{t('farmer.plant.outsideTitle')}</h2>
-            <p>{t('farmer.plant.outsideBody')}</p>
-            <button type="button" className="btn secondary block" onClick={() => setShowReference((shown) => !shown)} aria-expanded={showReference}>
-              {showReference ? t('farmer.plant.hideReference') : t('farmer.plant.showReference')}
-            </button>
-          </div>
-          {showReference && <p className="callout is-warn">{t('farmer.plant.referenceNote')}</p>}
-        </>
-      )}
-
-      {wanted && current?.status === 'loading' && (
+      {parcel && !published && (
         <p className="loading" role="status">
           <span className="spinner" aria-hidden="true" />
           {t('farmer.plant.loading')}
         </p>
       )}
-      {wanted && current?.status === 'error' && (
-        <div className="callout is-error" role="alert">
-          <p>{t('farmer.plant.error', { message: current.message ?? '' })}</p>
-          <button type="button" className="btn secondary" onClick={() => setAttempt((n) => n + 1)}>
-            {t('farmer.common.retry')}
-          </button>
-        </div>
+
+      {parcel && published && !zone && (
+        <>
+          <ZoneNotice point={parcel.point} />
+          <div className="empty-card">
+            <h2>{t('near.noDataCard.title')}</h2>
+            <p>{t('near.noDataCard.body')}</p>
+            <button type="button" className="btn primary big block" onClick={onGoParcel}>
+              {t('farmer.common.change')}
+            </button>
+          </div>
+        </>
       )}
-      {wanted && current?.status === 'ready' && current.rec && (
-        <RecommendationCard
-          rec={current.rec}
-          meta={data.meta}
-          models={data.models}
-          actions={
-            <>
-              <SaveButton rec={current.rec} saved={saved} onSave={onSave} />
-              <button type="button" className="btn secondary" onClick={onAsk}>
-                {t('farmer.rec.actions.ask')}
-              </button>
-              <button type="button" className="btn ghost" onClick={onGoParcel}>
-                {t('farmer.rec.actions.edit')}
-              </button>
-            </>
-          }
-        />
+
+      {zone && !zone.rotations && (
+        <>
+          <p className="callout is-warn">{t('near.noRotations', { place: zone.name })}</p>
+          <EnvironmentPanel zone={zone} />
+          <button type="button" className="btn secondary" onClick={onAsk}>
+            {t('farmer.rec.actions.ask')}
+          </button>
+        </>
       )}
     </div>
-  )
-}
-
-export function SaveButton({ rec, saved, onSave }: { rec: Recommendation; saved: Recommendation[]; onSave: (rec: Recommendation) => void }) {
-  const { t } = useI18n()
-  const done = saved.some((item) => item.id === rec.id)
-  return (
-    <button type="button" className="btn primary" onClick={() => onSave(rec)} disabled={done}>
-      {done && <CheckIcon />}
-      {done ? t('farmer.rec.actions.saved') : t('farmer.rec.actions.save')}
-    </button>
   )
 }

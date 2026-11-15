@@ -1,21 +1,19 @@
 import { useState } from 'react'
-import { ClimateCard } from '../../../components/ClimateCard.tsx'
 import { MapCard } from '../../../components/MapCard.tsx'
-import { VerdictCard } from '../../../components/VerdictCard.tsx'
-import { useCoverage } from '../../../hooks/useCoverage.ts'
+import { ZoneNotice } from '../../../farmer/ui/ZoneNotice.tsx'
 import { useI18n } from '../../../i18n/index.tsx'
+import { DEMO_LOCATIONS } from '../../../lib/demoLocations.ts'
 import type { LatLon } from '../../../lib/geo.ts'
 import { StepFrame } from '../frame.tsx'
 import { useDraft } from '../hooks.ts'
 import type { StepProps } from './types.ts'
 
 /** "¿Dónde piensas sembrar?": a pin on the map, as before, with NASA's climate there and an honest verdict. */
-export function WhereStep({ pin, site, drafts, position, onPin }: StepProps & { onPin: (point: LatLon) => void }) {
+export function WhereStep({ pin, drafts, position, onPin }: StepProps & { onPin: (point: LatLon) => void }) {
   const { t, coords } = useI18n()
   const [point, setPoint] = useDraft<LatLon | null>(drafts, 'where', () => pin)
   const [locating, setLocating] = useState(false)
   const [geoProblem, setGeoProblem] = useState<'unsupported' | 'denied' | 'failed' | null>(null)
-  const info = useCoverage(point, site)
 
   const locate = () => {
     if (!('geolocation' in navigator)) return setGeoProblem('unsupported')
@@ -45,24 +43,22 @@ export function WhereStep({ pin, site, drafts, position, onPin }: StepProps & { 
       wide
     >
       <div className="ob-where">
-        <MapCard value={point} onChange={setPoint} site={site} />
+        <MapCard value={point} onChange={setPoint} />
         <div className="ob-where-side">
           <div className="ob-pinline">
             <button type="button" className="chip-button" onClick={locate} disabled={locating}>
               {locating ? t('onboarding.where.locating') : t('onboarding.where.locate')}
             </button>
-            <button type="button" className="chip-button" onClick={() => setPoint(site)}>
-              {t('where.inTexcoco')}
-            </button>
+            {DEMO_LOCATIONS.map((place) => (
+              <button key={place.id} type="button" className="chip-button" onClick={() => setPoint({ lat: place.latitude, lon: place.longitude })}>
+                {t('where.inPlace', { place: place.name })}
+              </button>
+            ))}
           </div>
-          {point && info ? (
+          {point ? (
             <>
               <p className="ob-coords">{coords(point)}</p>
-              <VerdictCard verdict={info.verdict} distanceKm={info.distanceKm} />
-              <details className="ob-more">
-                <summary>{t('onboarding.where.climate')}</summary>
-                <ClimateCard climate={info.climate} onRetry={info.retry} />
-              </details>
+              <ZoneNotice point={point} />
             </>
           ) : (
             <p className="ob-muted">{t('where.noPin')}</p>

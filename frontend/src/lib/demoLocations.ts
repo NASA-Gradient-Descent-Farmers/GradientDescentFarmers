@@ -8,6 +8,8 @@
 //                   when that file loaded, always as exploratory scenarios; when it did not, as "data unavailable";
 //   null            no model results: the simulator shows "data unavailable" and never borrows another location's.
 
+import { distanceKm, type LatLon } from './geo.ts'
+
 export const DEMO_LOCATION_IDS = ['guanajuato', 'sinaloa', 'sonora'] as const
 export type DemoLocationId = (typeof DEMO_LOCATION_IDS)[number]
 
@@ -26,3 +28,13 @@ export const DEMO_LOCATIONS: readonly DemoLocation[] = [
 ]
 
 export const demoLocation = (id: DemoLocationId): DemoLocation => DEMO_LOCATIONS.find((place) => place.id === id)!
+
+/** The demonstration place closest to a point, and how far it is. */
+export function nearestDemoLocation(point: LatLon): { place: DemoLocation; km: number } {
+  let best = { place: DEMO_LOCATIONS[0], km: Infinity }
+  for (const place of DEMO_LOCATIONS) {
+    const km = distanceKm(point, { lat: place.latitude, lon: place.longitude })
+    if (km < best.km) best = { place, km }
+  }
+  return best
+}

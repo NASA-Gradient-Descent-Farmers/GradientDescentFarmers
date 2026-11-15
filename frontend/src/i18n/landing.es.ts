@@ -1,7 +1,7 @@
 // Copy of the home page (the signed-out front page). It reuses welcome.* for the greeting and the prototype notice.
 
 export const landingEs = {
-  eyebrow: 'Sonora · Sinaloa · Guanajuato · Texcoco',
+  eyebrow: 'Sonora · Sinaloa · Guanajuato',
   tagline: 'Rotaciones de cultivos con satélites de la NASA y un modelo de cultivos.',
   lede: 'Dile dónde está tu parcela y qué te importa. YolIA te propone qué sembrar, con sus riesgos y en palabras sencillas.',
   start: 'Entrar a YolIA',

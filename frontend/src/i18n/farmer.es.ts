@@ -38,7 +38,7 @@ export const farmerEs = {
     },
     place: {
       searchLabel: 'Tu municipio o localidad',
-      searchPlaceholder: 'Por ejemplo: Texcoco',
+      searchPlaceholder: 'Por ejemplo: Bácum',
       searchHelp: 'Buscamos por municipio. Si no encuentras tu localidad, escribe tu municipio o márcala en el mapa.',
       loadingPlaces: 'Cargando la lista de municipios…',
       placesError: 'No se pudo cargar la lista de municipios. Puedes usar tu ubicación o marcarla en el mapa.',
@@ -89,14 +89,6 @@ export const farmerEs = {
       ctaHint: 'Revisamos las opciones con lo que nos contaste.',
     },
   },
-  zone: {
-    inside: { title: 'Estás dentro de la zona del modelo', body: 'El modelo se ajustó con parcelas de Texcoco y tu parcela está a {km} km de El Batán. Aun así, el suelo y la altura pueden ser distintos.' },
-    near: { title: 'Estás cerca de la zona del modelo', body: 'Tu parcela está a {km} km de El Batán y con un clima parecido, pero el modelo no se comprobó ahí. Tómalo solo como una referencia.' },
-    nearUnchecked: { title: 'Estás cerca de la zona del modelo', body: 'Tu parcela está a {km} km de El Batán. No pudimos comparar el clima, así que tómalo solo como una referencia.' },
-    outsideClimate: { title: 'Tu parcela está fuera de la zona del modelo', body: 'A {km} km de El Batán el clima es distinto. El modelo solo se ajustó con parcelas de Texcoco, así que aquí no podemos darte una recomendación confiable.' },
-    outsideDistance: { title: 'Tu parcela está fuera de la zona del modelo', body: 'Está a {km} km de El Batán. El modelo solo se ajustó con parcelas de Texcoco, así que aquí no podemos darte una recomendación confiable.' },
-    pending: { title: 'Revisando el clima de tu zona…', body: 'Un momento. Estamos comparando el clima de tu parcela con el de Texcoco.' },
-  },
   plant: {
     title: 'Qué sembrar',
     question: '¿Qué me conviene sembrar en mi parcela para la próxima temporada?',
@@ -106,11 +98,6 @@ export const farmerEs = {
     go: 'Ir a Mi parcela',
     loading: 'Revisando las opciones para tu parcela…',
     error: 'No pudimos calcular la recomendación: {message}',
-    outsideTitle: 'Aquí no podemos recomendarte qué sembrar',
-    outsideBody: 'El modelo solo se ajustó con parcelas de Texcoco, Estado de México. Prefiero no darte una recomendación que no pueda respaldar.',
-    showReference: 'Ver las opciones de Texcoco como referencia',
-    hideReference: 'Ocultar la referencia',
-    referenceNote: 'Esto es para Texcoco, no para tu parcela.',
   },
   rec: {
     brief: { more: 'Ver todos los detalles' },
@@ -226,7 +213,7 @@ export const farmerEs = {
       money: 'Esto es lo que el modelo calcula que podrías ganar. Recuerda que es una estimación, no una promesa:',
       rain: 'Esto es lo que muestra el modelo cuando llueve poco. Abajo, en riesgos, está el detalle:',
     },
-    outside: 'Tu parcela está a {km} km de El Batán, fuera de la zona donde se probó el modelo. Prefiero no darte una recomendación que no pueda respaldar. En «Qué sembrar» puedes ver las opciones de Texcoco como referencia.',
+    outside: 'Para esta ubicación todavía no hay datos publicados. YolIA tiene datos de Sonora, Sinaloa y Guanajuato: elige uno de esos puntos en «Mi parcela» y te cuento qué hay. Prefiero no darte una recomendación que no pueda respaldar.',
     fertilizer: {
       general: 'Sobre el abono, te lo digo con franqueza: en este modelo el abono casi no sube el rendimiento, por eso sugiere poco o nada. Eso viene del modelo, no de un resultado de campo.',
       advice: 'Para decidir tu dosis, lo mejor es probar en un pedazo de tu parcela o consultar a un técnico.',
@@ -237,7 +224,7 @@ export const farmerEs = {
       intro: 'Te lo digo con franqueza: las cifras de YolIA sirven para comparar opciones, no para prometer una cosecha.',
       outro: 'Por eso, cada resultado dice que es una estimación y qué tan lejos está tu parcela de donde se probó el modelo.',
     },
-    unknown: 'Eso no lo puedo responder todavía con seguridad. Solo trabajo con el clima, las rotaciones y los rendimientos de Texcoco. Prueba con una de las preguntas de abajo, o escríbela de otra forma.',
+    unknown: 'Eso no lo puedo responder todavía con seguridad. Solo trabajo con los datos de Sonora, Sinaloa y Guanajuato. Prueba con una de las preguntas de abajo, o escríbela de otra forma.',
     error: 'No pude calcularlo: {message}',
   },
   saved: {
