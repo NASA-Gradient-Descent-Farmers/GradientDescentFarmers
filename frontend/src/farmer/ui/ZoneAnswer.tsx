@@ -7,6 +7,7 @@ import { environmentBubbles, type EnvironmentTopic } from '../../whatsapp/enviro
 import { richText } from '../../whatsapp/format.tsx'
 import { rotationBubbles, type RotationTopic } from '../../whatsapp/rotationAnswers.ts'
 import { DistrictSection } from './DistrictSection.tsx'
+import { PlantAnswer } from './PlantCard.tsx'
 import { useDataTranslation } from '../../lib/dataI18n.ts'
 import '../../near.css'
 
@@ -42,14 +43,20 @@ export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind
       : environment
         ? environmentBubbles('climate', place.name, environment, ctx)
         : []
+  const cards = PLANTING.includes(body.topic) && rotations && rotations.options.length > 0 ? rotations : null
   return (
     <>
       {body.km > INSIDE_KM && <p className="muted">{t('near.nearest.body', { km: distance(body.km), place: place.name })}</p>}
-      {bubbles.map((bubble, i) => (
-        <p key={i} className="zone-text">
-          {richText(bubble.text)}
-        </p>
-      ))}
+      {/* a planting answer with options is drawn as cards; every sentence of the service stays in them (see PlantCard) */}
+      {cards ? (
+        <PlantAnswer rotations={cards} ctx={ctx} compare={body.topic === 'compare'} />
+      ) : (
+        bubbles.map((bubble, i) => (
+          <p key={i} className="zone-text">
+            {richText(bubble.text)}
+          </p>
+        ))
+      )}
       {/* a planting question also gets the district engine's short answer, as a second, separate tool */}
       {PLANTING.includes(body.topic) && <DistrictSection placeId={body.place} app={{ water: body.water, goal: body.goal }} mode="agricultor" />}
     </>

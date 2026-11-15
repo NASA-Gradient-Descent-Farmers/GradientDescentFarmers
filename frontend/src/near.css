@@ -141,3 +141,132 @@
 .fa-msg .zone-text + .zone-text {
   margin-top: 10px;
 }
+
+/* The planting answer as cards: the plan as steps, three figures, and the model's own sentences folded away */
+.plan-card {
+  margin: 14px 0;
+  padding: 18px;
+  border: 1px solid var(--orange-200);
+  border-radius: var(--radius-l);
+  background: var(--orange-50);
+}
+.plan-card.risky {
+  border-color: var(--warn-line);
+  background: var(--warn-bg);
+}
+.plan-eyebrow {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--orange-700);
+}
+.plan-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.plan-steps li {
+  position: relative;
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--white);
+}
+.plan-steps li:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--black);
+  color: var(--white);
+  font-size: 0.75rem;
+  line-height: 1;
+  z-index: 1;
+}
+.plan-steps li.fallow {
+  background: var(--gray-50);
+  border-style: dashed;
+}
+.plan-steps strong {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+.plan-year,
+.plan-months {
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+.plan-note {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.plan-note.warn {
+  padding: 10px 12px;
+  border-left: 4px solid var(--warn-line);
+  background: var(--white);
+  color: var(--warn-ink);
+  font-weight: 600;
+}
+.plan-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+}
+.plan-tiles > div {
+  padding: 12px 14px;
+  border-radius: var(--radius-m);
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.plan-tiles dt {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.plan-tiles dd {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-2);
+}
+.plan-tiles dd.plan-big {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text);
+}
+.plan-more,
+.plan-other {
+  margin-top: 12px;
+}
+.plan-more summary,
+.plan-other summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--action);
+  padding: 6px 0;
+}
+.plan-other {
+  padding: 4px 14px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+}
+.plan-other > .plan-card,
+.plan-other > div > .plan-card {
+  margin-bottom: 0;
+}
