@@ -1,0 +1,58 @@
+{
+  "inegi_boundaries": {
+    "product": "INEGI Marco Geoestadístico 2022, áreas geoestadísticas municipales (CONABIO mun22gw)",
+    "url": "http://www.conabio.gob.mx/informacion/gis/maps/geo/mun22gw.zip",
+    "retrieved_utc": "2026-11-15T05:32:36Z"
+  },
+  "siap": {
+    "product": "SIAP, Estadística de la producción agrícola (datos abiertos), national CSV per year",
+    "url": "https://nube.agricultura.gob.mx/index.php?view=10AE434F-A2158368-A120BC5A-EDF4AFAA&ANIO={year}",
+    "spatial": "SIAP district (DDR); rows by municipality",
+    "retrieved_utc": "2026-11-15T05:32:36Z"
+  },
+  "power": {
+    "product": "NASA POWER daily point API, AG community (MERRA-2 meteorology)",
+    "url": "https://power.larc.nasa.gov/api/temporal/daily/point",
+    "spatial": "MERRA-2 cell centre (0.5 x 0.625 deg) of each municipality point",
+    "temporal": "daily",
+    "retrieved_utc": "2026-11-15T05:32:46Z"
+  },
+  "chirps": {
+    "product": "CHIRPS v2.0 monthly, 0.05 deg (Cloud-Optimized GeoTIFF)",
+    "url": "https://data.chc.ucsb.edu/products/CHIRPS/v2.0/global_monthly/cogs/chirps-v2.0.{year}.{month:02d}.cog",
+    "spatial": "0.05 deg, mean within 10 km",
+    "temporal": "monthly",
+    "retrieved_utc": "2026-11-15T05:32:46Z"
+  },
+  "grace": {
+    "product": "NASA GSFC GRACE/GRACE-FO mascons RL06v2.0 (200204-202606)",
+    "url": "https://earth.gsfc.nasa.gov/sites/default/files/geo/GSFC.glb_.200204_202606_RL06v2.0_OBP-ICE6GD.h5",
+    "spatial": "1-degree equal-area mascons (~300 km resolution)",
+    "temporal": "monthly",
+    "retrieved_utc": "2026-11-15T05:32:53Z"
+  },
+  "ndvi": {
+    "product": "MODIS MOD13C2 v061 monthly NDVI (0.05 deg), LP DAAC OPeNDAP; weights: MODIS MCD12C1 v061 land cover 2015, Land_Cover_Type_1_Percent",
+    "spatial": "0.05 deg, cropland-weighted within 15 km",
+    "temporal": "monthly",
+    "retrieved_utc": "2026-11-15T05:32:54Z"
+  },
+  "smap": {
+    "product": "SMAP L4 SPL4SMGP v008 root-zone soil moisture (9 km), NSIDC OPeNDAP, one 3-hourly granule a day",
+    "spatial": "9 km EASE-Grid 2.0, mean within 10 km",
+    "temporal": "daily",
+    "retrieved_utc": "2026-11-15T05:32:54Z"
+  },
+  "gldas": {
+    "product": "GLDAS soil texture (Noah, 0.25 deg) and soil fractions",
+    "url": "https://ldas.gsfc.nasa.gov/sites/default/files/ldas/gldas/SOILS",
+    "spatial": "0.25 deg nearest cell",
+    "retrieved_utc": "2026-11-15T05:32:56Z"
+  },
+  "igbp": {
+    "product": "IGBP-DIS SoilData surface products (5 arc-min), ORNL DAAC",
+    "doi": "10.3334/ORNLDAAC/569",
+    "spatial": "5 arc-min cell",
+    "retrieved_utc": "2026-11-15T05:32:57Z"
+  }
+}

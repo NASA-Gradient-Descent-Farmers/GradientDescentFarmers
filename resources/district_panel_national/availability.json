@@ -1,0 +1,92 @@
+{
+  "inegi_boundaries": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:10:28Z",
+    "seconds": 0.0
+  },
+  "siap": {
+    "status": "available",
+    "warnings": [
+      "7 municipalities in the target districts have no reference point and are left out: [{'state_id': 2, 'mun_id': 6}, {'state_id': 4, 'mun_id': 13}, {'state_id': 4, 'mun_id': 12}, {'state_id': 7, 'mun_id': 125}, {'state_id': 17, 'mun_id': 34}, {'state_id': 17, 'mun_id': 35}, {'state_id': 17, 'mun_id': 36}]"
+    ],
+    "errors": [],
+    "tables": {
+      "siap_crop_years": 52420,
+      "municipality_district_weights": 2467,
+      "municipality_districts": 2446
+    },
+    "started_utc": "2026-11-15T07:10:28Z",
+    "seconds": 8.8
+  },
+  "power": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {
+      "climate_municipal": 29268,
+      "climate_municipal_years": 1287792,
+      "climate_district": 2292,
+      "climate_district_years": 100848,
+      "power_cells": 2439,
+      "chirps_municipal_years": 736578,
+      "chirps_district_years": 57682
+    },
+    "started_utc": "2026-11-15T07:10:37Z",
+    "seconds": 373.8
+  },
+  "chirps": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:10:37Z",
+    "seconds": 0.0
+  },
+  "grace": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {
+      "grace_municipal": 2439,
+      "grace_district": 191,
+      "grace_years": 4125
+    },
+    "started_utc": "2026-11-15T07:16:51Z",
+    "seconds": 0.6
+  },
+  "ndvi": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:16:51Z",
+    "seconds": 3.6
+  },
+  "smap": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:16:55Z",
+    "seconds": 10.3
+  },
+  "gldas": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:17:08Z",
+    "seconds": 49.3
+  },
+  "igbp": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T07:17:57Z",
+    "seconds": 1.5
+  }
+}

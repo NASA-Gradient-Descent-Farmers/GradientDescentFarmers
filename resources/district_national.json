@@ -1,0 +1,13 @@
+{
+  "source": {
+    "output_root": "data/processed/districts_national",
+    "cache_root": "data/cache/districts",
+    "sources": {"siap": true, "power": true, "chirps": true, "grace": true, "ndvi": true, "smap": true, "gldas": true, "igbp": true},
+    "settings": {
+      "all_districts": true,
+      "district_membership": "shared",
+      "et0_wind": "power",
+      "workers": 6
+    }
+  }
+}

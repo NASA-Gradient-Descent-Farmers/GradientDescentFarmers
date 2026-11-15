@@ -1,0 +1,318 @@
+{
+  "sites": {
+    "rows": 0,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "state_id": 1.0,
+      "mun_id": 1.0,
+      "ddr": 1.0,
+      "other_districts": 1.0,
+      "note": 1.0
+    },
+    "passed": true
+  },
+  "siap_crop_years": {
+    "rows": 52420,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "sown_ha_in_range": true,
+      "production_t_in_range": true
+    },
+    "missing_share": {
+      "sown_ha": 0.0,
+      "harvested_ha": 0.0,
+      "lost_ha": 0.0,
+      "production_t": 0.0,
+      "value_mxn": 0.0
+    },
+    "passed": true
+  },
+  "municipality_district_weights": {
+    "rows": 2467,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "sown_ha_in_range": true,
+      "weight_ha_in_range": true
+    },
+    "missing_share": {
+      "sown_ha": 0.0,
+      "weight_ha": 0.0
+    },
+    "passed": true
+  },
+  "municipality_districts": {
+    "rows": 2446,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "ddr": 0.0
+    },
+    "passed": true
+  },
+  "observed_municipal": {
+    "rows": 29268,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "ndvi_in_range": true,
+      "ndvi_p20_in_range": true,
+      "ndvi_p80_in_range": true,
+      "smap_rootzone_in_range": true,
+      "smap_relative_in_range": true
+    },
+    "missing_share": {
+      "ndvi": 0.0,
+      "ndvi_p20": 0.0,
+      "ndvi_p80": 0.0,
+      "smap_rootzone": 0.0,
+      "smap_dry": 0.0,
+      "smap_wet": 0.0,
+      "smap_relative": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "observed_district": {
+    "rows": 2292,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "ndvi_in_range": true,
+      "ndvi_p20_in_range": true,
+      "ndvi_p80_in_range": true,
+      "smap_rootzone_in_range": true,
+      "smap_relative_in_range": true
+    },
+    "missing_share": {
+      "ndvi": 0.0,
+      "ndvi_p20": 0.0,
+      "ndvi_p80": 0.0,
+      "smap_rootzone": 0.0,
+      "smap_relative": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "soil_municipal": {
+    "rows": 2439,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "sand_in_range": true,
+      "silt_in_range": true,
+      "clay_in_range": true
+    },
+    "missing_share": {
+      "texture_class": 0.007,
+      "sand": 0.0074,
+      "silt": 0.0074,
+      "clay": 0.0074,
+      "profile_available_water_capacity": 0.0049,
+      "soil_carbon_density": 0.0049
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "climate_municipal": {
+    "rows": 29268,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "rain_in_range": true,
+      "rain_p20_in_range": true,
+      "et0_in_range": true,
+      "tmin_in_range": true,
+      "tmax_in_range": true,
+      "frost_prob_in_range": true,
+      "frost_nights_in_range": true,
+      "heat_days_in_range": true
+    },
+    "missing_share": {
+      "rain": 0.0,
+      "et0": 0.0,
+      "tmin": 0.0,
+      "tmax": 0.0,
+      "frost_prob": 0.0,
+      "frost_nights": 0.0,
+      "heat_days": 0.0,
+      "rain_p20": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "climate_municipal_years": {
+    "rows": 1287792,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "rain_in_range": true,
+      "et0_in_range": true,
+      "tmin_in_range": true,
+      "tmax_in_range": true,
+      "frost_nights_in_range": true,
+      "heat_days_in_range": true
+    },
+    "missing_share": {
+      "rain": 0.0002,
+      "et0": 0.0,
+      "tmin": 0.0,
+      "tmax": 0.0,
+      "frost_nights": 0.0,
+      "heat_days": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "climate_district": {
+    "rows": 2292,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "rain_in_range": true,
+      "rain_p20_in_range": true,
+      "et0_in_range": true,
+      "tmin_in_range": true,
+      "tmax_in_range": true,
+      "frost_prob_in_range": true,
+      "frost_nights_in_range": true,
+      "heat_days_in_range": true
+    },
+    "missing_share": {
+      "rain": 0.0,
+      "et0": 0.0,
+      "tmin": 0.0,
+      "tmax": 0.0,
+      "frost_prob": 0.0,
+      "frost_nights": 0.0,
+      "heat_days": 0.0,
+      "rain_p20": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "climate_district_years": {
+    "rows": 100848,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true,
+      "rain_in_range": true,
+      "et0_in_range": true,
+      "tmin_in_range": true,
+      "tmax_in_range": true,
+      "frost_nights_in_range": true,
+      "heat_days_in_range": true
+    },
+    "missing_share": {
+      "rain": 0.0001,
+      "et0": 0.0,
+      "tmin": 0.0,
+      "tmax": 0.0,
+      "frost_nights": 0.0,
+      "heat_days": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "power_cells": {
+    "rows": 2439,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "lat": 0.0,
+      "lon": 0.0,
+      "cell_lat": 0.0,
+      "cell_lon": 0.0
+    },
+    "passed": true
+  },
+  "chirps_municipal_years": {
+    "rows": 736578,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "chirps_rain": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "chirps_district_years": {
+    "rows": 57682,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "chirps_rain": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "grace_municipal": {
+    "rows": 2439,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "mascon": 0.0,
+      "trend_cm_yr": 0.0,
+      "trend_se": 0.0,
+      "trend_recent_cm_yr": 0.0,
+      "trend_recent_se": 0.0,
+      "change_cm": 0.0,
+      "leakage_trend_cm_yr": 0.0,
+      "noise_2sigma_cm": 0.0,
+      "rank_national": 0.0,
+      "first_year": 0.0,
+      "last_year": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "grace_district": {
+    "rows": 191,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "trend_cm_yr": 0.0,
+      "trend_se": 0.0,
+      "trend_recent_cm_yr": 0.0,
+      "trend_recent_se": 0.0,
+      "change_cm": 0.0,
+      "leakage_trend_cm_yr": 0.0,
+      "noise_2sigma_cm": 0.0,
+      "rank_national": 0.0,
+      "mascon": 0.0,
+      "n_mascons": 0.0,
+      "first_year": 0.0,
+      "last_year": 0.0
+    },
+    "coverage": 1.0,
+    "passed": true
+  },
+  "grace_years": {
+    "rows": 4125,
+    "checks": {
+      "keys_present": true,
+      "keys_unique": true
+    },
+    "missing_share": {
+      "cm": 0.0,
+      "months": 0.0
+    },
+    "passed": true
+  }
+}
