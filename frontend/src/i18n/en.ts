@@ -27,6 +27,8 @@ export const en = {
     techMode: 'Technical mode',
     hemispheres: 'N,S,E,W',
     language: 'Language',
+    github: 'Code on GitHub',
+    githubLabel: 'See the YoliA code on GitHub (opens in a new tab)',
     loading: 'Loading the model results…',
     loadError: 'Could not load the model results ({message}). Reload the page; if it keeps happening, the exported results are missing.',
   },

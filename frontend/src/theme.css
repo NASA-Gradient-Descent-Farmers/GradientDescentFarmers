@@ -1821,3 +1821,43 @@ button.topbar-brand {
     padding: 12px 18px;
   }
 }
+
+/* ---- The GitHub link in the top bar: big, always visible ---- */
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px 0 10px;
+  color: var(--white);
+  background: var(--black);
+  border: 2px solid var(--black);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.github-link:hover {
+  background: var(--orange-600);
+  border-color: var(--orange-600);
+}
+.github-mark {
+  flex: none;
+  display: block;
+}
+@media (max-width: 560px) {
+  /* on a phone only the mark shows, still a 48px target */
+  .github-link {
+    width: 48px;
+    padding: 0;
+    justify-content: center;
+  }
+  .github-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

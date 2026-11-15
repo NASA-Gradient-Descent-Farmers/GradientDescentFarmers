@@ -4,6 +4,7 @@ import { AccountMenu } from './account/AccountMenu.tsx'
 import type { Account } from './account/users.ts'
 import { Brand } from './components/Brand.tsx'
 import { TopBar } from './components/TopBar.tsx'
+import { GitHubLink } from './components/GitHubLink.tsx'
 import { LangToggle } from './components/LangToggle.tsx'
 import { PinGlyph } from './components/icons.tsx'
 import { LeafMark } from './components/Leaf.tsx'
@@ -138,6 +139,7 @@ function Workspace({ user }: { user: Account }) {
               <PinGlyph /> {t('where.pinLabel')}: {coords(pin)} · <u>{t('where.change')}</u>
             </button>
           )}
+          <GitHubLink />
           <AccountMenu />
           <LangToggle />
         </header>

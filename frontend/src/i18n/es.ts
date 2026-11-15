@@ -26,6 +26,8 @@ export const es: Dict = {
     techMode: 'Modo Técnico',
     hemispheres: 'N,S,E,O',
     language: 'Idioma',
+    github: 'Código en GitHub',
+    githubLabel: 'Ver el código de YoliA en GitHub (se abre en otra pestaña)',
     loading: 'Cargando los resultados del modelo…',
     loadError: 'No se pudieron cargar los resultados del modelo ({message}). Recarga la página; si sigue igual, faltan los resultados exportados.',
   },
