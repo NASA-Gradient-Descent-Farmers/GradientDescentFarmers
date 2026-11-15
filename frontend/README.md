@@ -111,6 +111,29 @@ Figures are exact (to the peso), not rounded further. `src/farmer/ui/ZoneAnswer.
 
 **Privacy.** The pin is stored only in this browser (`localStorage`). NASA POWER is sent the location rounded to 0.1° (about 11 km, finer than its weather cell, so nothing is lost), and the map tiles come from OpenStreetMap and NASA GIBS, which see the area being viewed. The page says this next to the map.
 
+## The simple farmer view (`/campo`)
+
+A separate, minimal page for producers, at `/campo` (or `#campo` on hosts that pass only a plain hash). It does not load or
+change the main app. Four questions with big buttons (where: GPS or municipality search; irrigated or rainfed; last
+year's crop, from the district's own main crops; what matters most: earn more, less risk, save water, care for the soil),
+then one answer card:
+
+- the option to explore, why (the engine's words), the income difference against what they grow (harvest value before
+  costs) with a one-line reliability note from the backtest (gaps of 5,000 MXN/ha/yr or more held 98% of the time; smaller
+  ones 3 times out of 4), the main risk, and a question for a technician; evidence and gaps behind "¿En qué se basa?";
+- what they grow now, other options (collapsed), and the WOFOST simulation card where a run exists (the 3 demo places);
+- "Preguntarle a YoliA por WhatsApp" opens the WhatsApp demo already at their place and answers (outside the demo places
+  the chat answers from the district engine and, when configured, the language model).
+
+"Earn more" shows the alternative with the most recorded income: the engine's income score is on a fixed 0-40,000 MXN/ha
+scale and saturates for irrigated districts, so it cannot rank them (see "Open issues" in
+gradientdescentfarmers/model_builder/rotations/README.md).
+
+Data: any municipality maps to its district through `public/data/district/national/index.json` (2,095 of 2,463
+municipalities have a district with enough SIAP data); the engine's answers for 187 districts are precomputed there by
+`web_export_national.py`. Near the three demo points the richer demo answers are used. Answers are saved on the phone
+under `yolia-campo`.
+
 ## Two engines: WOFOST simulation and SIAP district history
 
 Next to the WOFOST rotation runs (the "simulación de suelo y cultivo", unchanged), YoliA shows a second, separate engine: the

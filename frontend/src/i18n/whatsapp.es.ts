@@ -104,6 +104,7 @@ export const whatsappEs = {
     sources: '¿De dónde salen los datos?',
   },
   district: {
+    fromCampo: 'Vi tus respuestas sobre tu parcela en {place}. Te cuento lo que encontramos.',
     summaryHead: 'En resumen, para {place}',
     summaryQuestion: '¿Qué me conviene sembrar?',
     wofostLine: '*Modelo de suelo y cultivo (WOFOST)*, {regime}: {plan}. Valor de la cosecha ≈ {income} MXN por ha en todo el plan (bruto, sin costos). Confianza: {confidence}.',

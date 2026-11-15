@@ -103,6 +103,7 @@ export const whatsappEn = {
     sources: 'Where does the data come from?',
   },
   district: {
+    fromCampo: 'I saw your answers about your field in {place}. Here is what we found.',
     summaryHead: 'In short, for {place}',
     summaryQuestion: 'What should I plant?',
     wofostLine: '*Soil and crop model (WOFOST)*, {regime}: {plan}. Harvest value ≈ {income} MXN per ha over the whole plan (gross, before costs). Confidence: {confidence}.',

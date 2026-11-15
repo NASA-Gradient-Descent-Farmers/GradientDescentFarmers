@@ -18,7 +18,7 @@ const publicData = join(here, '..', 'public', 'data')
 const out = join(publicData, 'i18n', 'en.json')
 const MODEL = process.env.YOLIA_LLM_MODEL || 'claude-sonnet-5-5'
 const BATCH = 50
-const PARALLEL = 5
+const PARALLEL = Number(process.env.TRANSLATE_PARALLEL || 5)
 
 function apiKey() {
   if (process.env.ANTHROPIC_API_KEY) return process.env.ANTHROPIC_API_KEY

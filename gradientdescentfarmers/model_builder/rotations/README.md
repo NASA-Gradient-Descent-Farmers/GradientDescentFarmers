@@ -67,6 +67,35 @@ python -m gradientdescentfarmers.model_builder.rotations.serve --port 8765   # P
 If it is unreachable the app falls back to the precomputed answer and says so. Note: the Sinaloa WOFOST run names the
 municipality Juan José Ríos (created in 2021); the district panel's boundaries and SIAP file that point under Ahome.
 
+## The panel in Cloud Storage (`panel_store.py`)
+
+Panel runs are published to `gs://gdfarming-farm-data/district_panel/runs/<run_id>/` with `latest.json` next to them (a
+new prefix; nothing else in the bucket is touched). Runs are immutable.
+
+```bash
+python -m gradientdescentfarmers.model_builder.rotations.panel_store push <run folder>   # upload + make latest
+python -m gradientdescentfarmers.model_builder.rotations.panel_store list
+python -m gradientdescentfarmers.model_builder.rotations.panel_store pull                # latest -> ~/.cache/yolia/
+```
+
+`RotationModelBuilder().build("gs://gdfarming-farm-data/district_panel", {})`, and `--panel gs://...` on `web_export_national`
+and `backtest`, download the run once and read it locally. Needs the gcloud CLI with an account that can read the bucket.
+
+## Every district (`web_export_national.py`)
+
+Precomputes the engine for every district and water regime with a crop on >= 300 ha/yr since 2016: the district's three
+largest crops (and its main spring-summer/autumn-winter pair), with no priority or one of income, risk, water and soil;
+no water scenarios. 187 districts, 864 current rotations, ~47 min on 2 cores, 27 MB, for the simple farmer view
+(`/campo`). Crops whose Spanish name has a parenthesis (calabaza (semilla), avena (grano), ebo (veza)) cannot be parsed
+back from text and are skipped (12 cases, listed under `errores` in the index).
+
+## Open issues
+
+- The income score is on a fixed 0-40,000 MXN/ha/yr scale (`scoring.SCALES`); irrigated rotations above it all score
+  100, so the "ingreso" priority cannot rank them (Sonora irrigated wheat: trigo-garbanzo scores 69, soya-trigo 68, though
+  soya-trigo recorded +26,208 MXN/ha/yr more). The simple farmer view works around it; the scale needs a decision.
+- Rotations given as text cannot name crops whose Spanish name has a parenthesis; pass them as `[{"pv": key, "oi": key}]`.
+
 ## Tests
 
 ```bash

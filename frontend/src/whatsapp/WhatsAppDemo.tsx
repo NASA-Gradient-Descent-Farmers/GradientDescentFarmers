@@ -150,21 +150,27 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
     setMessages([])
     setTyping(true)
     try {
-      for (const [i, bubble] of greeting(t).entries()) {
-        await sleep(i === 0 ? 300 : Math.round(typingMs * 0.8))
-        if (mine !== generation.current) return
-        add('bot', bubble)
-      }
       // arriving from the simple farmer view (/campo) at a demo place: open the chat there, with its planting question
       let handoff: string | null = null
       try {
         handoff = sessionStorage.getItem(WA_HANDOFF_KEY)
-        sessionStorage.removeItem(WA_HANDOFF_KEY)
       } catch {
         // no storage: the chat starts at the greeting, as always
       }
       const start = readHandoff(handoff)
+      // from the farmer view, only the hello and a line naming their place: they already chose it there
+      const hello = start ? [greeting(t)[0], { text: t('whatsapp.district.fromCampo', { place: start.national?.label ?? DEMO_LOCATIONS.find((d) => d.id === start.demoId)?.name ?? '' }) }] : greeting(t)
+      for (const [i, bubble] of hello.entries()) {
+        await sleep(i === 0 ? 300 : Math.round(typingMs * 0.8))
+        if (mine !== generation.current) return
+        add('bot', bubble)
+      }
       if (start) {
+        try {
+          sessionStorage.removeItem(WA_HANDOFF_KEY) // used once, by the run that got this far
+        } catch {
+          // nothing to remove
+        }
         // the farmer's own answers (water, last crop, priority) and, outside the demo places, their district
         chat.current = { ...chat.current, district: start.inputs, ...(start.national ? { national: start.national } : {}) }
         const demoPlace = DEMO_LOCATIONS.find((d) => d.id === start.demoId)
