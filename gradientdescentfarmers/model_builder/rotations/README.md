@@ -27,9 +27,19 @@ for r in result["rotaciones"]:
 7. **Harvest month and district calendars** (`indicators.season`). A season's sowing and harvest months come from the farmer (`mes_siembra`, `mes_cosecha`), then from the district calendar in `tables/calendars.csv`, then from the formula. A known harvest month sets the season length, keeping FAO-56's stage proportions. `fechas_siembra` says where each date came from, and `preguntar` asks for the harvest month when a winter crop's season length comes from the formula.
 8. **Crop and soil tables checked against FAO-56** (Tables 11, 12, 19, 22) on 15 November 2026; the result is in `tables/crop_sources.csv`. Wheat now uses FAO's December-sown California desert row (160 days) instead of the spring-sown mid-latitude row (135 days).
 
+## District calendars (`tables/calendars.csv`)
+
+Usual sowing month, and harvest month where the source gives a season length, for the main crops of the three demo districts, from INIFAP's *Agenda Técnica Agrícola* for Guanajuato, Sinaloa and Sonora (2017). Each row quotes the recommended window in `nota`; the month chosen is the one whose 10th falls inside it. Where an agenda gives days to maturity, the harvest month is the sowing day plus the midpoint (wheat and chickpea 130–140 days, safflower 140–152). Gaps, on purpose:
+
+- **No harvest month** for maize, sorghum, soybean, irrigated bean and Bajío wheat: the agendas give sowing windows but not season lengths. Those seasons keep the FAO-56 formula, and the engine asks the farmer (`preguntar`).
+- **Cajeme** wheat and chickpea use the Sinaloa agenda's days to maturity; the Sonora agenda gives none.
+- **No maize in Cajeme, no barley in Cortazar, no sorghum in Los Mochis.** The Sonora agenda has no maize package, the Guanajuato agenda only forage barley. Sinaloa's irrigated sorghum is sown 15 January–10 March, which does not fit SIAP's spring-summer cycle as the engine reads it; left out until a technician says how SIAP files it.
+
+These are state-level recommendations, not observations: a technician should confirm them for each district.
+
 ## Known limitation to review
 
-The crop calendar assumes irrigated autumn-winter crops are sown around 21 November, and FAO-56 stage lengths shorten in warm places: wheat in the Yaqui valley comes out at ~108 days (harvest mid-March), maize in Los Mochis at ~129 days. Local practice is probably later sowing and a longer season. This affects water need and the trend window. The farmer's sowing month now corrects the start; the season length still needs a technician's or INIFAP's calendar for each district.
+Where no calendar row or farmer answer exists, the crop calendar falls back to the default sowing date (around 21 November for irrigated autumn–winter crops) and FAO-56 stage lengths shortened in warm places. The calendar table above replaces that for its rows; the rest still need local calendars.
 
 ## Tests
 

@@ -367,18 +367,19 @@ def test_sowing_month_moves_the_season_of_its_own_cycle():
 def test_winter_sowing_month_changes_water_and_trend_window_and_is_asked_for(panel_run):
     from gradientdescentfarmers.model_builder.rotations.compare import comparar_rotaciones
 
-    default = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", escenarios=False)
+    # Maize in Cajeme has no row in tables/calendars.csv, so it runs on the default autumn-winter date.
+    default = comparar_rotaciones("Bácum", "maíz", estado="Sonora", agua="riego", escenarios=False)
     first = default["fechas_siembra"][0]
-    assert (first["ciclo"], first["cultivo"], first["mes"], first["fuente"]) == ("oi", "wheat", 11, "supuesto")
+    assert (first["ciclo"], first["cultivo"], first["mes"], first["fuente"]) == ("oi", "maize", 11, "supuesto")
     assert [p["dato"] for p in default["preguntar"]] == ["mes_siembra", "mes_cosecha"]
-    december = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=12, escenarios=False)
+    december = comparar_rotaciones("Bácum", "maíz", estado="Sonora", agua="riego", mes_siembra=12, escenarios=False)
     assert december["fechas_siembra"][0]["fuente"] == "agricultor"
     assert [p["dato"] for p in december["preguntar"]] == ["mes_cosecha"]
     assert december["tendencias"]["detalle"][0]["meses"] != default["tendencias"]["detalle"][0]["meses"]
     water = lambda r: r["rotaciones"][0]["indicadores"]["agua"]["valor"]
     assert water(december) != water(default)
     assert any("el mes que nos dijiste" in line for line in december["tu_lugar"])
-    june = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=6, escenarios=False)
+    june = comparar_rotaciones("Bácum", "maíz", estado="Sonora", agua="riego", mes_siembra=6, escenarios=False)
     assert any("no se usó" in line for line in june["tu_lugar"]) and june["fechas_siembra"][0]["fuente"] == "supuesto"
     summer = comparar_rotaciones("Valle de Santiago", "maíz", estado="Guanajuato", mes_siembra=6, escenarios=False)
     s0 = summer["fechas_siembra"][0]
@@ -427,3 +428,19 @@ def test_harvest_month_in_the_comparison_and_what_is_asked(panel_run):
     assert 4 in both["tendencias"]["detalle"][0]["meses"]
     with pytest.raises(ValueError):
         comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_cosecha=13, escenarios=False)
+
+
+def test_calendar_table_rows_are_valid_and_used_for_yaqui_wheat(panel_run):
+    import pandas as pd
+    from gradientdescentfarmers.model_builder.rotations import catalog
+    from gradientdescentfarmers.model_builder.rotations.compare import comparar_rotaciones
+    from gradientdescentfarmers.model_builder.rotations.indicators import sowing_cycle
+
+    cal = pd.read_csv(catalog.DATA / "calendars.csv")
+    assert not cal.duplicated(["state_id", "ddr", "crop", "cycle", "water"]).any()
+    assert set(cal["crop"]) <= set(catalog.crops().index) and cal["fuente"].str.contains("INIFAP").all()
+    assert all(sowing_cycle(int(m)) == c for m, c in zip(cal["siembra"], cal["cycle"]))   # month fits its cycle
+    r = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", escenarios=False)
+    d = r["fechas_siembra"][0]
+    assert (d["mes"], d["fuente"], d["cosecha"], d["fuente_cosecha"]) == (12, "calendario", 4, "calendario")
+    assert r["preguntar"] == [] and any("calendario agrícola de tu distrito" in l for l in r["tu_lugar"])
