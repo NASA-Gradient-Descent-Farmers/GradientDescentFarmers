@@ -456,6 +456,52 @@ GENERAL_GAPS = [
 ]
 
 
+FULL_MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
+               "noviembre", "diciembre"]
+
+
+def sowing_dates(place, current_eval):
+    """The sowing date used for each cycle of the current rotation: [{cycle, crop, month, source}].
+
+    source is "agricultor" (the farmer's month) or "supuesto" (the engine's default for that cycle).
+    """
+    from .indicators import MONTH_OF_DAY, farmer_sowing_month
+
+    out, seen = [], set()
+    for item in current_eval["seasons"]:
+        s = item["season"]
+        if s.cycle in seen:
+            continue
+        seen.add(s.cycle)
+        out.append({"ciclo": s.cycle, "cultivo": s.crop, "mes": int(MONTH_OF_DAY[s.sow_day]) + 1,
+                    "fuente": "agricultor" if farmer_sowing_month(place, s.cycle) else "supuesto"})
+    return out
+
+
+def sowing_lines(place, current_eval):
+    """Which sowing date each cycle used, and whether it came from the farmer or is an assumption."""
+    from .indicators import sowing_cycle
+
+    lines, cycles = [], set()
+    for d in sowing_dates(place, current_eval):
+        cycles.add(d["ciclo"])
+        crop, month = catalog.name(d["cultivo"]), FULL_MONTHS[d["mes"] - 1]
+        if d["fuente"] == "agricultor":
+            lines.append(f"Siembra de {crop}: {month}, el mes que nos dijiste.")
+            continue
+        if d["ciclo"] == "pv":
+            basis = "inicio de las lluvias" if place.water == "temporal" else "fecha típica de riego de primavera"
+        else:
+            basis = "fecha típica de riego de otoño-invierno" if place.water == "riego" else "final de las lluvias, con humedad residual"
+        lines.append(f"Supuse que siembras {crop} en {month} ({basis}). Si siembras en otro mes, dímelo: cambia "
+                     "heladas, calor, agua, calendario y las tendencias del clima en los meses de tu cultivo.")
+    if place.sowing_month and sowing_cycle(place.sowing_month) not in cycles:
+        lines.append(f"El mes que nos diste ({FULL_MONTHS[place.sowing_month - 1]}) es de "
+                     f"{'primavera-verano' if sowing_cycle(place.sowing_month) == 'pv' else 'otoño-invierno'}, y tu "
+                     "rotación no tiene cultivo en ese ciclo, así que no se usó.")
+    return lines
+
+
 def place_summary(place, current_eval):
     c = place.climate
     lgp = place.lgp
@@ -477,13 +523,7 @@ def place_summary(place, current_eval):
     rain = c["rain"].to_numpy()
     if rain[6] < 0.8 * (rain[5] + rain[8]) / 2 or rain[7] < 0.8 * (rain[5] + rain[8]) / 2:
         lines.append("Hay canícula: julio-agosto llueve menos que junio y septiembre.")
-    if place.sowing_month is None:
-        first = next((item["season"] for item in current_eval["seasons"] if item["season"].cycle == "pv"), None)
-        if first is not None:
-            month = MONTHS[int(np.searchsorted(np.cumsum([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]), first.sow_day, side="right"))]
-            basis = "inicio de las lluvias" if place.water == "temporal" else "fecha típica de riego"
-            lines.append(f"Supuse que siembras en {month} ({basis}). Si siembras en otro mes, dímelo para ajustar "
-                         "heladas, agua y calendario.")
+    lines.extend(sowing_lines(place, current_eval))
     bare = current_eval["bare_months"]
     lines.append(f"Con tu rotación actual la parcela queda descubierta en: {months_text(bare)}.")
     lines.extend(satellite_lines(place, bare))

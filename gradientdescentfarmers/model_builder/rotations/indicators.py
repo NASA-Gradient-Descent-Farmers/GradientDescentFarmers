@@ -151,13 +151,33 @@ def effective_rain(monthly_mm):
     return np.where(p <= 250, p * (125 - 0.2 * p) / 125, 125 + 0.1 * p)
 
 
+PV_SOWING_MONTHS = range(3, 9)       # March-August: a spring-summer sowing; September-February: autumn-winter
+
+
+def sowing_cycle(month):
+    """The SIAP cycle a sowing month belongs to."""
+    return "pv" if month in PV_SOWING_MONTHS else "oi"
+
+
+def farmer_sowing_month(place, cycle):
+    """The farmer's sowing month when it belongs to `cycle`, else None."""
+    m = place.sowing_month
+    return m if m and sowing_cycle(m) == cycle else None
+
+
 def sowing_day(place, cycle, after_day=None):
-    """Day of year (0-364) a season starts."""
+    """Day of year (0-364) a season starts.
+
+    The farmer's sowing month sets the season of its own cycle: a month from March to August moves the
+    spring-summer sowing, one from September to February the autumn-winter sowing. Field-shift applied it to
+    spring-summer only, so a wheat farmer in the Yaqui valley saying "December" changed nothing.
+    """
     lgp = place.lgp
-    if cycle == "pv":
-        if place.sowing_month:
-            day = int(DAYS[:place.sowing_month - 1].sum()) + 10
-        elif place.water == "riego":
+    farmer = farmer_sowing_month(place, cycle)
+    if farmer:
+        day = int(DAYS[:farmer - 1].sum()) + 10
+    elif cycle == "pv":
+        if place.water == "riego":
             day = 120                                                # ~May 1
         elif lgp is None:
             day = 181                                                # July 1; flagged by the caller

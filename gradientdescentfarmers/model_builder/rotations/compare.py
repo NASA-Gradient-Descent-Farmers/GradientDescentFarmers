@@ -32,6 +32,9 @@ def comparar_rotaciones(lugar, rotacion_actual, estado=None, agua="temporal", pr
     """Compare `rotacion_actual` with up to `n_alternativas` alternatives (plus any `propuestas`).
 
     lugar: municipality or SIAP district name; estado: state name to disambiguate.
+    mes_siembra: the farmer's sowing month (1-12) for the crop of its cycle: March-August sets the
+        spring-summer sowing, September-February the autumn-winter sowing. Without it each cycle uses a
+        default, which is weakest for autumn-winter crops; `preguntar` then asks for it.
     rotacion_actual / propuestas: text like "maíz - frijol" or "maíz/garbanzo", or lists of {"pv":..., "oi":...}.
     agua: "temporal" or "riego". prioridades: subset of scoring.PRIORITIES.
     residuo: what happens to stover, one of indicators.RESIDUE. pendiente: "plana", "ligera" or "fuerte".
@@ -184,6 +187,8 @@ def comparar_rotaciones(lugar, rotacion_actual, estado=None, agua="temporal", pr
         "agua_region": None if storage is None else {**storage, "lineas": grace.lines(storage, agua), "tipo": "observado"},
         "calendario_lugar": insights.place_calendar(place),
         "prioridades": [scoring.PRIORITY_LABELS[p] for p in prioridades],
+        "fechas_siembra": cards.sowing_dates(place, baseline["evaluation"]),
+        "preguntar": ask_for(place, baseline["evaluation"]),
         "rotaciones": rotations,
         "nota_opciones": (WIDER_NOTE.format(agua=agua) if widened and len(chosen) >= MIN_ALTERNATIVES
                           else FEW_NOTE.format(agua=agua) if len(chosen) < MIN_ALTERNATIVES else None),
@@ -202,6 +207,25 @@ def comparar_rotaciones(lugar, rotacion_actual, estado=None, agua="temporal", pr
         "vacios_generales": cards.GENERAL_GAPS,
         "aviso": DISCLAIMER,
     }
+
+
+def ask_for(place, evaluation):
+    """Data worth asking the farmer for, because a default stands in for it where it matters most.
+
+    The autumn-winter sowing date is a fixed default (about 21 November under irrigation, the end of the rains
+    under rainfed), while spring-summer follows the rains, so a winter crop's calendar rests most on the
+    assumption: its water need, frost and heat, and the months its climate trends cover.
+    """
+    out = []
+    dates = cards.sowing_dates(place, evaluation)
+    winter = [d for d in dates if d["ciclo"] == "oi" and d["fuente"] == "supuesto"]
+    if winter:
+        crop = catalog.name(winter[0]["cultivo"])
+        out.append({"dato": "mes_siembra",
+                    "pregunta": f"¿En qué mes siembras el {crop}?",
+                    "por_que": ("La fecha de siembra de otoño-invierno se supuso; cambia el agua que pide el cultivo, "
+                                "el riesgo de helada y calor, y los meses en que se miden las tendencias del clima.")})
+    return out
 
 
 def to_json(result):

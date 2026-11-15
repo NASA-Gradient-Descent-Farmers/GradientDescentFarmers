@@ -22,10 +22,11 @@ for r in result["rotaciones"]:
 3. **No crops proposed in their off-season** (`candidates.off_cycle`). SIAP records ~400 ha a year of "spring-summer" chickpea in Los Mochis against thousands of hectares in autumn-winter, and the engine proposed summer chickpea. A crop grown in a cycle on under a quarter of its area in the other cycle and under 1,000 ha is now treated as niche there: listed, not proposed.
 4. **Missing map soil values** (IGBP-DIS needs an Earthdata login) are reported as missing instead of crashing.
 5. Water balances and bad years keep field-shift's 2001–2025 window; the longer 1982–2025 series is used only for trends.
+6. **The farmer's sowing month sets its own cycle** (`indicators.sowing_day`). Field-shift applied `mes_siembra` to spring–summer only, so a Yaqui wheat farmer saying "December" changed nothing. Now March–August moves the spring–summer sowing and September–February the autumn–winter one. The result lists the date used for each cycle and whether it came from the farmer (`fechas_siembra`), and when a winter crop runs on the default the result asks for the month (`preguntar`), for the assistant or the web page to pass on.
 
 ## Known limitation to review
 
-The crop calendar assumes irrigated autumn-winter crops are sown around 21 November, and FAO-56 stage lengths shorten in warm places: wheat in the Yaqui valley comes out at ~108 days (harvest mid-March), maize in Los Mochis at ~129 days. Local practice is probably later sowing and a longer season. This affects water need and the trend window. It needs a technician's or INIFAP's calendar for each district, and the farmer can already override the sowing month.
+The crop calendar assumes irrigated autumn-winter crops are sown around 21 November, and FAO-56 stage lengths shorten in warm places: wheat in the Yaqui valley comes out at ~108 days (harvest mid-March), maize in Los Mochis at ~129 days. Local practice is probably later sowing and a longer season. This affects water need and the trend window. The farmer's sowing month now corrects the start; the season length still needs a technician's or INIFAP's calendar for each district.
 
 ## Tests
 

@@ -348,3 +348,36 @@ def test_model_builder_contract(tmp_path):
         builder.build({"build_state": "failed", "output_dir": str(FIXTURE), "fatal": "x"}, {})
     with pytest.raises(FileNotFoundError):
         builder.build(str(tmp_path), {})
+
+
+def test_sowing_month_moves_the_season_of_its_own_cycle():
+    from gradientdescentfarmers.model_builder.rotations.indicators import sowing_cycle, sowing_day
+
+    assert [sowing_cycle(m) for m in (3, 8, 9, 12, 1, 2)] == ["pv", "pv", "oi", "oi", "oi", "oi"]
+    place = synthetic_place(water="riego")
+    default_oi, default_pv = sowing_day(place, "oi"), sowing_day(place, "pv")
+    place.sowing_month = 12
+    assert sowing_day(place, "oi") == 334 + 10 and sowing_day(place, "pv") == default_pv     # December, winter only
+    place.sowing_month = 1
+    assert sowing_day(place, "oi") == 10                                                    # January sowing
+    place.sowing_month = 6
+    assert sowing_day(place, "oi") == default_oi and sowing_day(place, "pv") == 151 + 10
+
+
+def test_winter_sowing_month_changes_water_and_trend_window_and_is_asked_for(panel_run):
+    from gradientdescentfarmers.model_builder.rotations.compare import comparar_rotaciones
+
+    default = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", escenarios=False)
+    assert default["fechas_siembra"] == [{"ciclo": "oi", "cultivo": "wheat", "mes": 11, "fuente": "supuesto"}]
+    assert [p["dato"] for p in default["preguntar"]] == ["mes_siembra"]
+    december = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=12, escenarios=False)
+    assert december["fechas_siembra"][0]["fuente"] == "agricultor" and december["preguntar"] == []
+    assert december["tendencias"]["detalle"][0]["meses"] != default["tendencias"]["detalle"][0]["meses"]
+    water = lambda r: r["rotaciones"][0]["indicadores"]["agua"]["valor"]
+    assert water(december) != water(default)
+    assert any("el mes que nos dijiste" in line for line in december["tu_lugar"])
+    june = comparar_rotaciones("Bácum", "trigo", estado="Sonora", agua="riego", mes_siembra=6, escenarios=False)
+    assert any("no se usó" in line for line in june["tu_lugar"]) and june["fechas_siembra"][0]["fuente"] == "supuesto"
+    summer = comparar_rotaciones("Valle de Santiago", "maíz", estado="Guanajuato", mes_siembra=6, escenarios=False)
+    assert summer["fechas_siembra"][0] == {"ciclo": "pv", "cultivo": "maize", "mes": 6, "fuente": "agricultor"}
+    assert summer["preguntar"] == []
