@@ -4,7 +4,7 @@ import { data } from '../assistant/testdata.ts'
 import { DICTIONARIES, translate } from '../i18n/translate.ts'
 import { DEMO_LOCATIONS, demoLocation } from '../lib/demoLocations.ts'
 import { makeFormat } from '../lib/format.ts'
-import { EMPTY_CHAT, readLocation, reply, type BotBubble, type ChatState, type Env } from './engine.ts'
+import { EMPTY_CHAT, greeting, readLocation, reply, type BotBubble, type ChatState, type Env } from './engine.ts'
 
 const t = (path: string, vars?: Record<string, string | number>) => translate(DICTIONARIES.es, path, vars)
 const fmt = makeFormat('es')
@@ -125,5 +125,19 @@ describe('the chosen location is used throughout', () => {
     expect(state.last).toBeNull()
     state = (await reply('Guanajuato', state, env)).state
     expect(state.location).toBe('guanajuato')
+  })
+})
+
+describe('the opening of the conversation', () => {
+  it('asks which of the three locations, with a button for each, and says they are reference points', () => {
+    const bubbles = greeting(t)
+    expect(bubbles[bubbles.length - 1].options?.map((o) => o.label)).toEqual(['Guanajuato', 'Sinaloa', 'Sonora'])
+    expect(flat(bubbles)).toContain(t('whatsapp.askLocation'))
+    expect(flat(bubbles)).toContain('no parcelas verificadas')
+  })
+
+  it('invites a question once a location with results is chosen, and not for one without', async () => {
+    expect(flat((await reply('Guanajuato', EMPTY_CHAT, env)).bubbles)).toContain(t('whatsapp.nextStep'))
+    expect(flat((await reply('Sonora', EMPTY_CHAT, env)).bubbles)).not.toContain(t('whatsapp.nextStep'))
   })
 })

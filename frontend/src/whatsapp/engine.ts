@@ -140,9 +140,11 @@ const lowerFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string,
 const upperFirst = (text: string) => text.replace(/^(¿?)(.)/, (_, mark: string, letter: string) => mark + letter.toUpperCase())
 const bold = (text: string) => `*${text}*`
 
-export const greeting = (t: T): BotBubble[] => [{ text: t('whatsapp.welcome') }, { text: t('whatsapp.demoParcel') }]
 
 const coords = (place: DemoLocation) => `${place.latitude}, ${place.longitude}`
+
+/** The opening of the chat: who we are, what the locations are, and the first question, which location. */
+export const greeting = (t: T): BotBubble[] => [{ text: t('whatsapp.welcome') }, { text: t('whatsapp.demoParcel') }, locationAsk(t)]
 
 function locationAsk(t: T): BotBubble {
   return { text: t('whatsapp.askLocation'), options: DEMO_LOCATIONS.map((place) => ({ label: place.name })) }
@@ -356,7 +358,7 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
       const turn = await answer(text, { ...chosen, pending: null, focus: null }, env)
       return { state: turn.state, bubbles: [...confirm, ...turn.bubbles] }
     }
-    return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : locationBubbles(named, t).slice(0, 1) }
+    return { state: { ...chosen, pending: null, focus: null }, bubbles: [...(confirm.length ? confirm : locationBubbles(named, t).slice(0, 1)), { text: t('whatsapp.nextStep') }] }
   }
 
   if (state.location === null && (needsLocation(text) || state.pending === 'location')) {
