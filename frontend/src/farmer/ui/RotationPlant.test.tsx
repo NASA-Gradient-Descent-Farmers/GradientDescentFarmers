@@ -97,6 +97,10 @@ describe('Qué sembrar for a parcel near a run', () => {
     expect(text).toContain('no miden tu parcela')
   })
 
+  it('draws each highlight with one bullet, not two', () => {
+    expect(html).not.toContain('• ')
+  })
+
   it('says the results are per hectare and ordered by what matters most', () => {
     expect(text).toContain('Se ordenan según lo que más te importa')
   })

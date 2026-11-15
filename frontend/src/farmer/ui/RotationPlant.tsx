@@ -68,7 +68,8 @@ function OptionCard({ regime, option, rotations, goal }: { regime: (typeof REGIM
       <p className="muted">{t('whatsapp.rotations.calendarNote')}</p>
       <ul className="near-facts">
         {rest.map((line) => (
-          <li key={line}>{line}</li>
+          // the chat text marks the service's highlights with its own bullet; this list draws one
+          <li key={line}>{line.replace(/^• /, '')}</li>
         ))}
       </ul>
     </article>
