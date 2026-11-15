@@ -27,6 +27,12 @@ phone ──WhatsApp──▶ Twilio ──HTTPS POST /whatsapp──▶ tunnel 
   `frontend/public/data/environment/` (Daniel's source profiles). The bot always says these are satellite and model grids
   for a point, not measurements of the parcel. *¿Qué pasa si llueve poco?* also quotes the rain observed in the place.
 - Every figure comes from the stored model results and data files; nothing is estimated or written by hand.
+- **English and Spanish.** A conversation starts in the language of the first message (Spanish unless it is clearly
+  English) and keeps it per sender. Type `english` or `español` at any time to switch, or just ask a clear question in
+  the other language. `menu` restarts without changing the language. The text the rotation service wrote in Spanish
+  (the plan description, its highlights, the confidence reasons, the crop names) is translated from its known sentences
+  (`frontend/src/lib/rotationText.ts`); a sentence that is not known is shown as the service wrote it, and a test fails
+  when a run contains one.
 - Send `menu` at any time to start over. Photos and voice notes are not read.
 
 ## Requirements

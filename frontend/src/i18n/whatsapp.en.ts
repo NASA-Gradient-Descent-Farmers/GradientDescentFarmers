@@ -92,6 +92,7 @@ export const whatsappEn = {
   placeholder: 'Type a message',
   send: 'Send',
   reset: 'Reset',
+  languageLabel: 'Language',
   resetLabel: 'Reset the conversation',
   suggested: 'Suggested questions',
   suggestions: {

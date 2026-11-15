@@ -42,6 +42,28 @@ describe('the simulator screen', () => {
   })
 })
 
+describe('the language toggle', () => {
+  it('offers Spanish and English, with the current one marked', () => {
+    expect(html).toMatch(/<div class="wa-lang" role="group" aria-label="Idioma">/)
+    expect(html).toMatch(/aria-pressed="true"[^>]*>ES<\/button>/)
+    expect(html).toMatch(/aria-pressed="false"[^>]*>EN<\/button>/)
+  })
+
+  it('in English the whole screen is in English, with EN marked', () => {
+    const english = renderToStaticMarkup(
+      <I18nProvider initial="en">
+        <WhatsAppChat data={data} home="/" />
+      </I18nProvider>,
+    )
+    const words = english.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+    expect(english).toMatch(/aria-label="Language"/)
+    expect(english).toMatch(/aria-pressed="true"[^>]*>EN<\/button>/)
+    expect(words).toContain('Simulation · not real WhatsApp')
+    expect(words).toContain('What should I plant?')
+    expect(words).not.toMatch(/Simulación|¿Qué me conviene/)
+  })
+})
+
 describe('the location selector', () => {
   it('offers exactly the three locations, none chosen at first', () => {
     for (const name of ['Guanajuato', 'Sinaloa', 'Sonora']) expect(html).toMatch(new RegExp(`aria-pressed="false"[^>]*>${name}<`))

@@ -23,12 +23,12 @@ export function ZoneAnswer({ body }: { body: Extract<Body, { kind: 'zone' }> }) 
 
 /** The answer itself, from the published files it is given. */
 export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind: 'zone' }>; published: Published }) {
-  const { t, fmt, distance } = useI18n()
+  const { t, fmt, lang, distance } = useI18n()
   const place = DEMO_LOCATIONS.find((candidate) => candidate.id === body.place)
   if (!place) return null
   const rotations = published.rotations[body.place]
   const environment = published.environment[body.place] ?? null
-  const ctx = { t, fmt, observed: environment, goal: body.goal ?? null, water: body.water ?? null }
+  const ctx = { t, fmt, lang, observed: environment, goal: body.goal ?? null, water: body.water ?? null }
   const bubbles = ENVIRONMENT.includes(body.topic)
     ? environment
       ? environmentBubbles(body.topic as EnvironmentTopic, place.name, environment, ctx)

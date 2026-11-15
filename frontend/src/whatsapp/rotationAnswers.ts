@@ -3,7 +3,8 @@
 // numbers are (a crop model run on past weather, with historical prices, not validated in the field) and that income is
 // gross per hectare, never profit. Unknown values read "sin datos", never zero.
 
-import type { Format } from '../lib/format.ts'
+import type { Format, Lang } from '../lib/format.ts'
+import { confidenceLabelText, cropName, describeOption, highlightText, reasonText } from '../lib/rotationText.ts'
 import { bestOption, pickForGoal, topIncomeOption, type Regime, type RotationCampaign, type RotationGoal, type RotationOption, type Rotations } from '../lib/rotations.ts'
 import type { Environment } from '../lib/environment.ts'
 import type { BotBubble, Focus } from './engine.ts'
@@ -17,6 +18,8 @@ export type RotationTopic = Focus | 'trust' | 'fertilizer'
 export interface Ctx {
   t: T
   fmt: Format
+  /** The language of the answer; the service's Spanish text is translated for English. Spanish when not given. */
+  lang?: Lang
   /** The place's environmental package, when loaded: the rain question adds what was observed there. */
   observed?: Environment | null
   /** What matters most to the farmer: the options are ranked by it. */
@@ -69,7 +72,7 @@ export function optionLines(option: RotationOption, ctx: Ctx, rotations: Rotatio
   const { t, fmt } = ctx
   const lines = [t(`whatsapp.rotations.status.${option.advisoryStatus}`)]
   if (option.highlightObjectives.length > 0) lines.push(t('whatsapp.rotations.stands', { list: option.highlightObjectives.map((objective) => word('whatsapp.rotations.objective', objective, ctx)).join(', ') }))
-  lines.push(...option.highlightsEs.map((line) => `• ${line}`))
+  lines.push(...option.highlightsEs.map((line) => `• ${highlightText(line, ctx.lang ?? 'es')}`))
   const { gross } = option
   if (gross?.p10 != null && gross?.p90 != null) lines.push(t('whatsapp.rotations.rangeP', { low: money(gross.p10, ctx), high: money(gross.p90, ctx) }))
   if (option.regime === 'rainfed') lines.push(t('whatsapp.rotations.noIrrigation'))
@@ -86,7 +89,7 @@ export function optionLines(option: RotationOption, ctx: Ctx, rotations: Rotatio
 }
 
 function optionBubble(head: string, option: RotationOption, ctx: Ctx, rotations: Rotations): BotBubble {
-  return { text: [bold(head), option.descriptionEs, ...optionLines(option, ctx, rotations)].join('\n') }
+  return { text: [bold(head), describeOption(option, ctx.lang ?? 'es', ctx.fmt), ...optionLines(option, ctx, rotations)].join('\n') }
 }
 
 /** The option to show for a regime: the best for the farmer's goal when they gave one, else the service's own pick, else the highest income. */
@@ -127,7 +130,7 @@ function harvest(rotations: Rotations, ctx: Ctx): BotBubble[] {
       .map((campaign) => {
         const amount = campaign.grainTHa === null ? noData(ctx) : campaign.grainTHa < NO_HARVEST_T_HA ? t('whatsapp.rotations.harvestNone') : t('whatsapp.rotations.harvestAmount', { amount: fmt.number(campaign.grainTHa, 2) })
         const gross = campaign.grossMxnHa === null ? '' : ` · ${t('whatsapp.rotations.seasonIncome', { amount: money(campaign.grossMxnHa, ctx) })}`
-        return t('whatsapp.rotations.harvestLine', { crop: campaign.cropEs, season: season(campaign, ctx), amount }) + gross
+        return t('whatsapp.rotations.harvestLine', { crop: cropName(campaign.cropEs, ctx.lang ?? 'es'), season: season(campaign, ctx), amount }) + gross
       })
     bubbles.push({ text: `${bold(regimeName(regime, ctx))}\n${lines.length > 0 ? lines.join('\n') : t('whatsapp.rotations.fallowOnly')}` })
   }
@@ -159,9 +162,9 @@ function rain(rotations: Rotations, ctx: Ctx): BotBubble[] {
   return bubbles
 }
 
-function trust(rotations: Rotations, { t }: Ctx): BotBubble[] {
+function trust(rotations: Rotations, { t, lang = 'es' }: Ctx): BotBubble[] {
   const { confidence } = rotations
-  const lines = [t('whatsapp.rotations.trustHead', { label: confidence.labelEs }), bullets(confidence.reasonsEs)]
+  const lines = [t('whatsapp.rotations.trustHead', { label: confidenceLabelText(confidence.labelEs, lang) }), bullets(confidence.reasonsEs.map((reason) => reasonText(reason, lang)))]
   if (confidence.probabilityOfSuccess === null) lines.push(t('whatsapp.rotations.noProbability'))
   return [{ text: lines.join('\n\n') }]
 }

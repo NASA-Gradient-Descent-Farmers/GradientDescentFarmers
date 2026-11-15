@@ -10,7 +10,7 @@ import { evidenceFor, yearsText } from '../farmer/evidence.ts'
 import { fold } from '../farmer/places.ts'
 import { confidenceOf, DRY_SCENARIOS, nextCrop, recommend, roundMoney, type Recommendation, type Zone } from '../farmer/recommend.ts'
 import { FIELDS, GOALS, PREVIOUS, validHectares, type Field, type Goal, type Previous, type Situation } from '../farmer/state.ts'
-import type { Format } from '../lib/format.ts'
+import type { Format, Lang } from '../lib/format.ts'
 import { WATER, type Water } from '../lib/farm.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import { distanceKm } from '../lib/geo.ts'
@@ -53,6 +53,8 @@ export interface Env {
   data: DashboardData
   t: T
   fmt: Format
+  /** The language of the conversation (the dictionary `t` and the formatter `fmt` already follow it). Spanish when not given. */
+  lang?: Lang
   distance: (km: number) => string
   /** The rotation results loaded for the locations that have them; a location missing here has none. */
   rotations?: RotationsByLocation
@@ -133,8 +135,8 @@ export function readAnswer(field: Field, text: string): Situation[Field] | undef
 
 // ---- reading the topic ----
 
-const HARVEST = /\b(cosech\w*|rendimiento|rendir\w*|produc\w*|toneladas)\b/
-const COMPARE = /\b(cultivo|cultivos)\b.*\b(mas|mejor)\b|\b(mejor|mejores) (cultivo|cultivos|opcion|opciones)\b/
+const HARVEST = /\b(cosech\w*|rendimiento|rendir\w*|produc\w*|toneladas|harvest\w*|yield\w*|tonnes?|tons?)\b/
+const COMPARE = /\b(cultivo|cultivos)\b.*\b(mas|mejor)\b|\b(mejor|mejores) (cultivo|cultivos|opcion|opciones)\b|\b(best|better) (crop|crops|option|options)\b|\bwhich crop\b|\bcrop\b.*\b(best|better)\b/
 
 /** What a question is about. The assistant's own classifier first; the two simulator topics only where it has no answer. */
 export function focusOf(text: string): Focus | null {
@@ -425,6 +427,8 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
   if (state.location === null && (needsLocation(text) || state.pending === 'location')) {
     return { state: { ...state, pending: 'location', focus: focusOf(text) ?? environmentTopicOf(text) ?? state.focus ?? 'plant' }, bubbles: [locationAsk(t)] }
   }
+  // no location chosen and nothing that needs one ("hola" again, a message with no topic): start from the greeting
+  if (state.location === null) return { state, bubbles: greeting(t) }
   return answer(text, state, env)
 }
 

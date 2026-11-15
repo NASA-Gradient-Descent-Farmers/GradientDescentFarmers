@@ -4,6 +4,7 @@ import type { Rotations } from '../../lib/rotations.ts'
 import { bestOption, pickForGoal, type RotationGoal, type RotationOption } from '../../lib/rotations.ts'
 import type { Situation } from '../state.ts'
 import type { Zone } from '../../lib/environment.ts'
+import { confidenceLabelText, cropName, describeOption, reasonText } from '../../lib/rotationText.ts'
 import { optionLines, season } from '../../whatsapp/rotationAnswers.ts'
 import { DataTable } from './DataTable.tsx'
 import { Disclosure } from './Disclosure.tsx'
@@ -44,13 +45,13 @@ function OptionCard({ regime, option, rotations, goal }: { regime: (typeof REGIM
       <h2>{t(`whatsapp.rotations.regime.${regime}`)}</h2>
       <p className="near-kicker">{kicker}</p>
       <p>
-        <strong>{option.descriptionEs}</strong>
+        <strong>{describeOption(option, ctx.lang, fmt)}</strong>
       </p>
       <p className={`callout ${flagged ? 'is-error' : 'is-warn'}`}>{status}</p>
       <ol className="near-seasons">
         {option.campaigns.map((campaign, i) => (
           <li key={i}>
-            <strong>{campaign.fallow ? t('near.fallow') : campaign.cropEs}</strong>
+            <strong>{campaign.fallow ? t('near.fallow') : cropName(campaign.cropEs, ctx.lang)}</strong>
             <span className="muted">{season(campaign, ctx)}</span>
             {!campaign.fallow && (
               <span>
@@ -140,7 +141,7 @@ function RunDetails({ rotations }: { rotations: Rotations }) {
  * is the file's, rounded for display.
  */
 export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { zone: Zone; rotations: Rotations; situation?: Situation; notice?: ReactNode; onAsk: () => void }) {
-  const { t } = useI18n()
+  const { t, lang, fmt } = useI18n()
   const { name } = zone
   const { income } = useFigures()
   const goal = situation?.goal ?? null
@@ -172,7 +173,7 @@ export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { z
           {rotations.options.map((option) => (
             <li key={option.id}>
               <strong>{t(`whatsapp.rotations.regime.${option.regime}`)}</strong>
-              <span>{option.descriptionEs}</span>
+              <span>{describeOption(option, lang, fmt)}</span>
               <span className="muted">{income(option)}</span>
               <span className="muted">{t(`whatsapp.rotations.status.${option.advisoryStatus}`)}</span>
             </li>
@@ -182,11 +183,11 @@ export function RotationPlant({ zone, rotations, situation, notice, onAsk }: { z
 
       <Disclosure title={t('near.confidence')}>
         <p>
-          <strong>{rotations.confidence.labelEs}</strong>
+          <strong>{confidenceLabelText(rotations.confidence.labelEs, lang)}</strong>
         </p>
         <ul>
           {rotations.confidence.reasonsEs.map((reason) => (
-            <li key={reason}>{reason}</li>
+            <li key={reason}>{reasonText(reason, lang)}</li>
           ))}
         </ul>
         <p>{t('whatsapp.rotations.noProbability')}</p>

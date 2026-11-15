@@ -13,6 +13,10 @@
 .wa-ia { color: #f08a5d; }
 .wa-who p { margin: 0; font-size: 13px; color: #d8d8d4; }
 .wa-reset { flex: none; min-height: 44px; padding: 0 14px; border: 1px solid #fff; border-radius: 22px; background: transparent; color: #fff; font: inherit; font-size: 15px; cursor: pointer; }
+.wa-lang { flex: none; display: flex; border: 1px solid #fff; border-radius: 22px; overflow: hidden; }
+.wa-lang button { min-height: 44px; min-width: 44px; padding: 0 10px; border: 0; background: transparent; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.wa-lang button[aria-pressed='true'] { background: #fff; color: #111; }
+.wa-lang button:focus-visible { outline: 3px solid #f08a5d; outline-offset: -3px; }
 .wa-reset:hover { background: #fff; color: #111; }
 
 .wa-banner { padding: 8px 14px; background: #fff6df; color: #5c3d00; font-size: 14px; line-height: 1.4; border-bottom: 1px solid #e2cf9f; }
@@ -54,3 +58,9 @@
 .wa-place:focus-visible { outline: 3px solid #111; outline-offset: 2px; }
 .wa-place-status { flex-basis: 100%; margin: 0; font-size: 13px; color: #55554f; }
 .wa-place-status.none { color: #7a1a12; font-weight: 600; }
+
+/* on a narrow phone the reset button is only its icon, so the title and status keep their room */
+@media (max-width: 420px) {
+  .wa-reset { min-width: 44px; padding: 0 12px; }
+  .wa-reset-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}

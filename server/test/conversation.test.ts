@@ -171,6 +171,81 @@ describe('environmental data of each place (Daniel\'s source profiles)', () => {
   })
 })
 
+describe('English', () => {
+  // words the Spanish text has and an English answer must not
+  const SPANISH = /\b(año|ingreso|riego|cosecha|barbecho|maíz|garbanzo|sorgo|trigo|exploratori[oa]s?|experimento|lluvia|confianza|opciones|suelo|datos)\b/i
+
+  it('a conversation opened in English stays in English: location, questions, links and hints', async () => {
+    const me = 'whatsapp:+14155550101'
+    const greeting = await say(base, me, 'Hello')
+    assert.match(greeting, /Hi, I am YolIA/)
+    assert.match(greeting, /Reply with the number or type your answer/)
+    assert.match(greeting, /Prefer Spanish\? Type \*español\*/)
+    assert.match(greeting, /More about YolIA: https:\/\/yolia\.example\/site/)
+    assert.doesNotMatch(greeting, SPANISH)
+    assert.match(await say(base, me, '3'), /Location: Sonora/)
+    for (const question of ['What should I plant?', 'How much will I harvest?', 'What if it rains little?', 'How reliable is this data?', 'What is the climate like?', 'Where does the data come from?']) {
+      const answer = await say(base, me, question)
+      assert.doesNotMatch(answer, SPANISH, question)
+      assert.match(answer, /More about YolIA/, question)
+    }
+  })
+
+  it('the first message can be an English question, and the location is asked in English', async () => {
+    const asked = await say(base, 'whatsapp:+14155550102', 'What should I plant?')
+    assert.match(asked, /Which location should I check\?/)
+    assert.match(asked, /Reply with the number/)
+  })
+
+  it('English and Spanish senders do not affect each other', async () => {
+    const english = 'whatsapp:+14155550103'
+    const spanish = 'whatsapp:+5215500000601'
+    await say(base, english, 'Hello')
+    await say(base, spanish, 'Hola')
+    assert.match(await say(base, english, 'Sonora'), /Location: Sonora/)
+    assert.match(await say(base, spanish, 'Sonora'), /Ubicación: Sonora/)
+    assert.match(await say(base, english, 'What should I plant?'), /With irrigation/)
+    assert.match(await say(base, spanish, '¿Qué me conviene sembrar?'), /Con riego/)
+  })
+
+  it('"english" and "español" switch the conversation, and say so', async () => {
+    const from = 'whatsapp:+5215500000602'
+    await say(base, from, 'Hola')
+    const switched = await say(base, from, 'english')
+    assert.match(switched, /Okay, I will continue in English/)
+    assert.match(switched, /Hi, I am YolIA/)
+    assert.match(await say(base, from, 'Sinaloa'), /Location: Sinaloa/)
+    const back = await say(base, from, 'español')
+    assert.match(back, /Listo, seguiré en español/)
+    assert.match(back, /Hola, soy YolIA/)
+  })
+
+  it('a clear English question in a Spanish conversation switches it; a bare place name does not', async () => {
+    const from = 'whatsapp:+5215500000603'
+    await say(base, from, 'Hola')
+    assert.match(await say(base, from, 'Sonora'), /Ubicación: Sonora/)
+    assert.match(await say(base, from, 'What should I plant?'), /With irrigation/)
+    assert.match(await say(base, from, 'Guanajuato'), /Location: Guanajuato/)
+  })
+
+  it('"menu" restarts without changing the language, and greeting twice does not break', async () => {
+    const from = 'whatsapp:+14155550104'
+    await say(base, from, 'Hello')
+    const again = await say(base, from, 'Hello again')
+    assert.match(again, /Hi, I am YolIA/)
+    assert.match(await say(base, from, 'menu'), /Hi, I am YolIA/)
+  })
+
+  it('the numbers are the same in both languages', async () => {
+    const a = 'whatsapp:+14155550105'
+    const b = 'whatsapp:+5215500000604'
+    await say(base, a, 'Sonora')
+    await say(base, b, 'Sonora')
+    const numbers = (text: string) => [...text.matchAll(/\d[\d,.]*/g)].map((match) => match[0].replace(/[,.]/g, ''))
+    assert.deepEqual(numbers(await say(base, a, 'What should I plant?')), numbers(await say(base, b, '¿Qué me conviene sembrar?')))
+  })
+})
+
 describe('missing agricultural data', () => {
   for (const name of ['Sinaloa', 'Sonora']) {
     it(`${name} without its rotation file: every question about results is answered "Datos no disponibles", with no figures`, async () => {

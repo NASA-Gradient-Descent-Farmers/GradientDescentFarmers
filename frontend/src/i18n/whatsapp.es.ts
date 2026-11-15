@@ -93,6 +93,7 @@ export const whatsappEs = {
   placeholder: 'Escribe un mensaje',
   send: 'Enviar',
   reset: 'Reiniciar',
+  languageLabel: 'Idioma',
   resetLabel: 'Reiniciar la conversación',
   suggested: 'Preguntas sugeridas',
   suggestions: {

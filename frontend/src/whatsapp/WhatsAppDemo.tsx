@@ -22,7 +22,7 @@ interface Message {
 
 const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare', 'climate', 'soil', 'sources'] as const
 
-const clock = () => new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
+const clock = (lang: 'es' | 'en') => new Date().toLocaleTimeString(lang === 'en' ? 'en-GB' : 'es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 /** /demo/whatsapp: loads the stored model results (from this app's own files) and shows the chat. */
@@ -30,7 +30,6 @@ export default function WhatsAppDemo() {
   const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation } | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
-    document.title = 'YolIA · WhatsApp (simulación)'
     const base = appRoot(window.location)
     // a rotation file that is missing only leaves that location on "data unavailable"; the model results are required
     const withRotations = DEMO_LOCATIONS.filter((place) => place.results === 'rotations').map((place) => place.id)
@@ -41,7 +40,7 @@ export default function WhatsAppDemo() {
     )
   }, [])
   return (
-    <I18nProvider initial="es">
+    <I18nProvider>
       {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} home={appRoot(window.location)} /> : <Loading error={error} />}
     </I18nProvider>
   )
@@ -69,8 +68,11 @@ interface ChatProps {
 }
 
 export function WhatsAppChat({ data, rotations, environment, home, typingMs = TYPING_MS }: ChatProps) {
-  const { t, fmt, distance } = useI18n()
-  const env = useMemo<Env>(() => ({ data, rotations, environment, t, fmt, distance }), [data, rotations, environment, t, fmt, distance])
+  const { t, fmt, distance, lang, setLang } = useI18n()
+  const env = useMemo<Env>(() => ({ data, rotations, environment, lang, t, fmt, distance }), [data, rotations, environment, lang, t, fmt, distance])
+  useEffect(() => {
+    document.title = lang === 'en' ? 'YolIA · WhatsApp (simulation)' : 'YolIA · WhatsApp (simulación)'
+  }, [lang])
   const [messages, setMessages] = useState<Message[]>([])
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)
@@ -83,8 +85,8 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
 
   const add = useCallback((from: Message['from'], bubble: BotBubble | { text: string }) => {
     const options = 'options' in bubble ? bubble.options : undefined
-    setMessages((all) => [...all, { id: nextId.current++, from, text: bubble.text, options, time: clock() }])
-  }, [])
+    setMessages((all) => [...all, { id: nextId.current++, from, text: bubble.text, options, time: clock(lang) }])
+  }, [lang])
 
   const begin = useCallback(async () => {
     const mine = ++generation.current
@@ -161,8 +163,16 @@ export function WhatsAppChat({ data, rotations, environment, home, typingMs = TY
             </h1>
             <p>{t('whatsapp.status')}</p>
           </div>
+          <div className="wa-lang" role="group" aria-label={t('whatsapp.languageLabel')}>
+            {(['es', 'en'] as const).map((code) => (
+              <button key={code} type="button" aria-pressed={lang === code} onClick={() => setLang(code)}>
+                {code.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <button type="button" className="wa-reset" onClick={() => void begin()} aria-label={t('whatsapp.resetLabel')}>
-            ↺ {t('whatsapp.reset')}
+            <span aria-hidden="true">↺</span>
+            <span className="wa-reset-text"> {t('whatsapp.reset')}</span>
           </button>
         </header>
 

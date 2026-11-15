@@ -2,12 +2,15 @@
 // options last offered (so "2" can be read as the second one). Kept in memory, keyed by the sender's WhatsApp number,
 // and forgotten after a while idle. It is lost when the server restarts; a database comes with the deployment phase.
 
+import type { Lang } from '../../frontend/src/lib/format.ts'
 import type { ChatState } from '../../frontend/src/whatsapp/engine.ts'
 
 export interface Session {
   state: ChatState
   /** The labels of the quick replies the bot last offered, in order. */
   options: string[]
+  /** The language of this conversation. */
+  lang: Lang
   touched: number
 }
 
@@ -34,9 +37,9 @@ export class SessionStore {
     return session
   }
 
-  set(sender: string, state: ChatState, options: string[]): void {
+  set(sender: string, state: ChatState, options: string[], lang: Lang = 'es'): void {
     this.#sessions.delete(sender)
-    this.#sessions.set(sender, { state, options, touched: this.#now() })
+    this.#sessions.set(sender, { state, options, lang, touched: this.#now() })
     if (this.#sessions.size > MAX_SESSIONS) {
       const oldest = this.#sessions.keys().next().value
       if (oldest !== undefined) this.#sessions.delete(oldest)
