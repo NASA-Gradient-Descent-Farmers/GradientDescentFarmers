@@ -29,26 +29,18 @@ python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 ```
 
-The shared configuration has the sections `source`, `model` and `optimizer`. The `model` section in `resources/application.conf` contains the Guanajuato app template, including selected products, water mode, irrigation system, historical seasons, and planned rotation. Soil measurements, planned area, and future weather remain unset until provided for a real run. Each team can create its own file, for example `resources/experiment.local.conf`, without editing the shared file. `*.local.conf` files are ignored by Git.
+The shared configuration has the sections `source`, `model` and `optimizer`. The `model` section in `resources/application.conf` contains the pinned Guanajuato latitude/longitude, selected products, water mode, historical seasons, two example rotation options, and a two-year weather-analog shift. `app.py` fills unset future weather and hydraulic soil inputs from the pinned GCS profile. The example dates and 1-ha areas are scenario assumptions. A different point raises `NoPointDataError` until the source builder is connected. Each team can create its own file, for example `resources/experiment.local.conf`, without editing the shared file. `*.local.conf` files are ignored by Git.
 
 ## Guanajuato model app
 
-`run_model_app()` in `gradientdescentfarmers/app.py` loads the JSON template, applies a user dictionary to its `model` section, then calls `GuanajuatoModelBuilder`. Pass `rotation_options` to compare multiple named crop schedules. The single compact `final_df` has **one row per phase of each option**, including crop and phase identifiers, water estimates, soil nutrient context, calibrated yield, harvest price, and gross value. Full WOFOST daily and terminal variables remain in the result's diagnostic DataFrames. Use `result.save_final_csv("data/model_builder/my_run.csv")` for one consolidated CSV. `notebooks/app.ipynb` demonstrates two options with three and two phases. Its historical and future weather, hydraulic soil inputs, dates, and areas are invented for a smoke test. For input details and the faba-bean data limitation, see `gradientdescentfarmers/model_builder/README.md`.
+`run_model_app()` in `gradientdescentfarmers/app.py` loads the JSON template, applies optional user overrides, checks the supported point, prepares missing model inputs from GCS, then calls `GuanajuatoModelBuilder`. Pass `rotation_options` to compare multiple named crop schedules. The single compact `final_df` has **one row per phase of each option**, including water, soil nutrient context, calibrated yield, harvest price, and gross value. Full WOFOST daily and terminal variables remain in the result's diagnostic DataFrames. `notebooks/app.ipynb` only defines an optional override dictionary and displays the final and intermediate outputs returned by the app. The default runs two two-phase maize alternatives using the profile's 2024–2025 weather replayed in 2026–2027 as a historical analog. For input details and the faba-bean data limitation, see `gradientdescentfarmers/model_builder/README.md`.
 
 The versioned [SIAP municipal observation CSV](resources/examples/siap_valle_de_santiago_observed_2003_2025.csv) includes all 47 crop labels reported during 2003–2025 with `selected_products=None`; it is observed annual municipal data, not WOFOST output. The [model data and output dictionary](gradientdescentfarmers/model_builder/docs/DATA_SOURCES_CALIBRATION_OUTPUTS.md) explains both schemas and the sources used by the model.
 
 ```python
 from gradientdescentfarmers.app import run_model_app
 
-result = run_model_app({
-    "selected_products": ["maize"],
-    "water_mode": "rainfed",
-    "irrigation_system": None,
-    "soil_parameters": measured_soil,
-    "initial_available_water_cm": measured_initial_water_cm,
-    "future_weather": future_weather_df,
-    "planned_rotation": planned_rotation_with_dates_and_area,
-})
+result = run_model_app()  # use application.conf defaults and the pinned profile
 valued_harvests = result.final_df
 ```
 

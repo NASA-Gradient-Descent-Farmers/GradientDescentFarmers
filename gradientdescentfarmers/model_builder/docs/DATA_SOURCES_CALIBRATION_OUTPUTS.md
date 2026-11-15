@@ -15,6 +15,15 @@ reported municipal SIAP aggregates.
 | `gs://data_dump_samples/SIAP_Agricultural_Production_2000_2025/Municipal (2003_2025)/Cierre_agricola_mun_<YEAR>.csv` | Configured historical years for yield calibration, and configured price years (2003–2025 by default) for price history and model selection. Municipal data are preferred; state aggregates are a per-crop fallback. |
 | Configured `gs://` weather object, if supplied | Explicit historical or future weather. The profile does not contain a future-weather forecast. |
 
+`run_model_app()` in `app.py` reads only the existing profile and SIAP GCS
+objects. It repeats the profile's 2024–2025 weather in 2026–2027 as a historical
+analog, not as observed future weather or a forecast. It omits leap day when
+shifting 2024 to 2026. The profile's SoilGrids water-content and bulk-density
+layers anchor a rainfed hydraulic **scenario**. Particle density,
+conductivity, critical air, initial water, the maize calendars, and 1-ha
+areas are explicit assumptions, not measured farm inputs. The notebook passes
+only optional overrides to the app and displays its intermediate results.
+
 The model does not read profile vegetation, sparse SMAP soil moisture, GPM
 rain, topography samples, or Dataverse harvest files. The Dataverse 2012–2022
 harvest observations do not overlap the published 2024–2025 weather run.
@@ -67,8 +76,8 @@ model output is `final_df`, with **one row per phase of each supplied rotation
 option**. `rotation_id` identifies the alternative, `rotation_step` gives the
 phase order, and `rotation_phase_count` gives its size. A three-phase option
 and a two-phase option therefore produce five rows. `save_final_csv(path)`
-writes this one compact DataFrame. The notebook `notebooks/app.ipynb` shows
-these two options and saves the five-row CSV.
+writes this one compact DataFrame. The GCS-profile `notebooks/app.ipynb`
+currently shows two two-phase maize alternatives and saves four rows.
 
 The full PCSE daily state, crop summary (`summary_*`), and terminal water
 balance (`terminal_*`) remain in `future_daily_df` and
