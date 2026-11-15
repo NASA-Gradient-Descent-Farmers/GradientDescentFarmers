@@ -27,7 +27,7 @@ Normalized input tables: `fields` (one per field), `crop_seasons` (one per seaso
 | `nex_gddp_cmip6` | Earth Engine | `climate_projections` | daily, 0.25° | explicit only |
 | `modis_landcover` | Earth Engine MCD12Q1 | `landcover` | annual, 500 m | explicit only |
 
-**Alternatives**, stored as explicit metadata: MODIS via Earth Engine; IMERG via Earth Engine; SMAP via NASA Harmony. Alternative Earth Engine routines are documented in `farmadapt/earth_engine.py`, but **do not run automatically** or impersonate identical QA. Harmony is a planned integration, not a completed client.
+**Alternatives**, stored as explicit metadata: MODIS via Earth Engine; IMERG via Earth Engine; SMAP via NASA Harmony. Alternative Earth Engine routines are in `gradientdescentfarmers/source_builder/core/earth_engine.py`, but **do not run automatically** or impersonate identical QA. Harmony is a planned integration, not a completed client.
 
 ## C. Main transformations and units
 

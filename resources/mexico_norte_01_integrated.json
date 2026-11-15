@@ -1,0 +1,10 @@
+{
+  "source": {
+    "farmer_input_file": "resources/mexico_norte_01_reference.json",
+    "settings_file": "resources/guanajuato_integrated_settings.json",
+    "output_root": "data/integrated_mexico_norte",
+    "cache_root": "data/cache"
+  },
+  "model": {},
+  "optimizer": {}
+}

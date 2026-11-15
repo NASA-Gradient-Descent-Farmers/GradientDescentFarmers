@@ -190,10 +190,29 @@ def get_modis_earthaccess(ctx: ProviderContext, product: str) -> ProviderPayload
     )
     if not granules:
         raise LookupError(f"No CMR granules returned for {product} .061")
+    # CMR granules can overlap a query window even when the composite
+    # acquisition (YYYYDDD in the file name) predates modis_start. Filter by
+    # actual composite start before downloading and keep the exact provenance.
+    start = pd.Timestamp(settings.modis_start, tz="UTC")
+    end = pd.Timestamp(settings.modis_end, tz="UTC")
+    selected = []
+    outside_window = []
+    for granule in granules:
+        name = GranuleRecovery.filename(granule)
+        acquisition = _date_from_filename(Path(name))
+        if start <= acquisition <= end:
+            selected.append(granule)
+        else:
+            outside_window.append(name)
+    if not selected:
+        raise ValueError(
+            f"CMR returned {len(granules)} MODIS granules but none has an "
+            f"acquisition date in {start.date()}..{end.date()}"
+        )
     directory = settings.cache_root / "earthdata" / "modis" / product
     directory.mkdir(parents=True, exist_ok=True)
     recovery = GranuleRecovery(directory, required_groups=(), retries=settings.retries)
-    paths = recovery.acquire(earthaccess, granules)
+    paths = recovery.acquire(earthaccess, selected)
     rows = []
     for path in paths:
         row = extract_point(path, f.latitude, f.longitude, product)
@@ -216,9 +235,14 @@ def get_modis_earthaccess(ctx: ProviderContext, product: str) -> ProviderPayload
             "pixel_sampling": "WGS84 to native MODLAND sinusoidal; containing pixel",
             "coordinate": [f.longitude, f.latitude],
             "requested_max_granules": settings.modis_max_granules,
+            "cmr_granules_found": len(granules),
+            "excluded_out_of_window": outside_window,
+            "composite_date_window": [start.date().isoformat(), end.date().isoformat()],
         },
         warnings=(
-            ["CMR query reached the requested max granules; completeness not established"]
-            if len(granules) >= settings.modis_max_granules else []
+            (["CMR query reached requested max granules; temporal completeness not established"]
+             if len(granules) >= settings.modis_max_granules else [])
+            + ([f"Excluded {len(outside_window)} composites with acquisition dates outside configured window"]
+               if outside_window else [])
         ),
     )

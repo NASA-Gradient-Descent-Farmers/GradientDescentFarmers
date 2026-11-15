@@ -17,6 +17,9 @@ data/raw/
 data/economics/*
 !data/economics/*.parquet
 !data/economics/README.md
+# Generated data stays local; keep its directory guide in Git.
+/data/*
+!/data/README.md
 
 # LaTeX build files
 *.aux

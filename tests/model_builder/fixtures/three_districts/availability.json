@@ -1,0 +1,90 @@
+{
+  "inegi_boundaries": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:36Z",
+    "seconds": 0.5
+  },
+  "siap": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {
+      "siap_crop_years": 52420,
+      "municipality_district_weights": 2467,
+      "municipality_districts": 2446
+    },
+    "started_utc": "2026-11-15T05:32:36Z",
+    "seconds": 9.4
+  },
+  "power": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {
+      "climate_municipal": 384,
+      "climate_municipal_years": 16896,
+      "climate_district": 36,
+      "climate_district_years": 1584,
+      "power_cells": 32,
+      "chirps_municipal_years": 9664,
+      "chirps_district_years": 906
+    },
+    "started_utc": "2026-11-15T05:32:46Z",
+    "seconds": 7.2
+  },
+  "chirps": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:46Z",
+    "seconds": 0.0
+  },
+  "grace": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {
+      "grace_municipal": 32,
+      "grace_district": 3,
+      "grace_years": 225
+    },
+    "started_utc": "2026-11-15T05:32:53Z",
+    "seconds": 1.0
+  },
+  "ndvi": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:54Z",
+    "seconds": 0.5
+  },
+  "smap": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:54Z",
+    "seconds": 1.4
+  },
+  "gldas": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:56Z",
+    "seconds": 0.7
+  },
+  "igbp": {
+    "status": "available",
+    "warnings": [],
+    "errors": [],
+    "tables": {},
+    "started_utc": "2026-11-15T05:32:57Z",
+    "seconds": 1.7
+  }
+}

@@ -13,8 +13,8 @@ def test_reference_coordinates_and_configs():
     d=json.loads((REPO_ROOT/"resources/guanajuato_reference.json").read_text())
     assert d["latitude"]==20.4243195
     assert d["longitude"]==-101.1466639
-    c=load_source_config(REPO_ROOT/"resources/guanajuato_baseline.json")
-    assert c["output_root"]=="data/processed"
+    c=load_source_config(REPO_ROOT/"resources/guanajuato_integrated.json")
+    assert c["output_root"]=="data/integrated_guanajuato"
 
 def test_preview_disables_downloads(tmp_path,monkeypatch):
     from gradientdescentfarmers.source_builder.core import builder as core_builder
