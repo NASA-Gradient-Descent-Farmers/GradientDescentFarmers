@@ -4,12 +4,14 @@ import { assistantEn } from './assistant.en.ts'
 import { onboardingEn } from './onboarding.en.ts'
 import { farmerEn } from './farmer.en.ts'
 import { accountEn } from './account.en.ts'
+import { whatsappEn } from './whatsapp.en.ts'
 
 export const en = {
   assistant: assistantEn,
   onboarding: onboardingEn,
   farmer: farmerEn,
   account: accountEn,
+  whatsapp: whatsappEn,
   app: {
     title: 'YolIA',
     tagline: 'Rainfed crop rotations at El Batán · NASA POWER, IGBP-DIS and GLDAS soils, WOFOST crop model',
