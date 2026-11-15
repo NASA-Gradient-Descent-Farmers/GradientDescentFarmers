@@ -19,6 +19,11 @@ import type { RotationsByLocation } from '../lib/rotations.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { environmentBubbles, type EnvironmentTopic } from './environmentAnswers.ts'
 import { locatedNote, rotationBubbles, type RotationTopic } from './rotationAnswers.ts'
+import { districtAnswer, type DistrictAnswer, type DistrictIndex, type DistrictInputs, type PriorityId } from '../lib/district.ts'
+import type { Narrator } from '../llm/client.ts'
+import type { FollowUp } from '../llm/prompt.ts'
+import { districtBubbles } from './districtAnswers.ts'
+import { availableFollowUps, DEFAULT_FOLLOW_UPS, followUpLabel, narrateRequest, writtenSummary } from './summary.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
@@ -29,13 +34,19 @@ export type Focus = 'plant' | 'money' | 'rain' | 'harvest' | 'compare'
 export interface ChatState {
   situation: Situation
   /** The question the farmer is being asked, whose answer the next message is read as. */
-  pending: Field | 'location' | null
+  pending: Field | 'location' | DistrictQuestion | null
   /** What they originally asked, answered once the questions are done. */
   focus: Focus | EnvironmentTopic | null
   last: Recommendation | null
   /** The demonstration location chosen, used for every answer until another is chosen. */
   location: DemoLocationId | null
+  /** What the farmer told the district engine in this chat (current rotation, water, priority). Only that engine reads it. */
+  district?: DistrictInputs
 }
+
+/** The questions only the district engine asks. */
+export type DistrictQuestion = 'districtRotation' | 'districtPriority' | 'districtRegime'
+const DISTRICT_QUESTIONS: readonly string[] = ['districtRotation', 'districtPriority', 'districtRegime']
 
 export const EMPTY_CHAT: ChatState = { situation: {}, pending: null, focus: null, last: null, location: null }
 
@@ -65,6 +76,13 @@ export interface Env {
   /** Injected so tests can run without the planner. */
   run?: typeof recommend
   now?: () => number
+  /**
+   * The SIAP district engine's precomputed answers (lib/district.ts). When given, a planting question gets one summary of both
+   * engines with follow-up buttons, and the WOFOST details are one tap away; without it the chat answers as before.
+   */
+  district?: { index: DistrictIndex; base: string; fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T }
+  /** The language model that phrases the summary (llm/client.ts); null or failing means the written summary. */
+  narrate?: Narrator | null
 }
 
 /**
@@ -389,13 +407,141 @@ function topicOf(text: string): RotationTopic | null {
 }
 
 /** A location with rotation results: the question is answered from them, with nothing left to ask. */
-function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env): Turn {
-  return { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, { ...env, observed: env.environment?.[place.id] ?? null }), showsResults: true }
+async function rotationTurn(state: ChatState, topic: RotationTopic, place: DemoLocation, env: Env, text = ''): Promise<Turn> {
+  // with the district engine on, "what to plant" is answered by one summary of both engines (the WOFOST details are a button away)
+  if (env.district && (topic === 'plant' || topic === 'compare')) return summaryTurn({ ...state, pending: null, focus: null }, place, env, 'summary', text)
+  const turn: Turn = { state: { ...state, pending: null, focus: null }, bubbles: rotationBubbles(topic, env.rotations![place.id]!, { ...env, observed: env.environment?.[place.id] ?? null }), showsResults: true }
+  return env.district ? withFollowUps(turn, await districtFor(state, place, env), env, []) : turn
+}
+
+// ---- the district engine and the summary of both engines ----
+
+/** The district engine's answer for this chat's place and answers, or null (no index, no place, a file missing). */
+async function districtFor(state: ChatState, place: DemoLocation, env: Env): Promise<DistrictAnswer | null> {
+  if (!env.district) return null
+  try {
+    const { water, goal, previous } = state.situation
+    return await districtAnswer(place.id, env.district.index, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api, translate: env.district.translate })
+  } catch {
+    return null
+  }
+}
+
+/** Puts follow-up buttons under the last bubble: the ones given, else the defaults, without those just answered. */
+function withFollowUps(turn: Turn, answer: DistrictAnswer | null, env: Env, skip: FollowUp[], chosen?: FollowUp[]): Turn {
+  const possible = availableFollowUps(answer, env.rotations?.[turn.state.location!])
+  const ids = [...(chosen?.length ? chosen : []), ...DEFAULT_FOLLOW_UPS].filter((id, i, all) => possible.includes(id) && !skip.includes(id) && all.indexOf(id) === i).slice(0, 4)
+  if (turn.bubbles.length === 0 || ids.length === 0) return turn
+  const bubbles = [...turn.bubbles]
+  const last = bubbles[bubbles.length - 1]
+  bubbles[bubbles.length - 1] = { ...last, options: ids.map((id) => ({ label: followUpLabel(id, env.t) })) }
+  return { ...turn, bubbles }
+}
+
+/** One message that sums up both engines for the farmer: phrased by the language model when it can, else written. */
+async function summaryTurn(state: ChatState, place: DemoLocation, env: Env, mode: 'summary' | 'question', question: string): Promise<Turn> {
+  const answer = await districtFor(state, place, env)
+  const rotations = env.rotations?.[place.id]
+  const ctx = { t: env.t, fmt: env.fmt, goal: state.situation.goal ?? null }
+  const narrated = env.narrate ? await env.narrate(narrateRequest(mode, question || env.t('whatsapp.district.summaryQuestion'), place, answer, rotations, { ...ctx, language: env.lang ?? 'es' })) : null
+  if (mode === 'question' && !narrated) return { state, bubbles: [] }
+  const text = narrated ? `${narrated.reply}
+
+_${env.t('whatsapp.district.byModel')}_` : writtenSummary(place, answer, rotations, ctx)
+  return withFollowUps({ state, bubbles: [{ text }], showsResults: true }, answer, env, [], narrated?.followUps)
+}
+
+const FOLLOW_UP_IDS: readonly FollowUp[] = ['wofost', 'district', 'why', 'risks', 'money', 'trends', 'water', 'trust', 'rotation', 'priority', 'regime']
+
+/** The follow-up a message is (a tapped button, or the same words typed), or null. */
+export function followUpOf(text: string, t: T): FollowUp | null {
+  const q = fold(text)
+  return FOLLOW_UP_IDS.find((id) => fold(followUpLabel(id, t)) === q) ?? null
+}
+
+const PRIORITY_ORDER: PriorityId[] = ['ingreso', 'riesgo', 'agua', 'suelo', 'erosion', 'plagas', 'forraje']
+
+function districtAsk(question: DistrictQuestion, answer: DistrictAnswer, place: DemoLocation, env: Env): BotBubble {
+  const { t } = env
+  if (question === 'districtRotation') {
+    const options = env.district!.index.lugares[place.id]?.regimenes[answer.inputs.agua] ?? []
+    return { text: t('whatsapp.district.askRotation', { regime: t(`district.regime.${answer.inputs.agua}`) }), options: options.map((o) => ({ label: o.etiqueta })) }
+  }
+  if (question === 'districtPriority') {
+    return { text: t('whatsapp.district.askPriority'), options: [...PRIORITY_ORDER.map((id) => ({ label: t(`district.priority.${id}`) })), { label: t('whatsapp.district.noPriority') }] }
+  }
+  return { text: t('whatsapp.district.askRegime'), options: [{ label: t('whatsapp.district.regimeRiego') }, { label: t('whatsapp.district.regimeTemporal') }] }
+}
+
+/** Reads the answer to a district question; undefined when the text does not answer it. */
+function readDistrictAnswer(question: DistrictQuestion, text: string, state: ChatState, place: DemoLocation, env: Env): DistrictInputs | undefined {
+  const q = fold(text)
+  const { t } = env
+  const own = state.district ?? {}
+  if (question === 'districtRotation') {
+    const regimes = env.district!.index.lugares[place.id]?.regimenes ?? {}
+    for (const options of Object.values(regimes)) {
+      const hit = options?.find((o) => fold(o.etiqueta) === q || fold(o.rotacion) === q)
+      if (hit) return { ...own, rotacion: hit.id }
+    }
+    return undefined
+  }
+  if (question === 'districtPriority') {
+    if (q === fold(t('whatsapp.district.noPriority'))) return { ...own, prioridades: [] }
+    const hit = PRIORITY_ORDER.find((id) => fold(t(`district.priority.${id}`)) === q)
+    return hit ? { ...own, prioridades: [hit] } : undefined
+  }
+  if (q === fold(t('whatsapp.district.regimeRiego')) || /\briego\b/.test(q)) return { ...own, agua: 'riego', rotacion: undefined }
+  if (q === fold(t('whatsapp.district.regimeTemporal')) || /\b(temporal|lluvia)\b/.test(q)) return { ...own, agua: 'temporal', rotacion: undefined }
+  return undefined
+}
+
+/** A tapped follow-up (or the same words typed) at a place with results. */
+async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation, env: Env): Promise<Turn> {
+  const answer = await districtFor(state, place, env)
+  const rotations = env.rotations?.[place.id]
+  const base: ChatState = { ...state, pending: null, focus: null }
+  const ctx = { t: env.t, fmt: env.fmt }
+  const wofost = (topic: RotationTopic) => (rotations ? rotationBubbles(topic, rotations, { ...env, observed: env.environment?.[place.id] ?? null, goal: state.situation.goal ?? null, water: state.situation.water ?? null }) : [unavailableBubble(place, env.t)])
+  const none = [{ text: env.t('whatsapp.district.districtNone') }]
+  let bubbles: BotBubble[]
+  switch (id) {
+    case 'wofost':
+      bubbles = wofost('plant')
+      break
+    case 'district':
+      bubbles = answer ? districtBubbles('summary', answer, ctx) : none
+      break
+    case 'why':
+    case 'risks':
+    case 'trends':
+    case 'water':
+      bubbles = answer ? districtBubbles(id, answer, ctx) : none
+      break
+    case 'money':
+      bubbles = [...(rotations ? wofost('money') : []), ...(answer ? districtBubbles('money', answer, ctx) : [])]
+      break
+    case 'trust':
+      bubbles = [...(rotations ? wofost('trust') : []), ...(answer ? [{ text: answer.result.como_leer }] : [])]
+      break
+    case 'rotation':
+    case 'priority':
+    case 'regime': {
+      if (!answer) return { state: base, bubbles: none }
+      const question: DistrictQuestion = id === 'rotation' ? 'districtRotation' : id === 'priority' ? 'districtPriority' : 'districtRegime'
+      return { state: { ...base, pending: question }, bubbles: [districtAsk(question, answer, place, env)] }
+    }
+  }
+  return withFollowUps({ state: base, bubbles, showsResults: true }, answer, env, [id])
 }
 
 /** The bot's answer to one message. `text` is what the farmer typed, or the label of the button they tapped. */
 export async function reply(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
+  if (env.district) {
+    const turn = await districtReply(text, state, env)
+    if (turn) return turn
+  }
   const named = readLocation(text)
 
   // choosing (or changing) the location: what was answered for another place is dropped, never carried over
@@ -413,7 +559,7 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
         return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
       }
       if (kind === null) return { state: { ...chosen, pending: null, focus: null }, bubbles: confirm.length ? confirm : [unavailableBubble(named, t)] }
-      const turn = kind === 'rotations' ? rotationTurn(chosen, state.focus, named, env) : await continueWith({ ...chosen, pending: null }, state.focus, env)
+      const turn = kind === 'rotations' ? await rotationTurn(chosen, state.focus, named, env) : await continueWith({ ...chosen, pending: null }, state.focus, env)
       return { ...turn, bubbles: [...confirm, ...turn.bubbles] }
     }
     // the same message may carry the question ("¿qué sembrar en Sonora?")
@@ -432,28 +578,55 @@ export async function reply(text: string, state: ChatState, env: Env): Promise<T
   return answer(text, state, env)
 }
 
+/** The district engine's part of a reply: a follow-up button, or the answer to a district question. Null when it is neither. */
+async function districtReply(text: string, state: ChatState, env: Env): Promise<Turn | null> {
+  const place = state.location ? demoLocation(state.location) : null
+  if (place && state.pending && DISTRICT_QUESTIONS.includes(state.pending)) {
+    const inputs = readDistrictAnswer(state.pending as DistrictQuestion, text, state, place, env)
+    if (inputs) return summaryTurn({ ...state, pending: null, focus: null, district: inputs }, place, env, 'summary', '')
+  }
+  const id = followUpOf(text, env.t)
+  if (!id) return null
+  if (!place) return { state: { ...state, pending: 'location', focus: 'plant' }, bubbles: [locationAsk(env.t)] }
+  return followUpTurn(id, state, place, env)
+}
+
+/** A free question the rules cannot place, at a place with results: the language model answers from the facts, or null. */
+async function freeQuestion(text: string, state: ChatState, place: DemoLocation, env: Env): Promise<Turn | null> {
+  if (!env.district || !env.narrate) return null
+  const turn = await summaryTurn(state, place, env, 'question', text)
+  return turn.bubbles.length > 0 ? turn : null
+}
+
 /** A message with a location already chosen. */
 async function answer(text: string, state: ChatState, env: Env): Promise<Turn> {
   const { t } = env
   const place = demoLocation(state.location!)
   const kind = resultsKind(place, env)
   // an answer to the question just asked ("cuidar el suelo") is an answer, not a question about the soil
-  const answersPending = state.pending !== null && state.pending !== 'location' && readAnswer(state.pending, text) !== undefined
+  // the district engine's own questions are read in districtReply; here only the four parcel questions count
+  const field: Field | null = state.pending !== null && (FIELDS as readonly string[]).includes(state.pending) ? (state.pending as Field) : null
+  const answersPending = field !== null && readAnswer(field, text) !== undefined
   const dataTopic = answersPending ? null : environmentTopicOf(text)
   if (dataTopic) return environmentTurn(state, dataTopic, place, env)
   if (kind === null && needsLocation(text)) return { state, bubbles: [unavailableBubble(place, t)] }
   if (kind === 'rotations') {
     const topic = topicOf(text)
-    if (topic) return rotationTurn(state, topic, place, env)
+    if (topic) return rotationTurn(state, topic, place, env, text)
+    // a question the rules cannot place (and that answers nothing pending): the language model may answer it from the facts
+    if (!answersPending && classify(text) === 'unknown') {
+      const free = await freeQuestion(text, { ...state, pending: null, focus: null }, place, env)
+      if (free) return free
+    }
   }
 
   // an answer to the question just asked
-  if (state.pending && state.pending !== 'location') {
-    const value = readAnswer(state.pending, text)
-    if (value !== undefined) return afterAnswer({ ...state, situation: { ...state.situation, [state.pending]: value } }, env)
+  if (field) {
+    const value = readAnswer(field, text)
+    if (value !== undefined) return afterAnswer({ ...state, situation: { ...state.situation, [field]: value } }, env)
     // not an answer: a new question moves on; anything else is asked again, kindly
     if (focusOf(text) === null && classify(text) === 'unknown') {
-      return { state, bubbles: [{ text: t('whatsapp.notUnderstood') }, askBubble(state.pending, false, t)] }
+      return { state, bubbles: [{ text: t('whatsapp.notUnderstood') }, askBubble(field, false, t)] }
     }
   }
 

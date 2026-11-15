@@ -6,6 +6,7 @@ import { whatsappEs } from './whatsapp.es.ts'
 import { landingEs } from './landing.es.ts'
 import { nearEs } from './near.es.ts'
 import { envEs } from './env.es.ts'
+import { districtEs } from './district.es.ts'
 import type { Dict } from './en.ts'
 
 export const es: Dict = {
@@ -17,6 +18,7 @@ export const es: Dict = {
   landing: landingEs,
   near: nearEs,
   env: envEs,
+  district: districtEs,
   app: {
     title: 'YoliA',
     tagline: 'Datos de la NASA y un modelo de cultivos',

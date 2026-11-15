@@ -111,6 +111,61 @@ Figures are exact (to the peso), not rounded further. `src/farmer/ui/ZoneAnswer.
 
 **Privacy.** The pin is stored only in this browser (`localStorage`). NASA POWER is sent the location rounded to 0.1° (about 11 km, finer than its weather cell, so nothing is lost), and the map tiles come from OpenStreetMap and NASA GIBS, which see the area being viewed. The page says this next to the map.
 
+## Two engines: WOFOST simulation and SIAP district history
+
+Next to the WOFOST rotation runs (the "simulación de suelo y cultivo", unchanged), YoliA shows a second, separate engine: the
+SIAP district engine (`gradientdescentfarmers/model_builder/rotations`, the "historial del distrito"). It compares the farmer's
+current rotation with alternatives built from what their district actually grows (SIAP 2003-2025), with NASA climate, FAO-56
+water balances and literature coefficients, and writes for each one why, the evidence and its level, benefits, risks, gaps
+and questions for a technician.
+
+- **Data** (`public/data/district/`, `src/lib/district.ts`): precomputed by `web_export.py` for the three places over water
+  regime x current rotation x up to two priorities. With `VITE_DISTRICT_API` set, the live engine (`serve.py`) is used
+  instead and also gets slope, soil, stover, animals and sowing/harvest month; if it fails the precomputed answer is shown
+  with the reason. A precomputed answer lists the farmer's inputs it did not use.
+- **Its own inputs** (`yolia-district`, per account): water regime, current rotation (the district's main ones), up to two
+  priorities, and optional field details. When the farmer has not set them, the app's own answers are read (rain → temporal,
+  irrigation → riego; earn → ingreso, water → agua, soil → suelo; barley or maize last season → that rotation). Nothing the
+  district engine asks changes the WOFOST part.
+- **Técnico** (Por parcela → Qué sembrar, `farmer/ui/DistrictSection.tsx`): below the WOFOST card, every rotation the engine
+  compared with its indicators (value, 0-100 score, evidence level, source), bad years, water scenarios, trends, GRACE water
+  storage, niche crops and general gaps, plus the form for its inputs.
+- **Agricultor** (the chat on the home page): a planting question gets the WOFOST answer as before, then the district engine's
+  short answer in plain words, with "Afinar con datos de mi parcela" and the full detail behind disclosures.
+- **WhatsApp** (`whatsapp/summary.ts`, `whatsapp/districtAnswers.ts`): "what should I plant" is answered with one summary of
+  both engines and follow-up buttons for what the tools can answer (why, risks, money, climate trends, regional water, how
+  reliable, see the WOFOST simulation, see the district history, change current rotation / priority / water regime). The
+  WOFOST bubbles are one tap away, word for word. Without the district files the chat answers exactly as before.
+
+### The language model in the WhatsApp demo (`src/llm/`)
+
+The summary and free questions the rules cannot place can be phrased by Claude. The browser posts the fact lines of both
+engines to `/api/yolia-chat`; the server (`netlify/functions/yolia-chat.mts` on Netlify, a Vite middleware in `npm run dev`
+and `npm run preview`) calls the Anthropic Messages API with a "respond" tool (message + 2-4 follow-up ids from a fixed list; plain text is accepted as the message)
+and **checks every number in the reply against the facts**; one retry, then the chat falls back to its written summary. The
+prompt says which tool each idea comes from, states uncertainty, forbids new figures, crops, prices or doses, and leaves the
+decision to the farmer and a local technician. The banner says an AI writes the summaries only when the endpoint answers.
+
+```bash
+echo "ANTHROPIC_API_KEY=sk-ant-..." > frontend/.env.local    # git-ignored; optional YOLIA_LLM_MODEL (default claude-sonnet-5-5)
+npm run dev                                                 # the WhatsApp demo now uses the model
+```
+
+On Netlify set `ANTHROPIC_API_KEY` (and optionally `YOLIA_LLM_MODEL`) in the site's environment variables. `VITE_LLM=off`
+builds a demo that never calls it. Without a key everything works with the written templates.
+
+### English for evaluators
+
+Every page has the Español / English toggle, and so does the WhatsApp demo (or open `/demo/whatsapp?lang=en`; it also follows
+the language chosen on the site). The interface text comes from the dictionaries in `src/i18n/`. The engines write their
+explanations in Spanish, so their text was translated **once, ahead of time** into `public/data/i18n/en.json` (989 strings,
+`scripts/translate-data.mjs`, Claude with a fixed agricultural glossary). A translation whose numbers differ from the original
+is dropped. In English the app swaps those strings in (`src/lib/dataI18n.ts`); identifiers, enums, place names and figures are
+never touched, and English needs no key or network at run time. The language model writes its WhatsApp summaries directly in
+the chat's language. After refreshing `public/data/district/` or `public/data/rotations/`, run
+`node scripts/translate-data.mjs` (it only translates new strings; `--check` lists what is missing). Live-engine answers that
+were never exported stay in Spanish.
+
 ## Assistant
 
 The Técnico assistant. Instead of four separate tools, the user asks in their own words and the assistant picks the project's models that the question needs, runs them, and explains what they returned. (The Agricultor assistant is the simpler one described above.)
@@ -199,8 +254,9 @@ Charts in Técnico use the same orange, black and white (rotation = marker shape
 
 ## WhatsApp simulator (`/demo/whatsapp`)
 
-A WhatsApp-style chat that shows how YoliA could answer a farmer by text message. It is a **simulation**: nothing is sent to
-WhatsApp, Twilio or any API, and it needs no key, internet or language model. It reuses the farmer assistant's rules
+A WhatsApp-style chat that shows how YoliA could answer a farmer by text message. It is not connected to WhatsApp: nothing is sent to
+WhatsApp or Twilio, and it needs no key, internet or language model; when the app's `/api/yolia-chat` endpoint has a key, the
+summaries of both engines are phrased by Claude (see "Two engines" above). It reuses the farmer assistant's rules
 (`src/farmer/chat.ts`), the planner and the stored risk results (`src/farmer/recommend.ts`) and the existing Spanish copy;
 the only new code is in `src/whatsapp/`. The demo has three reference locations, defined once in `src/lib/demoLocations.ts` (Guanajuato, Sinaloa, Sonora; reference points, not verified parcels). All three places answer from their rotation run (`public/data/rotations/<id>.json`; exploratory scenarios, gross income per hectare, low confidence) and their environmental package. The simulator asks nothing first: pick a place and ask. It has a language toggle (ES / EN) in its header, follows the language already chosen in the app, and restarts the chat in the new language. The service's own Spanish text (plan description, highlights, confidence reasons, crop names) is translated from known sentences in `src/lib/rotationText.ts`; an unknown one is shown as written, and `rotationText.test.ts` fails when a published run contains one. If a rotation file is missing or invalid, that location shows "Data unavailable"; no location ever reuses another's results.
 

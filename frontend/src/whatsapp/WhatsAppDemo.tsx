@@ -4,6 +4,9 @@ import { loadData } from '../lib/data.ts'
 import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLocations.ts'
 import { loadEnvironment, type EnvironmentByLocation } from '../lib/environment.ts'
 import { loadRotations, type RotationsByLocation } from '../lib/rotations.ts'
+import { liveApi, loadDistrictIndex, type DistrictIndex } from '../lib/district.ts'
+import { loadTranslations, translateData, type Translations } from '../lib/dataI18n.ts'
+import { llmEnabled, makeNarrator, probeNarrator, type Narrator } from '../llm/client.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
 import { richText } from './format.tsx'
@@ -25,23 +28,31 @@ const SUGGESTIONS = ['plant', 'rain', 'harvest', 'compare', 'climate', 'soil', '
 const clock = (lang: 'es' | 'en') => new Date().toLocaleTimeString(lang === 'en' ? 'en-GB' : 'es-MX', { hour: '2-digit', minute: '2-digit', hour12: false })
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
+/** ?lang=en (or es) in the address picks the chat's language, e.g. /demo/whatsapp?lang=en for English-speaking reviewers. */
+function langFromAddress(): 'en' | 'es' | undefined {
+  const lang = new URLSearchParams(window.location.search).get('lang') ?? new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('lang')
+  return lang === 'en' || lang === 'es' ? lang : undefined
+}
+
 /** /demo/whatsapp: loads the stored model results (from this app's own files) and shows the chat. */
 export default function WhatsAppDemo() {
-  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation } | null>(null)
+  const [loaded, setLoaded] = useState<{ data: DashboardData; rotations: RotationsByLocation; environment: EnvironmentByLocation; district: DistrictIndex | null; narrate: Narrator | null; translations: Translations } | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
     const base = appRoot(window.location)
     // a rotation file that is missing only leaves that location on "data unavailable"; the model results are required
     const withRotations = DEMO_LOCATIONS.filter((place) => place.results === 'rotations').map((place) => place.id)
     // a file that is missing only leaves that location without it; the model results are required
-    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base)]).then(
-      ([data, rotations, environment]) => setLoaded({ data, rotations, environment }),
+    // the district engine's answers are optional too: without them the chat answers from the WOFOST runs only, as before
+    // the language model is used (and the banner says so) only when its endpoint is there and has a key
+    Promise.all([loadData(base), loadRotations(withRotations, base), loadEnvironment(DEMO_LOCATIONS.map((place) => place.id), base), loadDistrictIndex(base), llmEnabled() ? probeNarrator(base) : Promise.resolve(false), loadTranslations(base)]).then(
+      ([data, rotations, environment, district, llm, translations]) => setLoaded({ data, rotations, environment, district, narrate: llm ? makeNarrator(base) : null, translations }),
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
   }, [])
   return (
-    <I18nProvider>
-      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} home={appRoot(window.location)} /> : <Loading error={error} />}
+    <I18nProvider initial={langFromAddress()}>
+      {loaded ? <WhatsAppChat data={loaded.data} rotations={loaded.rotations} environment={loaded.environment} district={loaded.district} narrate={loaded.narrate} translations={loaded.translations} home={appRoot(window.location)} /> : <Loading error={error} />}
     </I18nProvider>
   )
 }
@@ -62,14 +73,32 @@ interface ChatProps {
   rotations?: RotationsByLocation
   /** Environmental packages for the places that have them; a place without one cannot answer about its climate or soil. */
   environment?: EnvironmentByLocation
+  /** The SIAP district engine's precomputed answers; without them the chat answers from the WOFOST runs only. */
+  district?: DistrictIndex | null
+  /** The language model that phrases the summaries (llm/client.ts); null keeps the written templates. */
+  narrate?: Narrator | null
+  /** English for the engines' Spanish text (lib/dataI18n.ts), used when the chat is in English. */
+  translations?: Translations
   /** The YoliA site this chat links to. */
   home: string
   typingMs?: number
 }
 
-export function WhatsAppChat({ data, rotations, environment, home, typingMs = TYPING_MS }: ChatProps) {
+export function WhatsAppChat({ data, rotations, environment, district, narrate, translations, home, typingMs = TYPING_MS }: ChatProps) {
   const { t, fmt, distance, lang, setLang } = useI18n()
-  const env = useMemo<Env>(() => ({ data, rotations, environment, lang, t, fmt, distance }), [data, rotations, environment, lang, t, fmt, distance])
+  const base = home
+  const env = useMemo<Env>(
+    () => {
+      // in English the engines' Spanish text is swapped for its translation; identifiers and figures are untouched
+      const map = lang === 'en' ? (translations ?? null) : null
+      const translate = <T,>(value: T): T => translateData(value, map)
+      return {
+        data, rotations: translate(rotations), environment, t, fmt, distance, lang, narrate: narrate ?? null,
+        ...(district ? { district: { index: translate(district), base, api: liveApi(), translate } } : {}),
+      }
+    },
+    [data, rotations, environment, t, fmt, distance, lang, narrate, district, base, translations],
+  )
   useEffect(() => {
     document.title = 'YoliA · WhatsApp'
   }, [])

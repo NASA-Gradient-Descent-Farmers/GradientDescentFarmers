@@ -6,9 +6,12 @@ import type { Body } from '../chat.ts'
 import { environmentBubbles, type EnvironmentTopic } from '../../whatsapp/environmentAnswers.ts'
 import { richText } from '../../whatsapp/format.tsx'
 import { rotationBubbles, type RotationTopic } from '../../whatsapp/rotationAnswers.ts'
+import { DistrictSection } from './DistrictSection.tsx'
+import { useDataTranslation } from '../../lib/dataI18n.ts'
 import '../../near.css'
 
 const ENVIRONMENT: readonly string[] = ['climate', 'soil', 'satellite', 'sources']
+const PLANTING: readonly string[] = ['plant', 'compare']
 
 /**
  * An answer of the in-app assistant, built from what the data service published for the parcel's place: the rotation run
@@ -24,9 +27,10 @@ export function ZoneAnswer({ body }: { body: Extract<Body, { kind: 'zone' }> }) 
 /** The answer itself, from the published files it is given. */
 export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind: 'zone' }>; published: Published }) {
   const { t, fmt, lang, distance } = useI18n()
+  const translate = useDataTranslation()
   const place = DEMO_LOCATIONS.find((candidate) => candidate.id === body.place)
   if (!place) return null
-  const rotations = published.rotations[body.place]
+  const rotations = translate(published.rotations[body.place])
   const environment = published.environment[body.place] ?? null
   const ctx = { t, fmt, lang, observed: environment, goal: body.goal ?? null, water: body.water ?? null }
   const bubbles = ENVIRONMENT.includes(body.topic)
@@ -46,6 +50,8 @@ export function ZoneAnswerView({ body, published }: { body: Extract<Body, { kind
           {richText(bubble.text)}
         </p>
       ))}
+      {/* a planting question also gets the district engine's short answer, as a second, separate tool */}
+      {PLANTING.includes(body.topic) && <DistrictSection placeId={body.place} app={{ water: body.water, goal: body.goal }} mode="agricultor" />}
     </>
   )
 }

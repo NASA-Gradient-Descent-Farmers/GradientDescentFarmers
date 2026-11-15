@@ -8,6 +8,7 @@ import { whatsappEn } from './whatsapp.en.ts'
 import { landingEn } from './landing.en.ts'
 import { nearEn } from './near.en.ts'
 import { envEn } from './env.en.ts'
+import { districtEn } from './district.en.ts'
 
 export const en = {
   assistant: assistantEn,
@@ -18,6 +19,7 @@ export const en = {
   landing: landingEn,
   near: nearEn,
   env: envEn,
+  district: districtEn,
   app: {
     title: 'YoliA',
     tagline: 'NASA data and a crop model',
