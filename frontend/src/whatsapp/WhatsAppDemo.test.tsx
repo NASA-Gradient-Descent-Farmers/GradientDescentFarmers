@@ -19,6 +19,10 @@ describe('the simulator screen', () => {
     expect(text).toMatch(/no se envía nada a WhatsApp/i)
   })
 
+  it('shows the WhatsApp mark on the avatar, as a decorative icon that assistive technology skips', () => {
+    expect(html).toMatch(/<span class="wa-badge"><svg class="wa-mark"[^>]*aria-hidden="true"/)
+  })
+
   it('offers the four suggested questions', () => {
     for (const question of ['¿Qué me conviene sembrar?', '¿Qué pasa si llueve poco?', '¿Cuánto podría cosechar?', '¿Qué cultivo me conviene más?']) expect(text).toContain(question)
   })

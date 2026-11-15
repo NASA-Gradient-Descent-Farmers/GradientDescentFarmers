@@ -8,6 +8,7 @@ import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type
 import { richText } from './format.tsx'
 import { appRoot } from './route.ts'
 import { converse, TYPING_MS } from './session.ts'
+import { WhatsAppMark } from './WhatsAppMark.tsx'
 import './whatsapp.css'
 
 interface Message {
@@ -143,6 +144,9 @@ export function WhatsAppChat({ data, rotations, home, typingMs = TYPING_MS }: Ch
         <header className="wa-header">
           <span className="wa-avatar" aria-hidden="true">
             Y
+            <span className="wa-badge">
+              <WhatsAppMark size={22} />
+            </span>
           </span>
           <div className="wa-who">
             <h1>
