@@ -12,7 +12,10 @@ interface Where {
 
 const tail = (path: string) => path.replace(/\/+$/, '')
 
-export const isWhatsAppDemo = ({ pathname, hash }: Where): boolean => tail(pathname).endsWith(DEMO_PATH) || tail(hash.replace(/^#/, '')) === DEMO_PATH
+/** Hosts that pass only a plain #name (such as a claude.ai artifact) can link the chat as #demo-whatsapp. */
+export const DEMO_ALIAS = 'demo-whatsapp'
+
+export const isWhatsAppDemo = ({ pathname, hash }: Where): boolean => tail(pathname).endsWith(DEMO_PATH) || [DEMO_PATH, DEMO_ALIAS].includes(tail(hash.replace(/^#/, '')))
 
 /** The folder holding the app's files and its front page ("/" or "/yolia/"), whichever way the demo was reached. */
 export function appRoot({ pathname }: Where): string {
