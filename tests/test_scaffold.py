@@ -39,7 +39,12 @@ class ScaffoldTests(unittest.TestCase):
 
     def test_template_config_is_valid(self):
         path = Path(__file__).resolve().parents[1] / "resources" / "application.conf"
-        self.assertEqual(PipelineConfig.from_file(path), PipelineConfig({}, {}, {}))
+        config = PipelineConfig.from_file(path)
+        self.assertEqual(config.source, {})
+        self.assertEqual(config.optimizer, {})
+        self.assertEqual(config.model["selected_products"], ["maize"])
+        self.assertEqual(config.model["water_mode"], "rainfed")
+        self.assertIsNone(config.model["irrigation_system"])
 
     def test_config_rejects_missing_section(self):
         with tempfile.TemporaryDirectory() as directory:

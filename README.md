@@ -1,6 +1,6 @@
 # GradientDescentFarmers
 
-Base template for the NASA Space Apps project. Requires Python 3.10 or higher and does not install ML libraries: each implementation can choose its own framework.
+Base template for the NASA Space Apps project. Requires Python 3.10 or higher. The model builder uses PCSE, scikit-learn, and statsmodels; install dependencies with `requirements.txt`.
 
 ## Structure
 
@@ -29,7 +29,28 @@ python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
 ```
 
-The shared configuration has the sections `source`, `model` and `optimizer`. Each team can create its own file, for example `resources/experiment.local.conf`, without editing the base file. `*.local.conf` files are ignored by Git.
+The shared configuration has the sections `source`, `model` and `optimizer`. The `model` section in `resources/application.conf` contains the Guanajuato app template, including selected products, water mode, irrigation system, historical seasons, and planned rotation. Soil measurements, planned area, and future weather remain unset until provided for a real run. Each team can create its own file, for example `resources/experiment.local.conf`, without editing the shared file. `*.local.conf` files are ignored by Git.
+
+## Guanajuato model app
+
+`run_model_app()` in `gradientdescentfarmers/app.py` loads the JSON template, applies a user dictionary to its `model` section, then calls `GuanajuatoModelBuilder`. Pass `rotation_options` to compare multiple named crop schedules. The result's single `final_df` has **one row per phase of each option**, including crop and phase identifiers, the full WOFOST terminal state, calibration, harvest price, gross value, and complete daily WOFOST records in `wofost_daily_json`. Use `result.save_final_csv("data/model_builder/my_run.csv")` for one consolidated CSV. `notebooks/app.ipynb` demonstrates two options with three and two phases. Its historical and future weather, soil, dates, and areas are invented for a smoke test. For input details and the faba-bean data limitation, see `gradientdescentfarmers/model_builder/README.md`.
+
+The versioned [SIAP municipal observation CSV](resources/examples/siap_valle_de_santiago_observed_2003_2025.csv) includes all 47 crop labels reported during 2003–2025 with `selected_products=None`; it is observed annual municipal data, not WOFOST output. The [model data and output dictionary](gradientdescentfarmers/model_builder/docs/DATA_SOURCES_CALIBRATION_OUTPUTS.md) explains both schemas and the sources used by the model.
+
+```python
+from gradientdescentfarmers.app import run_model_app
+
+result = run_model_app({
+    "selected_products": ["maize"],
+    "water_mode": "rainfed",
+    "irrigation_system": None,
+    "soil_parameters": measured_soil,
+    "initial_available_water_cm": measured_initial_water_cm,
+    "future_weather": future_weather_df,
+    "planned_rotation": planned_rotation_with_dates_and_area,
+})
+valued_harvests = result.final_df
+```
 
 ## Contracts between modules
 
@@ -74,4 +95,4 @@ The package version is changed **only** in `gradientdescentfarmers/version.py`; 
 3. Keep data, weights and local configuration files out of Git; use separate paths for each experiment.
 4. Before the pull request, merge the latest changes from `main` into your branch and run `python3 -m unittest discover -s tests -v`.
 
-Once the team agrees on concrete implementations, they can create an entry point that instantiates them and runs training, evaluation and export.
+The shared `Pipeline` contract remains available for source and optimizer implementations. The Guanajuato model flow can already be run through `run_model_app()`.
