@@ -1,0 +1,90 @@
+grupo,caso,prioridad,alternativa,dijo_mejor,fue_mejor_o_igual,empate,estrictamente_mejor,malos_alt,malos_actual
+demo,guanajuato/riego/maiz,ingreso,Con cultivo de invierno: maíz – garbanzo,True,True,False,True,,
+demo,guanajuato/riego/maiz,riesgo,Con cultivo de invierno: maíz – garbanzo,False,True,True,False,0.0,0.0
+demo,guanajuato/riego/maiz_trigo,ingreso,Milpa: milpa (maíz-frijol-calabaza) – trigo,True,True,False,True,,
+demo,guanajuato/riego/maiz_trigo,riesgo,Con leguminosa: maíz – frijol,True,True,True,False,0.0,0.0
+demo,guanajuato/riego/maiz_cebada,ingreso,Milpa: milpa (maíz-frijol-calabaza) – cebada,True,True,False,True,,
+demo,guanajuato/riego/maiz_cebada,riesgo,Milpa: milpa (maíz-frijol-calabaza) – cebada,True,True,True,False,0.0,0.0
+demo,guanajuato/riego/sorgo_cebada,ingreso,Milpa: milpa (maíz-frijol-calabaza),False,False,False,False,,
+demo,guanajuato/riego/sorgo_cebada,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,True,False,0.0,0.0
+demo,guanajuato/riego/sorgo,ingreso,Con cultivo de invierno: sorgo – garbanzo,True,True,False,True,,
+demo,guanajuato/riego/sorgo,riesgo,Con cultivo de invierno: sorgo – garbanzo,False,True,True,False,0.0,0.0
+demo,guanajuato/temporal/maiz,ingreso,Con cultivo de invierno: maíz – garbanzo,True,True,False,True,,
+demo,guanajuato/temporal/maiz,riesgo,Con cultivo de invierno: maíz – garbanzo,True,True,True,False,0.0,0.0
+demo,guanajuato/temporal/sorgo,ingreso,Con cultivo de invierno: sorgo – garbanzo,True,True,False,True,,
+demo,guanajuato/temporal/sorgo,riesgo,Con cultivo de invierno: sorgo – garbanzo,True,True,True,False,0.0,0.0
+demo,guanajuato/temporal/maiz_frijol,ingreso,Con cultivo de invierno: maíz – garbanzo – frijol,True,True,False,True,,
+demo,guanajuato/temporal/maiz_frijol,riesgo,Con cultivo de invierno: maíz – garbanzo – frijol,True,True,True,False,0.0,0.0
+demo,sinaloa/riego/maiz,ingreso,Con leguminosa: maíz – frijol,False,False,False,False,,
+demo,sinaloa/riego/maiz,riesgo,Con leguminosa: maíz – frijol,True,True,True,False,0.0,0.0
+demo,sinaloa/riego/sorgo_maiz,ingreso,Con forraje: sorgo – sorgo forrajero,False,False,False,False,,
+demo,sinaloa/riego/sorgo_maiz,riesgo,Con forraje: sorgo – sorgo forrajero,False,True,True,False,0.0,0.0
+demo,sinaloa/riego/frijol,ingreso,Con cultivo de verano: sorgo – frijol,True,True,False,True,,
+demo,sinaloa/riego/frijol,riesgo,Con cultivo de verano: sorgo – frijol,True,True,True,False,0.0,0.0
+demo,sinaloa/riego/trigo,ingreso,Con cultivo de verano: sorgo – trigo,True,True,False,True,,
+demo,sinaloa/riego/trigo,riesgo,Con leguminosa: trigo – frijol,True,True,True,False,0.0,0.0
+demo,sinaloa/temporal/sorgo,ingreso,Con leguminosa: sorgo – cacahuate,True,True,False,True,,
+demo,sonora/riego/trigo,ingreso,Con cultivo de verano: soya – trigo,True,True,False,True,,
+demo,sonora/riego/trigo,riesgo,Con cultivo de verano: soya – trigo,True,True,True,False,0.0,0.0
+demo,sonora/riego/soya_trigo,ingreso,Más ingreso: soya – maíz,False,False,False,False,,
+demo,sonora/riego/soya_trigo,riesgo,Más ingreso: soya – maíz,True,True,True,False,0.0,0.0
+demo,sonora/riego/maiz,ingreso,Con cultivo de verano: soya – maíz,True,True,False,True,,
+demo,sonora/riego/maiz,riesgo,Con cultivo de verano: soya – maíz,True,True,True,False,0.0,0.0
+demo,sonora/riego/trigo_maiz,ingreso,Con cultivo de verano: soya – trigo – maíz,True,True,False,True,,
+demo,sonora/riego/trigo_maiz,riesgo,Con cultivo de verano: soya – trigo – maíz,True,True,True,False,0.0,0.0
+nacional,Durango/Durango/riego/maize,ingreso,Con cultivo de invierno: maíz – avena forrajera,True,True,False,True,,
+nacional,Durango/Durango/riego/maize,riesgo,Con cultivo de invierno: maíz – avena forrajera,True,True,False,True,0.0,0.125
+nacional,Durango/Santiago Papasquiaro/riego/maize,ingreso,Con cultivo de invierno: maíz – avena forrajera,True,True,False,True,,
+nacional,Durango/Santiago Papasquiaro/riego/maize,riesgo,Con cultivo de invierno: maíz – avena forrajera,True,True,False,True,0.0,0.25
+nacional,San Luis Potosí/Rioverde/riego/maize,ingreso,Con leguminosa: maíz – cacahuate,True,True,False,True,,
+nacional,San Luis Potosí/Rioverde/riego/maize,riesgo,Con leguminosa: maíz – cacahuate,True,True,True,False,0.0,0.0
+nacional,Tamaulipas/Victoria/temporal/sorghum,ingreso,Con cultivo de invierno: sorgo – cártamo,True,True,False,True,,
+nacional,Tamaulipas/Victoria/temporal/sorghum,riesgo,Con cultivo de invierno: sorgo – cártamo,False,False,False,False,0.125,0.0
+nacional,Chiapas/Pichucalco/temporal/maize,ingreso,Con cultivo de invierno: maíz – frijol,True,True,False,True,,
+nacional,Chiapas/Pichucalco/temporal/maize,riesgo,Con cultivo de invierno: maíz – frijol,True,True,True,False,0.0,0.0
+nacional,Tlaxcala/Huamantla/temporal/maize,ingreso,Más ingreso: maíz – calabaza (semilla),True,True,False,True,,
+nacional,Tlaxcala/Huamantla/temporal/maize,riesgo,Con leguminosa: maíz – haba,True,True,True,False,0.0,0.0
+nacional,Oaxaca/Valles Centrales/temporal/maize,ingreso,Con cultivo de invierno: maíz – garbanzo,True,True,False,True,,
+nacional,Oaxaca/Valles Centrales/temporal/maize,riesgo,Con cultivo de invierno: maíz – garbanzo,True,True,True,False,0.0,0.0
+nacional,Michoacán/Sahuayo/riego/maize,ingreso,Con cultivo de invierno: maíz – frijol,True,True,False,True,,
+nacional,Michoacán/Sahuayo/riego/maize,riesgo,Con cultivo de invierno: maíz – frijol,True,True,True,False,0.0,0.0
+nacional,Nuevo León/Galeana/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,True,False,True,,
+nacional,Nuevo León/Galeana/temporal/maize,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,0.0,0.375
+nacional,Sonora/Hermosillo/riego/wheat,ingreso,Con cultivo de verano: frijol – trigo,True,True,False,True,,
+nacional,Sonora/Hermosillo/riego/wheat,riesgo,Con cultivo de verano: frijol – trigo,True,True,True,False,0.0,0.0
+nacional,Tamaulipas/Control/temporal/sorghum,ingreso,Con cultivo de verano: soya – sorgo,True,True,False,True,,
+nacional,Tamaulipas/Control/temporal/sorghum,riesgo,Con cultivo de verano: soya – sorgo,False,True,True,False,0.0,0.0
+nacional,Michoacán/La Piedad/riego/maize,ingreso,Con cultivo de invierno: maíz – garbanzo,True,True,False,True,,
+nacional,Michoacán/La Piedad/riego/maize,riesgo,Con cultivo de invierno: maíz – garbanzo,False,True,True,False,0.0,0.0
+nacional,Chihuahua/El Carmen/riego/maize,ingreso,Con leguminosa: maíz – cacahuate,True,True,False,True,,
+nacional,Chihuahua/El Carmen/riego/maize,riesgo,Con leguminosa: maíz – cacahuate,True,True,True,False,0.0,0.0
+nacional,Hidalgo/Pachuca/temporal/barley,ingreso,Con leguminosa: cebada – frijol,False,False,False,False,,
+nacional,Hidalgo/Pachuca/temporal/barley,riesgo,Con leguminosa: cebada – frijol,True,True,True,False,0.0,0.0
+nacional,Michoacán/Morelia/riego/maize,ingreso,Con cultivo de invierno: maíz – garbanzo,True,True,False,True,,
+nacional,Michoacán/Morelia/riego/maize,riesgo,Con cultivo de invierno: maíz – garbanzo,False,True,True,False,0.0,0.0
+nacional,Querétaro/San Juan del Río/temporal/maize,ingreso,Con leguminosa: maíz – frijol,False,False,False,False,,
+nacional,Querétaro/San Juan del Río/temporal/maize,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,0.0,0.25
+nacional,México/Zumpango/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,False,False,False,,
+nacional,México/Zumpango/temporal/maize,riesgo,Con leguminosa: maíz – frijol,True,True,False,True,0.0,0.125
+nacional,Oaxaca/Tuxtepec/temporal/maize,ingreso,Con cultivo de invierno: maíz – frijol,True,True,False,True,,
+nacional,Oaxaca/Tuxtepec/temporal/maize,riesgo,Con cultivo de invierno: maíz – frijol,True,True,True,False,0.0,0.0
+nacional,Nayarit/Ahuacatlán/temporal/maize,ingreso,Con leguminosa: maíz – cacahuate,True,True,False,True,,
+nacional,Nayarit/Ahuacatlán/temporal/maize,riesgo,Con leguminosa: maíz – cacahuate,True,True,True,False,0.0,0.0
+nacional,Zacatecas/Jalpa/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,False,False,False,,
+nacional,Zacatecas/Jalpa/temporal/maize,riesgo,Con leguminosa: maíz – frijol,False,True,True,False,0.0,0.0
+nacional,Chihuahua/Cuauhtémoc/riego/maize,ingreso,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,,
+nacional,Chihuahua/Cuauhtémoc/riego/maize,riesgo,Con leguminosa: maíz – frijol,True,True,True,False,0.0,0.0
+nacional,Chihuahua/San Juanito/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,True,False,True,,
+nacional,Chihuahua/San Juanito/temporal/maize,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,0.0,0.125
+nacional,Durango/Villa Ocampo/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,True,False,True,,
+nacional,Durango/Villa Ocampo/temporal/maize,riesgo,Con leguminosa: maíz – frijol,True,True,True,False,0.42857142857142855,0.42857142857142855
+nacional,Durango/Santiago Papasquiaro/temporal/maize,ingreso,Con leguminosa: maíz – frijol,True,True,False,True,,
+nacional,Durango/Santiago Papasquiaro/temporal/maize,riesgo,Con leguminosa: maíz – frijol,True,True,True,False,0.125,0.125
+nacional,Zacatecas/Concepción del Oro/temporal/maize,ingreso,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,,
+nacional,Zacatecas/Concepción del Oro/temporal/maize,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,False,True,0.0,0.25
+nacional,Michoacán/Zamora/riego/wheat,ingreso,Con cultivo de verano: frijol – trigo,True,True,False,True,,
+nacional,Michoacán/Zamora/riego/wheat,riesgo,Con cultivo de verano: frijol – trigo,True,True,True,False,0.0,0.0
+nacional,Campeche/Champotón/temporal/maize,ingreso,Con leguminosa: maíz – soya,True,True,False,True,,
+nacional,Campeche/Champotón/temporal/maize,riesgo,Con leguminosa: maíz – soya,True,True,True,False,0.0,0.0
+nacional,Guanajuato/León/temporal/maize,ingreso,Con leguminosa: maíz – frijol,False,False,False,False,,
+nacional,Guanajuato/León/temporal/maize,riesgo,Milpa: milpa (maíz-frijol-calabaza),True,True,True,False,0.0,0.0
