@@ -1,4 +1,3 @@
-import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -54,7 +53,9 @@ def fake_wofost(weather, *, crop, sowing_date, end_date, water_mode, **kwargs):
         "is_final_day": True, "water_mode": water_mode,
         "variety": kwargs["variety"],
         "NamountSO": 30.0, "SM": 0.2,
-        "summary_LAIMAX": 4.0, "terminal_RAINT": 15.0,
+        "summary_LAIMAX": 4.0, "summary_NuptakeTotal": 48.0,
+        "terminal_RAINT": 15.0, "terminal_TOTIRR": 0.0,
+        "terminal_WTRAT": 12.0, "terminal_EVST": 2.0,
     }])
 
 
@@ -95,9 +96,14 @@ class OrchestratorTests(unittest.TestCase):
         self.assertEqual(result.final_df.season_id.tolist(), ["planned_001", "planned_002"])
         self.assertFalse(result.final_df.soil_state_carried_forward.any())
         for column in ("NamountSO", "SM", "summary_LAIMAX", "terminal_RAINT"):
-            self.assertIn(column, result.final_df)
+            self.assertNotIn(column, result.final_df)
             self.assertIn(column, result.future_daily_df)
-            self.assertEqual(result.final_df[column].tolist(), result.future_daily_df[column].tolist())
+        self.assertNotIn("wofost_daily_json", result.final_df)
+        self.assertEqual(result.final_df.rainfall_total_mm.tolist(), [150.0, 150.0])
+        self.assertEqual(result.final_df.transpiration_total_mm.tolist(), [120.0, 120.0])
+        self.assertEqual(result.final_df.soil_evaporation_total_mm.tolist(), [20.0, 20.0])
+        self.assertEqual(result.final_df.plant_n_uptake_kg_ha.tolist(), [48.0, 48.0])
+        self.assertTrue(result.final_df.soil_total_n_0_30cm_g_kg.isna().all())
         for crop in ("maize", "fababean"):
             row = result.final_df[result.final_df.crop == crop].iloc[0]
             board = result.price_leaderboard_df[result.price_leaderboard_df.crop == crop]
@@ -151,9 +157,6 @@ class OrchestratorTests(unittest.TestCase):
         self.assertEqual(final.loc[0, "estimated_price_mxn_t"],
                          final.loc[3, "estimated_price_mxn_t"])
         for row in final.itertuples():
-            daily = json.loads(row.wofost_daily_json)
-            self.assertEqual(len(daily), 1)
-            self.assertEqual(daily[-1]["summary_LAIMAX"], 4.0)
             self.assertAlmostEqual(row.estimated_gross_value_mxn,
                                    row.estimated_tonnes * row.estimated_price_mxn_t)
         with TemporaryDirectory() as directory:

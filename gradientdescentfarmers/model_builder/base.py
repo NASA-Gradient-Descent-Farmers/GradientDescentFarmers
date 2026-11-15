@@ -19,6 +19,7 @@ from .price_forecasting import (
     forecast_harvest_prices, load_siap_price_history, rotation_horizon,
     select_price_scope,
 )
+from .soil_context import summarize_soil_context
 from .wofost import SUPPORTED_CROPS, run_wofost
 
 
@@ -80,7 +81,7 @@ class ModelBuildResult:
     horizon_months: int
 
     def save_final_csv(self, path: str | Path) -> Path:
-        """Save the single phase-level output, including each phase's daily JSON."""
+        """Save the compact, phase-level output as one CSV."""
         destination = Path(path)
         destination.parent.mkdir(parents=True, exist_ok=True)
         self.final_df.to_csv(destination, index=False)
@@ -164,6 +165,7 @@ class GuanajuatoModelBuilder(ModelBuilder):
             irrigation_events=season.get("irrigation_events"),
         )
         result = result.copy()
+        result["run_id"] = run_id
         result["variety"] = variety
         result["water_mode"] = water_mode
         result["irrigation_system"] = irrigation_system
@@ -213,6 +215,9 @@ class GuanajuatoModelBuilder(ModelBuilder):
             raise ValueError("Supply elevation_m when profile topography has no elevation")
         elevation = float(elevation)
         run_id = str(profile.manifest["run_id"])
+        soil_table = (profile.table("soil_properties_raw")
+                      if "soil_properties_raw" in profile.manifest.get("tables", {}) else None)
+        soil_context = summarize_soil_context(soil_table)
         historical_source = config.get("historical_weather")
         historical_weather = (profile.table("weather_daily") if historical_source is None
                               else self._weather(client, historical_source, "historical_weather"))
@@ -330,9 +335,6 @@ class GuanajuatoModelBuilder(ModelBuilder):
                 pd.to_numeric(finals.yield_t_ha, errors="raise") * finals.calibration_factor
             )
             finals["future_weather_source"] = config.get("future_weather_source", "provided")
-            finals["wofost_daily_json"] = run.to_json(
-                orient="records", date_format="iso", double_precision=15
-            )
             final_rows.append(finals)
         calibrated_futures = pd.concat(final_rows, ignore_index=True)
 
@@ -387,10 +389,48 @@ class GuanajuatoModelBuilder(ModelBuilder):
         final_df["rotation_total_estimated_gross_value_mxn"] = (
             final_df.groupby("rotation_id").estimated_gross_value_mxn.transform("sum")
         )
+        # The complete PCSE daily/summary/terminal output stays in future_daily_df.
+        # Only decision-useful phase aggregates belong in the consolidated CSV.
+        compact_columns = [
+            "rotation_id", "rotation_step", "rotation_phase_count", "rotation_option_count",
+            "rotation_sequence", "season_id", "crop", "variety", "sowing_date",
+            "harvest_date", "wofost_terminal_date", "area_ha", "water_mode",
+            "irrigation_system", "run_id", "future_weather_source",
+            "soil_state_carried_forward", "yield_t_ha", "calibration_factor",
+            "calibration_scope", "calibrated_t_ha", "estimated_tonnes",
+            "yield_loyo_mae_t_ha", "soil_moisture_end_m3_m3", "rainfall_total_mm",
+            "effective_irrigation_mm", "transpiration_total_mm",
+            "soil_evaporation_total_mm", "soil_total_n_0_30cm_g_kg",
+            "soil_organic_carbon_0_30cm_g_kg", "soil_ph_0_5cm",
+            "soil_context_source", "plant_n_uptake_kg_ha",
+            "estimated_price_mxn_t", "price_scope", "price_model",
+            "price_backtest_mae_mxn_t", "estimated_gross_value_mxn",
+            "rotation_total_estimated_gross_value_mxn",
+        ]
+
+        def numeric(source: str, scale: float = 1.0) -> pd.Series:
+            if source not in final_df:
+                return pd.Series(float("nan"), index=final_df.index)
+            return pd.to_numeric(final_df[source], errors="coerce") * scale
+
+        final_df["soil_moisture_end_m3_m3"] = numeric("SM")
+        for target, source in (
+            ("rainfall_total_mm", "terminal_RAINT"),
+            ("effective_irrigation_mm", "terminal_TOTIRR"),
+            ("transpiration_total_mm", "terminal_WTRAT"),
+            ("soil_evaporation_total_mm", "terminal_EVST"),
+        ):
+            final_df[target] = numeric(source, 10.0)  # PCSE water balance uses cm.
+        final_df["plant_n_uptake_kg_ha"] = numeric("summary_NuptakeTotal")
+        for column, value in soil_context.items():
+            final_df[column] = value
+        final_df = final_df[compact_columns].sort_values(
+            ["rotation_id", "rotation_step"]
+        ).reset_index(drop=True)
         rotation_columns = [
             "rotation_id", "rotation_step", "rotation_phase_count", "rotation_sequence",
             "season_id", "crop", "variety", "sowing_date",
-            "planned_harvest_date", "wofost_terminal_date", "water_mode",
+            "harvest_date", "wofost_terminal_date", "water_mode",
             "irrigation_system", "soil_state_carried_forward", "area_ha",
             "yield_t_ha", "calibrated_t_ha", "estimated_tonnes",
             "estimated_price_mxn_t", "estimated_gross_value_mxn",

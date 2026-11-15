@@ -140,6 +140,8 @@ The daily CSV exports only the water- and N-limited run. Empty values before eme
 
 Depending on the production level, native PCSE configurations can also produce `DVS` (dimensionless stage), `TAGP` and total `TW*` weights (kg dry matter/ha), `RD` (cm), `TSUM`/`TSUME` (°C·day), `CTRAT`/`CEVST` (cumulative cm), `LAIMAX` (m²/m²), phenology dates `DOS`, `DOE`, `DOA`, `DOM`, `DOH`, `DOV`, and a final water balance with `WTRAT`, `EVST`, `EVWT`, `TSR`, `RAINT`, `TOTINF`, `TOTIRR`, `PERCT`, and `LOSST` (cm). **Not all are exported** in the project's CSV files. `get_output()`, `get_summary_output()`, and `get_terminal_output()` depend on the variables requested in the configuration. [PCSE engine configuration guide](https://pcse.readthedocs.io/en/stable/reference_guide.html#engine-configuration-files).
 
+The separate `model_builder` pipeline keeps the configured PCSE daily, summary, and terminal outputs in diagnostic DataFrames. Its consolidated `final_df` has one compact row per rotation phase with water, soil context, calibrated yield, and price estimates. See [its output dictionary](../model_builder/docs/DATA_SOURCES_CALIBRATION_OUTPUTS.md).
+
 In this implementation, WOFOST does not produce fresh-forage yield, erosion (t soil/ha), changes in organic matter, NDVI, water outages, market value, profitability, pest incidence, pesticide effectiveness, or automatic recommendations. `crop_characteristics.csv` and Dataverse costs are external decision layers, not biophysical variables calculated by the model.
 
 ## Calibration used here
