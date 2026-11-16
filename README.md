@@ -8,6 +8,8 @@
 | **Code** | https://github.com/NASA-Gradient-Descent-Farmers/GradientDescentFarmers |
 | **Try it in 2 minutes** | [How to see it](#try-it-in-2-minutes) |
 
+**Demo scope:** The site uses precomputed crop-model results for **Sinaloa, Sonora and Guanajuato**. Satellite-data ingestion and WOFOST simulations run offline, not when someone clicks the map. The WhatsApp-style chat runs in the browser; the optional real WhatsApp integration is not deployed to a production number. This is a research prototype, not a field-validated recommendation service.
+
 ---
 
 ## The problem
@@ -22,8 +24,8 @@ A farmer marks their field, says how much land they have, whether they irrigate 
 (earn more, **use water well**, or look after the soil). YoliA answers **"what should I plant?"** with:
 
 - **A rotation plan, step by step** (for example *sorghum → chickpea → fallow*) with the months of each crop.
-- **Three figures that matter:** gross income per hectare (with its range over the price years), the water it needs, and how well
-  it fits what the farmer said matters most.
+- **Three figures that matter:** gross income per hectare (with its range over the price years), irrigation applied (separate
+  from rain and total crop water use), and how well it fits what the farmer said matters most.
 - **An honest status** on every option: it is an exploratory experiment, never an approved plan, and the risky ones say so.
 - **A second opinion from history:** what has actually worked in the farmer's own district over 20+ years of official statistics.
 
@@ -81,11 +83,12 @@ flowchart LR
 3. **District engine** (`gradientdescentfarmers/model_builder/rotations/`). A second, independent tool compares the farmer's current
    rotation with alternatives built from what their district actually grows (SIAP 2003 to 2025), using NASA climate and FAO-56
    water balances. It states the evidence level, benefits, risks and questions to ask a technician.
-4. **The app** (`frontend/`). A static React app that reads the precomputed results (committed in `frontend/public/data/`), so
-   the demo works with no backend, no database and no API key.
-5. **Optional language model.** If the site's server has a key, Claude phrases the chat summaries **only from the two tools'
-   results**, and the figures it writes are checked against them; without a key, fixed written templates are used.
-   The model never invents a number.
+4. **The app** (`frontend/`). A React app that reads precomputed results (committed in `frontend/public/data/`), so
+   the core demo works with no backend, database or API key. Selecting a new point does **not** run WOFOST for that field.
+5. **Optional language model.** A server-side Netlify Function can ask Claude to phrase chat summaries from the facts sent by
+   the app. Its numeric guard checks whether numbers in the response appear in those supplied facts and retries or falls back
+   if the check fails. Without an API key, the chat uses deterministic templates. **This is a numeric consistency check,
+   not a guarantee that every generated sentence is accurate or that a client cannot supply incorrect facts.**
 
 ### NASA data used
 
@@ -104,16 +107,19 @@ flowchart LR
 
 We want a judge to be able to check, not just believe.
 
-- **The district engine was back-tested.** It was trained on 2003 to 2019 and tested on what districts produced in 2020 to 2025.
-  On 127 alternative-versus-current comparisons it got the direction (earns more or less) right **91%** of the time, against
-  **68%** for always guessing the most common outcome; it was right in every case where it claimed a gap of 5,000 MXN/ha/yr or
-  more. It was wrong on 11 pairs, which are listed. Full report, including what it cannot check:
+- **The district engine was retrospectively back-tested.** It used district data through 2019 and compared its claims with
+  district outcomes from 2020 to 2025. On 127 alternative-versus-current comparisons it got the income-gap direction right
+  **91%** of the time, against **68%** for predicting the most common outcome; all 55 comparisons with a claimed gap of at
+  least 5,000 MXN/ha/yr had the correct direction. It was wrong on 11 pairs, which are listed. These are historical
+  **district-level** comparisons, not field trials, independent validation of WOFOST, or proof of future yield accuracy.
+  Full report, including what it cannot check:
   [`resources/district_backtest/REPORT_2019.md`](resources/district_backtest/REPORT_2019.md).
 - **Every figure traces to a file.** The numbers on screen are the ones in each run's `rotations.json`, shown to the peso; the
   model's own sentences are kept word for word under "see all the data". Tests check this (`frontend/src/farmer/ui/ZoneAnswer.test.tsx`).
 - **Unknown stays unknown.** A missing value is shown as "no data", never as zero.
-- **Tested.** The web app, the conversation engine and the WhatsApp webhook have automated tests, and every push runs them
-  (GitHub Actions: `.github/workflows/`).
+- **Tested.** The web app, conversation engine, WhatsApp webhook and scientific modules have automated tests. GitHub Actions
+  runs relevant suites for the paths changed in a push or pull request; **not every suite runs on every push**.
+  See `.github/workflows/` and the commands below.
 
 ### What this is not (honest limits)
 
@@ -140,11 +146,26 @@ npm test && npm run lint && npm run build
 
 The chat is at `http://localhost:5173/demo/whatsapp` (add `?lang=en` for English).
 
-**The Python pipeline** (Python 3.10 or newer; the crop-model service uses 3.11 and extra dependencies):
+**The Python scaffold check** (Python 3.10 or newer):
 
 ```bash
 python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests -v
+```
+
+That `unittest` command runs the **four scaffold tests**, not the scientific regression suite. For the source builder and
+district-model tests, install the optional scientific dependencies and run pytest:
+
+```bash
+python3 -m pip install -e '.[source,source-test,source-modis,source-district,gcs,source-cloud]'
+python3 -m pytest tests/source_builder tests/model_builder tests/test_scaffold.py -q
+```
+
+The separate **WOFOST/rotation service regression suite** uses Python 3.11 and its crop-model dependencies:
+
+```bash
+python3.11 -m pip install -e '.[rotations,gcs,source-cloud,source-test]'
+python3.11 -m pytest tests/rotations -q
 ```
 
 Rebuilding the model results needs NASA Earthdata credentials and Google Cloud access; the results the app shows are already
