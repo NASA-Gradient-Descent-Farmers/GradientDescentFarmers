@@ -1,5 +1,6 @@
 import { AccountMenu } from '../account/AccountMenu.tsx'
 import { Brand } from './Brand.tsx'
+import { GitHubLink } from './GitHubLink.tsx'
 import { LangToggle } from './LangToggle.tsx'
 import { LeafMark } from './Leaf.tsx'
 
@@ -12,6 +13,7 @@ export function TopBar() {
         <Brand className="topbar-name" />
       </div>
       <div className="topbar-right">
+        <GitHubLink />
         <AccountMenu />
         <LangToggle />
       </div>

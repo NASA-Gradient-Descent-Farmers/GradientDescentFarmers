@@ -60,9 +60,10 @@ export type Body =
   | { kind: 'unknown' }
   | { kind: 'error'; message: string }
 
-export type Turn = { id: string; at: number; role: 'user'; text: string } | { id: string; at: number; role: 'bot'; body: Body }
+/** A user message. `key` (a dictionary path, with its `vars`) is kept for what a button said, so it is shown in the language chosen now. */
+export type Turn = { id: string; at: number; role: 'user'; text: string; key?: string; vars?: Record<string, string | number> } | { id: string; at: number; role: 'bot'; body: Body }
 
-export const userTurn = (text: string, at = Date.now()): Turn => ({ id: newId(), at, role: 'user', text })
+export const userTurn = (text: string, said?: { key: string; vars?: Record<string, string | number> }, at = Date.now()): Turn => ({ id: newId(), at, role: 'user', text, ...(said ?? {}) })
 export const botTurn = (body: Body, at = Date.now()): Turn => ({ id: newId(), at, role: 'bot', body })
 
 export type Plan =
@@ -109,7 +110,7 @@ const KINDS = ['greeting', 'ask', 'zone', 'fertilizer', 'trust', 'unknown', 'err
 
 function isTurn(value: unknown): value is Turn {
   if (!isObject(value) || typeof value.id !== 'string' || typeof value.at !== 'number') return false
-  if (value.role === 'user') return typeof value.text === 'string'
+  if (value.role === 'user') return typeof value.text === 'string' && (value.key === undefined || typeof value.key === 'string')
   if (value.role !== 'bot' || !isObject(value.body)) return false
   const { kind, field } = value.body
   if (typeof kind !== 'string' || !(KINDS as readonly string[]).includes(kind)) return false

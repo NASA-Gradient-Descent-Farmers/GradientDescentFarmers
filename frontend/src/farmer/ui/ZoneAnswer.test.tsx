@@ -170,3 +170,24 @@ describe('a saved conversation', () => {
     expect(parseChat(JSON.stringify(turns)).map((turn) => turn.id)).toEqual(['a', 'd', 'e'])
   })
 })
+
+describe('the planting answer is a card a farmer can read at a glance', () => {
+  const html = answer({ kind: 'zone', topic: 'plant', place: 'sonora', km: 0, goal: 'earn', water: 'rain' })
+
+  it('shows the plan as steps (crop and months), the three figures that matter, and the status note', () => {
+    const rainfed = pickForGoal(published.rotations.sonora!, 'rainfed', 'earn')!
+    expect(html).toContain('class="plan-steps"')
+    expect((html.match(/<li/g) ?? []).length).toBeGreaterThanOrEqual(rainfed.campaigns.length)
+    expect(words(html)).toContain('Ingreso bruto por hectárea')
+    expect(words(html)).toContain(`${fmt.number(Math.round(rainfed.gross!.median!))} MXN`)
+    expect(words(html)).toContain('Solo lluvia')
+    expect(words(html)).toContain('No es la probabilidad de que salga bien')
+    expect(html).toMatch(/class="plan-note warn"/)
+  })
+
+  it('puts the farmer\'s water first, keeps the other one as a one-line summary, and folds the model\'s sentences into "see all the data"', () => {
+    expect(html.indexOf('Solo con lluvia')).toBeLessThan(html.indexOf('También, con riego'))
+    expect(html).toContain('<details class="plan-more">')
+    expect(words(html)).toContain('Ver todos los datos del modelo')
+  })
+})

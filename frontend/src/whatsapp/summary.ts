@@ -65,7 +65,7 @@ export function availableFollowUps(answer: DistrictAnswer | null, rotations: Rot
 }
 
 /** The default buttons after a summary, in order of usefulness, when no model chose them. */
-export const DEFAULT_FOLLOW_UPS: FollowUp[] = ['why', 'risks', 'rotation', 'priority', 'wofost', 'money']
+export const DEFAULT_FOLLOW_UPS: FollowUp[] = ['wofost', 'why', 'risks', 'priority', 'rotation', 'money']
 
 export const followUpLabel = (id: FollowUp, t: T) => t(`whatsapp.district.followUps.${id}`)
 

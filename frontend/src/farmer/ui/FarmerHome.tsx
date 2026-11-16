@@ -30,7 +30,7 @@ export function FarmerHome({ pin, onPin, site }: Props) {
   const ready = parcel !== null && isComplete(state.situation)
   const [view, setView] = useState<'setup' | 'home'>(ready ? 'home' : 'setup')
   const [firstTime] = useState(() => state.parcel === null && Object.keys(state.situation).length === 0)
-  const [seed, setSeed] = useState<{ text: string; nonce: number } | null>(null)
+  const [seed, setSeed] = useState<{ text: string; key?: string; nonce: number } | null>(null)
   const main = useRef<HTMLElement>(null)
 
   useEffect(() => saveState(state), [state])
@@ -53,7 +53,7 @@ export function FarmerHome({ pin, onPin, site }: Props) {
   }
   /** The questions are answered: back to the assistant, which gives the recommendation straight away. */
   const finishSetup = () => {
-    setSeed({ text: t('farmer.home.firstQuestion'), nonce: Date.now() })
+    setSeed({ text: t('farmer.home.firstQuestion'), key: 'farmer.home.firstQuestion', nonce: Date.now() })
     go('home')
   }
 

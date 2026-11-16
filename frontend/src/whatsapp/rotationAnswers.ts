@@ -35,7 +35,7 @@ const NO_HARVEST_T_HA = 0.05
 const bold = (text: string) => `*${text}*`
 const bullets = (lines: string[]) => lines.map((line) => `• ${line}`).join('\n')
 
-const years = ({ weatherYears }: Rotations) => {
+export const years = ({ weatherYears }: Rotations) => {
   const first = Math.min(...weatherYears)
   const last = Math.max(...weatherYears)
   return first === last ? String(first) : `${first}–${last}`
@@ -43,8 +43,8 @@ const years = ({ weatherYears }: Rotations) => {
 
 const noData = ({ t }: Ctx) => t('whatsapp.rotations.noData')
 /** The figure as the service generated it, to the peso: no further rounding. */
-const money = (value: number | null, ctx: Ctx) => (value === null ? noData(ctx) : ctx.fmt.number(Math.round(value)))
-const monthOf = (monthDay: string) => Number(monthDay.slice(0, 2)) - 1
+export const money = (value: number | null, ctx: Ctx) => (value === null ? noData(ctx) : ctx.fmt.number(Math.round(value)))
+export const monthOf = (monthDay: string) => Number(monthDay.slice(0, 2)) - 1
 /** The season as the plan gives it: sown in a month of one plan year, ending in a month of the same or the next (not dates). */
 export const season = (campaign: RotationCampaign, ctx: Ctx) =>
   ctx.t('whatsapp.rotations.season', { y1: campaign.planningYear, from: ctx.fmt.monthShort(monthOf(campaign.sowing)), y2: campaign.planningYearEnd, to: ctx.fmt.monthShort(monthOf(campaign.end)) })
@@ -63,6 +63,13 @@ function incomeLine(option: RotationOption, ctx: Ctx): string {
   return ctx.t('whatsapp.rotations.income', { amount: money(gross?.median ?? null, ctx), range })
 }
 
+/** How the option's irrigation compares with the service's reference ("Usa 38 % menos riego que …"), or null when it does not. */
+export function irrigationComparison(option: RotationOption, ctx: Ctx, rotations: Rotations): string | null {
+  if (option.irrigationSavingPct === null || option.regime !== 'irrigated' || Math.round(option.irrigationSavingPct) === 0) return null
+  const reference = rotations.references[option.regime]
+  return ctx.t(option.irrigationSavingPct > 0 ? 'whatsapp.rotations.saving' : 'whatsapp.rotations.extra', { pct: ctx.fmt.number(Math.abs(Math.round(option.irrigationSavingPct))), reference: word('whatsapp.rotations.reference', reference?.kind ?? '', ctx) })
+}
+
 /**
  * One option as a bubble, with what the service generated for it: its plan, its status (an experiment, never an approved plan),
  * what it stands out in, its own highlights word for word, the range of income over the price years, the water it applies and
@@ -78,10 +85,8 @@ export function optionLines(option: RotationOption, ctx: Ctx, rotations: Rotatio
   if (option.regime === 'rainfed') lines.push(t('whatsapp.rotations.noIrrigation'))
   if (option.evapotranspirationMm !== null) lines.push(t('whatsapp.rotations.consumed', { mm: fmt.number(Math.round(option.evapotranspirationMm)) }))
   if (option.rainfallMm !== null) lines.push(t('whatsapp.rotations.rain', { mm: fmt.number(Math.round(option.rainfallMm)) }))
-  if (option.irrigationSavingPct !== null && option.regime === 'irrigated' && Math.round(option.irrigationSavingPct) !== 0) {
-    const reference = rotations.references[option.regime]
-    lines.push(t(option.irrigationSavingPct > 0 ? 'whatsapp.rotations.saving' : 'whatsapp.rotations.extra', { pct: fmt.number(Math.abs(Math.round(option.irrigationSavingPct))), reference: word('whatsapp.rotations.reference', reference?.kind ?? '', ctx) }))
-  }
+  const compared = irrigationComparison(option, ctx, rotations)
+  if (compared) lines.push(compared)
   if (option.priorityScore !== null) lines.push(t('whatsapp.rotations.affinity', { score: fmt.number(Math.round(option.priorityScore)) }))
   if (option.immatureCampaigns > 0) lines.push(t('whatsapp.rotations.immature', { n: option.immatureCampaigns }))
   if (option.requiresIrrigationConfirmation) lines.push(t('whatsapp.rotations.confirmIrrigation'))
@@ -93,14 +98,14 @@ function optionBubble(head: string, option: RotationOption, ctx: Ctx, rotations:
 }
 
 /** The option to show for a regime: the best for the farmer's goal when they gave one, else the service's own pick, else the highest income. */
-const chosen = (rotations: Rotations, regime: Regime, ctx?: Ctx) => (ctx?.goal ? pickForGoal(rotations, regime, ctx.goal) : null) ?? bestOption(rotations, regime) ?? topIncomeOption(rotations, regime)
+export const chosen = (rotations: Rotations, regime: Regime, ctx?: Ctx) => (ctx?.goal ? pickForGoal(rotations, regime, ctx.goal) : null) ?? bestOption(rotations, regime) ?? topIncomeOption(rotations, regime)
 
 /** The regime the farmer says they have comes first; both are always shown. */
-const regimesFor = (ctx: Ctx): Regime[] => (ctx.water === 'rain' ? ['rainfed', 'irrigated'] : REGIMES)
+export const regimesFor = (ctx: Ctx): Regime[] => (ctx.water === 'rain' ? ['rainfed', 'irrigated'] : REGIMES)
 
-const label = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.label', { years: years(rotations) }) })
-const caution = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.caution', { years: years(rotations) }) })
-const regimeName = (regime: Regime, { t }: Ctx) => t(`whatsapp.rotations.regime.${regime}`)
+export const label = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.label', { years: years(rotations) }) })
+export const caution = (rotations: Rotations, { t }: Ctx): BotBubble => ({ text: t('whatsapp.rotations.caution', { years: years(rotations) }) })
+export const regimeName = (regime: Regime, { t }: Ctx) => t(`whatsapp.rotations.regime.${regime}`)
 
 function planting(rotations: Rotations, ctx: Ctx, compare: boolean): BotBubble[] {
   const bubbles: BotBubble[] = [label(rotations, ctx)]
