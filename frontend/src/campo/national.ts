@@ -35,6 +35,8 @@ export interface FarmPlace {
   municipality: string
   state: string
   point: LatLon
+  /** The district as the live engine described it (GET /district): its main crops; answers then come live. */
+  district?: DistrictPlace
   /** How the place was found: by name, or the closest municipality to the phone's position. */
   how: 'search' | 'gps' | 'example'
   districtKey: string | null
@@ -43,6 +45,28 @@ export interface FarmPlace {
 }
 
 export const DEMO_RADIUS_KM = 40
+
+/** The live district engine (Cloud Run, deploy/district-api) that the farmer view uses; VITE_DISTRICT_API overrides it, "off" disables it. */
+export const DEFAULT_CAMPO_API = 'https://district-api-842797144624.us-central1.run.app'
+export function campoApi(): string | null {
+  const set = (import.meta.env?.VITE_DISTRICT_API as string | undefined)?.trim()
+  if (set?.toLowerCase() === 'off') return null
+  return (set || DEFAULT_CAMPO_API).replace(/\/+$/, '')
+}
+
+/** The live engine's description of a municipality's district, or null when it has no SIAP district (404) or is unreachable. */
+export async function liveDistrict(api: string, municipality: string, state: string, fetcher: typeof fetch = fetch): Promise<DistrictPlace | null> {
+  try {
+    const url = `${api}/district?municipio=${encodeURIComponent(municipality)}&estado=${encodeURIComponent(stateName(state))}`
+    const response = await fetcher(url)
+    if (!response.ok) return null
+    const d = (await response.json()) as { lugar: string; estado: string; regimenes: DistrictPlace['regimenes'] }
+    const regimenes = Object.fromEntries(Object.entries(d.regimenes ?? {}).filter(([, options]) => (options?.length ?? 0) > 0))
+    return Object.keys(regimenes).length > 0 ? { municipio: d.lugar, estado: d.estado, regimenes } : null
+  } catch {
+    return null
+  }
+}
 
 let indexLoading: Promise<NationalIndex | null> | null = null
 let rowsLoading: Promise<MunicipioRow[]> | null = null

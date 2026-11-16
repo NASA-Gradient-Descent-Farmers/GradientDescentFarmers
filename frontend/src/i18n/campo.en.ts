@@ -14,6 +14,7 @@ export const campoEn = {
     searchHint: 'e.g. Valle de Santiago',
     examples: 'Or try an example',
     noDistrict: 'We have no SIAP data for the district of {place}. Try a neighbouring municipality.',
+    looking: 'Finding your district…',
     approx: 'Placed in the municipality closest to your position.',
   },
   water: {

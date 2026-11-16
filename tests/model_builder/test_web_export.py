@@ -83,5 +83,9 @@ def test_serve_passes_known_arguments_and_reports_errors():
         assert status == 400 and "nowhere" in body["error"]
         status, body = _post(port, {"rotacion_actual": "trigo"})
         assert status == 400
+        pre = urllib.request.Request(f"http://127.0.0.1:{port}/compare", method="OPTIONS")
+        with urllib.request.urlopen(pre) as response:     # CORS pre-check: 204, headers, no body
+            assert response.status == 204 and response.read() == b""
+            assert response.headers["Access-Control-Allow-Origin"] == "*"
     finally:
         server.shutdown()

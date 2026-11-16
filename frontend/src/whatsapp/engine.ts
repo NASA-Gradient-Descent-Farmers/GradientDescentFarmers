@@ -46,7 +46,7 @@ export interface ChatState {
    * A place anywhere in Mexico (handed over by the simple farmer view, /campo) when it is not one of the demo places: the
    * chat then answers from the district engine alone. Choosing a demo place replaces it.
    */
-  national?: { label: string; place: DistrictPlace }
+  national?: { label: string; place: DistrictPlace; api?: string | null }
 }
 
 /** The chat's stand-in for a national place: no demo id, so no WOFOST run or observed panel is looked up for it. */
@@ -433,7 +433,7 @@ async function districtFor(state: ChatState, place: DemoLocation, env: Env): Pro
   if (!env.district || !where) return null
   try {
     const { water, goal, previous } = state.situation
-    return await districtAnswerFor(where, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: env.district.api, translate: env.district.translate })
+    return await districtAnswerFor(where, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: state.national && !state.location && state.national.api ? state.national.api : env.district.api, translate: env.district.translate })
   } catch {
     return null
   }

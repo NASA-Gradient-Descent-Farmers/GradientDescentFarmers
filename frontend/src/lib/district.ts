@@ -83,10 +83,13 @@ export interface CurrentRotationOption {
   id: string
   rotacion: string
   etiqueta: string
-  archivo: string
-  secuencia: string
-  distrito: string
-  alternativas: number
+  /** The precomputed answer file; absent for options that come from the live engine (GET /district). */
+  archivo?: string
+  /** The rotation as the engine's structure ([{"pv": crop key}, ...]); sent instead of the text when present. */
+  estructura?: Record<string, string>[]
+  secuencia?: string
+  distrito?: string
+  alternativas?: number
 }
 
 export interface DistrictPlace {
@@ -310,7 +313,7 @@ export async function districtAnswerFor(
         body: JSON.stringify({
           lugar: place.municipio,
           estado: place.estado,
-          rotacion_actual: option.rotacion,
+          rotacion_actual: option.estructura ?? option.rotacion,
           agua: inputs.agua,
           prioridades: inputs.prioridades,
           pendiente: inputs.pendiente,
@@ -328,6 +331,7 @@ export async function districtAnswerFor(
       liveError = error instanceof Error ? error.message : String(error)
     }
   }
+  if (!option.archivo) return null // a live-only option, and the live engine did not answer
   const packed = await getJson<Packed>(`${base}data/district/${option.archivo}`, fetcher)
   const result = unpack(packed, priorityKey(inputs.prioridades))
   if (!result) return null

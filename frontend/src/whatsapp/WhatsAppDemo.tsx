@@ -32,7 +32,7 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 /** What the simple farmer view (/campo) hands over: a demo place id, or a place anywhere with its district, and its answers. */
 interface Handoff {
   demoId?: string
-  national?: { label: string; place: DistrictPlace }
+  national?: { label: string; place: DistrictPlace; api?: string | null }
   inputs: DistrictInputs
 }
 

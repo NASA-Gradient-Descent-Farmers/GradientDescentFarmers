@@ -14,6 +14,7 @@ export const campoEs = {
     searchHint: 'Ej. Valle de Santiago',
     examples: 'O prueba con un ejemplo',
     noDistrict: 'No tenemos datos de SIAP para el distrito de {place}. Prueba con un municipio vecino.',
+    looking: 'Buscando tu distrito…',
     approx: 'Ubicado en el municipio más cercano a tu posición.',
   },
   water: {

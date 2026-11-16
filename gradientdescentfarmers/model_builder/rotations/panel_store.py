@@ -79,20 +79,58 @@ def latest(bucket: str | None = None) -> str:
     return json.loads(_gcloud("cat", f"{_root(bucket)}/latest.json"))["run_id"]
 
 
+def _library():
+    """The Cloud Storage client library, when installed (the API's container); None means use the gcloud CLI."""
+    if shutil.which("gcloud") and not os.environ.get("YOLIA_GCS_LIBRARY"):
+        return None
+    try:
+        from google.cloud import storage
+    except ImportError:
+        return None
+    return storage.Client()
+
+
+def latest_of(bucket: str) -> str:
+    client = _library()
+    if client is None:
+        return latest(bucket)
+    return json.loads(client.bucket(bucket).blob(f"{PREFIX}/latest.json").download_as_text())["run_id"]
+
+
+def _download_by_manifest(client, bucket: str, run_id: str, target: Path) -> None:
+    """Every file the run's manifest names, without listing the bucket (a reader scoped to the prefix cannot list)."""
+    b = client.bucket(bucket)
+    base = f"{PREFIX}/runs/{run_id}"
+    manifest = b.blob(f"{base}/manifest.json").download_as_text()
+    (target / "manifest.json").write_text(manifest, encoding="utf-8")
+    names = [t["path"] for t in json.loads(manifest).get("tables", {}).values() if t.get("path")]
+    for name in names:
+        (target / name).parent.mkdir(parents=True, exist_ok=True)
+        b.blob(f"{base}/{name}").download_to_filename(str(target / name))
+    for extra in ("availability.json", "provenance.json", "validation.json", "README.md"):
+        blob = b.blob(f"{base}/{extra}")
+        if blob.exists():
+            blob.download_to_filename(str(target / extra))
+
+
 def local(url: str) -> Path:
     """A gs:// panel URL (the prefix = latest, or runs/<run_id>) -> a local run folder, downloaded once."""
     if not url.startswith("gs://"):
         return Path(url)
     path = url[5:].rstrip("/")
     bucket, _, rest = path.partition("/")
-    run_id = rest.rsplit("/", 1)[-1] if "/runs/" in f"/{rest}" else latest(bucket)
+    run_id = rest.rsplit("/", 1)[-1] if "/runs/" in f"/{rest}" else latest_of(bucket)
     target = CACHE / run_id
     if (target / "tables").is_dir() and (target / "manifest.json").is_file():
         return target
     partial = CACHE / f".{run_id}.partial"
     shutil.rmtree(partial, ignore_errors=True)
     partial.mkdir(parents=True)
-    _gcloud("cp", "-r", f"gs://{bucket}/{PREFIX}/runs/{run_id}/*", f"{partial}/", capture=False)
+    client = _library()
+    if client is not None:
+        _download_by_manifest(client, bucket, run_id, partial)
+    else:
+        _gcloud("cp", "-r", f"gs://{bucket}/{PREFIX}/runs/{run_id}/*", f"{partial}/", capture=False)
     if not (partial / "tables").is_dir():
         raise FileNotFoundError(f"gs://{bucket}/{PREFIX}/runs/{run_id} has no tables/")
     partial.rename(target)

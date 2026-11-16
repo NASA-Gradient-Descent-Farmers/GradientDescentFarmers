@@ -24,7 +24,7 @@ import {
 import { loadRotations, type Rotations } from '../lib/rotations.ts'
 import { DEMO_HREF, WA_HANDOFF_KEY } from '../whatsapp/route.ts'
 import { regimeOf, wofostPick } from '../whatsapp/summary.ts'
-import { loadMunicipioRows, loadNationalIndex, nationalDistrictPlace, placeByName, placeByPoint, type FarmPlace, type MunicipioRow, type NationalIndex } from './national.ts'
+import { campoApi, liveDistrict, loadMunicipioRows, loadNationalIndex, nationalDistrictPlace, placeByName, placeByPoint, type FarmPlace, type MunicipioRow, type NationalIndex } from './national.ts'
 import '../theme.css'
 import './campo.css'
 
@@ -69,6 +69,7 @@ const capital = (text: string) => text.charAt(0).toUpperCase() + text.slice(1)
 /** The district for a place: the demo answers near a demo point, else the national export. */
 function districtFor(place: FarmPlace, demo: DistrictIndex | null, national: NationalIndex | null): DistrictPlace | null {
   if (place.demoId && demo?.lugares[place.demoId]) return demo.lugares[place.demoId]!
+  if (place.district) return place.district // looked up live
   return national && place.districtKey ? nationalDistrictPlace(national, place.districtKey) : null
 }
 
@@ -204,8 +205,19 @@ function PlaceStep({ rows, national, onPick }: { rows: MunicipioRow[]; national:
   }, [])
   const hits = useMemo(() => searchPlaces(index, query, 6), [index, query])
 
-  const pick = (place: FarmPlace | null, label: string) => {
+  const [looking, setLooking] = useState(false)
+  const pick = async (place: FarmPlace | null, label: string) => {
     if (!place) return setProblem(t('campo.place.gpsFailed'))
+    setProblem(null)
+    const api = campoApi()
+    if (!place.demoId && api) {
+      // the live engine says which district this is and what it grows
+      setLooking(true)
+      const district = await liveDistrict(api, place.municipality, place.state)
+      setLooking(false)
+      if (!district) return setProblem(t('campo.place.noDistrict', { place: label }))
+      return onPick({ ...place, district })
+    }
     if (!place.districtKey && !place.demoId) return setProblem(t('campo.place.noDistrict', { place: label }))
     onPick(place)
   }
@@ -216,7 +228,7 @@ function PlaceStep({ rows, national, onPick }: { rows: MunicipioRow[]; national:
       const point = await currentPosition()
       setGps('idle')
       const place = placeByPoint(rows, national, point)
-      pick(place, place ? `${place.municipality}, ${stateLabel(place.state)}` : '')
+      void pick(place, place ? `${place.municipality}, ${stateLabel(place.state)}` : '')
     } catch {
       setGps('failed')
     }
@@ -236,13 +248,14 @@ function PlaceStep({ rows, national, onPick }: { rows: MunicipioRow[]; national:
         <ul className="campo-hits">
           {hits.map((p) => (
             <li key={`${p.state}|${p.municipality}`}>
-              <button type="button" onClick={() => pick(placeByName(rows, national, p.municipality, p.state), `${p.municipality}, ${p.state}`)}>
+              <button type="button" disabled={looking} onClick={() => void pick(placeByName(rows, national, p.municipality, p.state), `${p.municipality}, ${p.state}`)}>
                 <strong>{p.municipality}</strong> <span>{p.state}</span>
               </button>
             </li>
           ))}
         </ul>
       )}
+      {looking && <p className="campo-hint">{t('campo.place.looking')}</p>}
       {problem && <p className="campo-note">{problem}</p>}
       <p className="campo-hint">{t('campo.place.examples')}</p>
       <div className="campo-examples">
@@ -253,7 +266,7 @@ function PlaceStep({ rows, national, onPick }: { rows: MunicipioRow[]; national:
             className="chip"
             onClick={() => {
               const place = placeByPoint(rows, national, { lat: d.latitude, lon: d.longitude })
-              pick(place ? { ...place, how: 'example', demoId: d.id } : null, d.name)
+              void pick(place ? { ...place, how: 'example', demoId: d.id } : null, d.name)
             }}
           >
             {d.name}
@@ -362,14 +375,14 @@ function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }:
       setAnswer(null)
       return
     }
-    districtAnswerFor(district, { agua, rotacion: option.id, prioridades: prioridad ? [prioridad] : [] }, {}, base, { translate, api: null }).then(
+    districtAnswerFor(district, { agua, rotacion: option.id, prioridades: prioridad ? [prioridad] : [] }, {}, base, { translate, api: place.district ? campoApi() : null }).then(
       (a) => alive && setAnswer(a),
       () => alive && setAnswer(null),
     )
     return () => {
       alive = false
     }
-  }, [district, agua, option, prioridad, base, translate])
+  }, [district, agua, option, prioridad, base, translate, place.district])
 
   useEffect(() => {
     if (!place.demoId) return setWofost(null)
@@ -411,7 +424,7 @@ function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }:
     try {
       const inputs = { agua, rotacion: option?.id, prioridades: prioridad ? [prioridad] : [] }
       const label = `${place.how === 'example' && place.demoId ? district.municipio : place.municipality}, ${stateLabel(place.state)}`
-      sessionStorage.setItem(WA_HANDOFF_KEY, JSON.stringify(place.demoId ? { demoId: place.demoId, inputs } : { national: { label, place: district }, inputs }))
+      sessionStorage.setItem(WA_HANDOFF_KEY, JSON.stringify(place.demoId ? { demoId: place.demoId, inputs } : { national: { label, place: district, api: place.district ? campoApi() : null }, inputs }))
     } catch {
       // the chat then simply starts at the greeting
     }
