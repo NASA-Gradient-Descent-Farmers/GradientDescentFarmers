@@ -12,6 +12,7 @@ import type { Narrator } from '../llm/client.ts'
 import { EMPTY_CHAT, reply, type BotBubble, type ChatState, type Env } from './engine.ts'
 import { districtBubbles, districtFacts } from './districtAnswers.ts'
 import { checkNumbers } from '../llm/guard.ts'
+import { resetCentres } from '../lib/acopio.ts'
 
 const root = new URL('../../public/', import.meta.url)
 /** A fetch that reads the app's own public/ folder. */
@@ -129,6 +130,19 @@ describe('the chat with both engines', () => {
     const sized = await reply('siembro 2.5 hectáreas', asked.state, env)
     expect(sized.state.situation.hectares).toBe(2.5)
     expect(flat(sized.bubbles)).not.toMatch(/cuántas hectáreas/)
+  })
+
+  it('names the nearest official collection centre in the same state when the directory is there', async () => {
+    resetCentres()
+    const directory = { source: 'test', url: '', downloaded: '2026-11-15', located: 'municipio', columns: [], centros: [['Guanajuato', 'Salvatierra', 'Salvatierra', '11 CA SALVATIERRA', 'Calle Prueba S/N', 20.2138, -100.8806, 'B-11-028-0001-001'], ['Jalisco', 'La Barca', 'El Carmen', '08 CA EL CARMEN', 'Km 10', 20.29, -102.55, 'B-14-018-0009-004']] }
+    const fetcher = (async (url: string) => (String(url).endsWith('data/acopio.json') ? new Response(JSON.stringify(directory)) : diskFetch(url))) as typeof fetch
+    const env = withDistrict({ district: { index, base: '/', fetcher, api: null } })
+    const { bubbles } = await talk(env, 'Guanajuato', '¿Dónde vendo mi maíz?')
+    const text = flat(bubbles)
+    expect(text).toMatch(/Centro de acopio Salvatierra/)
+    expect(text).not.toMatch(/El Carmen/)
+    expect(text).toMatch(/no dice qué grano recibe/)
+    resetCentres()
   })
 
   it('gives the model the sell facts, with only the engines\' figures', async () => {

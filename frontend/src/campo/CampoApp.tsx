@@ -24,7 +24,8 @@ import {
 import { loadRotations, type Rotations } from '../lib/rotations.ts'
 import { DEMO_HREF, WA_HANDOFF_KEY } from '../whatsapp/route.ts'
 import { regimeOf, wofostPick } from '../whatsapp/summary.ts'
-import { needsSize, SELL_LINKS, sellLines, GUARANTEE, type FarmSize } from '../lib/market.ts'
+import { needsSize, nearestSentences, SELL_LINKS, sellLines, GUARANTEE, type FarmSize } from '../lib/market.ts'
+import { loadCentres, nearestCentres, type Centres } from '../lib/acopio.ts'
 import { campoApi, liveDistrict, loadMunicipioRows, loadNationalIndex, nationalDistrictPlace, placeByName, placeByPoint, type FarmPlace, type MunicipioRow, type NationalIndex } from './national.ts'
 import '../theme.css'
 import './campo.css'
@@ -311,6 +312,10 @@ interface SellContext {
   onSize: (size: FarmSize) => void
   /** Ask the farm size here (the main suggestion only). */
   ask: boolean
+  /** The official collection centres, when the directory is loaded; the farmer's point to measure from. */
+  centres?: Centres | null
+  point?: { lat: number; lon: number }
+  municipality?: string
 }
 
 const SIZES: FarmSize[] = ['hasta5', 'hasta30', 'mas30']
@@ -363,6 +368,13 @@ function Sell({ rotation, sell, asked }: { rotation: DistrictRotation; sell: Sel
           ),
         )}
       </ul>
+      {hasGuarantee && sell.centres && sell.point && (
+        <div className="campo-small">
+          {nearestSentences(nearestCentres(sell.centres.centres, sell.point, sell.state, sell.municipality, 1), sell.centres.downloaded, t, fmt).map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      )}
       <p className="campo-small">
         {hasGuarantee && (
           <>
@@ -452,6 +464,10 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
   const base = import.meta.env.BASE_URL
   const [answer, setAnswer] = useState<DistrictAnswer | null | undefined>(undefined)
   const [wofost, setWofost] = useState<Rotations | null>(null)
+  const [centres, setCentres] = useState<Centres | null>(null)
+  useEffect(() => {
+    void loadCentres(base).then(setCentres)
+  }, [base])
 
   useEffect(() => {
     let alive = true
@@ -503,7 +519,7 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
   const byIncome = prioridad === 'ingreso' ? [...alternativesOf(result)].filter((r) => r.vs_actual_ingreso && !r.adopcion.condicional).sort((a, b) => b.vs_actual_ingreso!.media - a.vs_actual_ingreso!.media)[0] : undefined
   const best = byIncome ?? bestAlternative(result)
   const others = alternativesOf(result).filter((r) => r !== best)
-  const sell: SellContext = { agua, state: place.state, size, onSize, ask: false }
+  const sell: SellContext = { agua, state: place.state, size, onSize, ask: false, centres, point: place.point, municipality: place.municipality }
   // the size question goes on the main card; when only another option has maíz or frijol, it goes on the first of those
   const askOn = best && needsSize([best], agua, place.state) ? best : others.find((r) => needsSize([r], agua, place.state))
   const goalOf = prioridad === 'ingreso' ? 'earn' : prioridad === 'agua' ? 'water' : prioridad === 'suelo' ? 'soil' : null
@@ -512,7 +528,7 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
     try {
       const inputs = { agua, rotacion: option?.id, prioridades: prioridad ? [prioridad] : [] }
       const label = `${place.how === 'example' && place.demoId ? district.municipio : place.municipality}, ${stateLabel(place.state)}`
-      sessionStorage.setItem(WA_HANDOFF_KEY, JSON.stringify(place.demoId ? { demoId: place.demoId, inputs } : { national: { label, place: district, api: place.district ? campoApi() : null }, inputs }))
+      sessionStorage.setItem(WA_HANDOFF_KEY, JSON.stringify(place.demoId ? { demoId: place.demoId, inputs } : { national: { label, place: district, api: place.district ? campoApi() : null, point: place.point }, inputs }))
     } catch {
       // the chat then simply starts at the greeting
     }

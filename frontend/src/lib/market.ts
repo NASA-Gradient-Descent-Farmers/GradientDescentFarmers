@@ -1,3 +1,4 @@
+import type { NearCentre } from './acopio.ts'
 import type { DistrictRotation, WaterRegime } from './district.ts'
 
 // "Where to sell": for each crop in a rotation, the official buyer and price when there is one, else where wholesale
@@ -159,6 +160,21 @@ export function sellSentences(lines: SellLine[], t: T, fmt: Fmt): string[] {
     if (l.pigmented != null) parts.push(t('campo.answer.sell.pigmented', { price: money(l.pigmented) }))
     return parts.join(' ')
   })
+}
+
+/** The nearest collection centres as sentences: only when a guarantee price is in play and the directory is loaded. */
+export function nearestSentences(near: NearCentre[], downloaded: string | null, t: T, fmt: Fmt): string[] {
+  if (!near.length) return []
+  const place = (c: NearCentre) => [c.locality, c.municipality].filter((x, i, all) => x && all.indexOf(x) === i).join(', ')
+  const title = (x: string) => (x === x.toUpperCase() ? x.toLowerCase().replace(/(^|\s)(\p{L})/gu, (_, sp: string, ch: string) => sp + ch.toUpperCase()) : x)
+  const name = (c: NearCentre) => title(c.name.replace(/^\d+\s+/, '')).replace(/^Ca\s+/, 'Centro de acopio ')
+  const lines = near.slice(0, 1).map((c) =>
+    c.sameMunicipality
+      ? t('campo.answer.sell.nearestSame', { name: name(c), place: place(c), address: c.address })
+      : t('campo.answer.sell.nearest', { name: name(c), place: place(c), km: fmt.number(Math.max(5, Math.round(c.km / 5) * 5)), address: c.address }),
+  )
+  if (downloaded) lines.push(t('campo.answer.sell.nearestNote', { date: downloaded }))
+  return lines
 }
 
 /** The sell lines as facts for the language model (Spanish, the engines' figures only). */

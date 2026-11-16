@@ -6,7 +6,8 @@
 import type { Format } from '../lib/format.ts'
 import { alternativesOf, bestAlternative, currentOf, incomeDelta, splitName, type DistrictAnswer, type DistrictRotation } from '../lib/district.ts'
 import type { BotBubble } from './engine.ts'
-import { sellFacts, sellLinesFor, sellSentences, type FarmSize } from '../lib/market.ts'
+import { nearestSentences, sellFacts, sellLinesFor, sellSentences, type FarmSize } from '../lib/market.ts'
+import type { NearCentre } from '../lib/acopio.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
@@ -17,6 +18,9 @@ export interface DistrictCtx {
   simple?: boolean
   /** Farm size, when the farmer said it: whether a guarantee price applies. */
   size?: FarmSize | null
+  /** The nearest official collection centres (sell answers), and when their directory was downloaded. */
+  near?: NearCentre[]
+  downloaded?: string | null
 }
 
 export type DistrictTopic = 'summary' | 'why' | 'risks' | 'trends' | 'water' | 'place' | 'money' | 'sell'
@@ -144,6 +148,7 @@ function sell(answer: DistrictAnswer, ctx: DistrictCtx): BotBubble[] {
   const unknownSize = guarantee && !ctx.size
   return [
     { text: [bold(t('campo.answer.sell.title')), bullets(sellSentences(lines, t, ctx.fmt))].join('\n') },
+    ...(guarantee && ctx.near?.length ? [{ text: nearestSentences(ctx.near, ctx.downloaded ?? null, t, ctx.fmt).join('\n') }] : []),
     { text: [guarantee ? t('whatsapp.district.sellWhere', { year: 2026 }) : t('whatsapp.district.sellSniim'), unknownSize ? t('whatsapp.district.sellAskSize') : ''].filter(Boolean).join('\n') },
   ]
 }

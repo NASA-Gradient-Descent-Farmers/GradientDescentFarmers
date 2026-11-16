@@ -3,7 +3,12 @@ import { readFileSync } from 'node:fs'
 
 /** The rows of a CSV file as objects keyed by the header row. */
 export function readCsv(path) {
-  const text = readFileSync(path, 'utf8')
+  return parseCsv(readFileSync(path, 'utf8'))
+}
+
+/** The rows of CSV text as objects keyed by the header row. */
+export function parseCsv(text) {
+  text = text.replace(/^\uFEFF/, '')
   const rows = []
   let row = []
   let field = ''

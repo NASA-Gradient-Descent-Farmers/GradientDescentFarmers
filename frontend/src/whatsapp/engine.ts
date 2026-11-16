@@ -23,6 +23,7 @@ import { districtAnswerFor, type DistrictAnswer, type DistrictIndex, type Distri
 import type { Narrator } from '../llm/client.ts'
 import type { FollowUp } from '../llm/prompt.ts'
 import { sizeOf } from '../lib/market.ts'
+import { loadCentres, nearestCentres } from '../lib/acopio.ts'
 import { districtBubbles } from './districtAnswers.ts'
 import { availableFollowUps, DEFAULT_FOLLOW_UPS, followUpLabel, narrateRequest, writtenSummary } from './summary.ts'
 
@@ -47,7 +48,7 @@ export interface ChatState {
    * A place anywhere in Mexico (handed over by the simple farmer view, /campo) when it is not one of the demo places: the
    * chat then answers from the district engine alone. Choosing a demo place replaces it.
    */
-  national?: { label: string; place: DistrictPlace; api?: string | null }
+  national?: { label: string; place: DistrictPlace; api?: string | null; point?: { lat: number; lon: number } }
 }
 
 /** The chat's stand-in for a national place: no demo id, so no WOFOST run or observed panel is looked up for it. */
@@ -537,9 +538,18 @@ async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation,
     case 'water':
       bubbles = answer ? districtBubbles(id, answer, ctx) : none
       break
-    case 'sell':
-      bubbles = answer ? districtBubbles('sell', answer, ctx) : none
+    case 'sell': {
+      if (!answer) {
+        bubbles = none
+        break
+      }
+      // the nearest official collection centre, when the directory is there and the place has a point
+      const point = state.national && !state.location ? state.national.point : { lat: place.latitude, lon: place.longitude }
+      const directory = env.district ? await loadCentres(env.district.base, env.district.fetcher) : null
+      const near = directory && point ? nearestCentres(directory.centres, point, answer.result.lugar.estado, answer.result.lugar.municipio ?? undefined, 1) : []
+      bubbles = districtBubbles('sell', answer, { ...ctx, near, downloaded: directory?.downloaded ?? null })
       break
+    }
     case 'money':
       bubbles = [...(rotations ? wofost('money') : []), ...(answer ? districtBubbles('money', answer, ctx) : [])]
       break
