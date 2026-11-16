@@ -24,6 +24,7 @@ import {
 import { loadRotations, type Rotations } from '../lib/rotations.ts'
 import { DEMO_HREF, WA_HANDOFF_KEY } from '../whatsapp/route.ts'
 import { regimeOf, wofostPick } from '../whatsapp/summary.ts'
+import { needsSize, SELL_LINKS, sellLines, GUARANTEE, type FarmSize } from './market.ts'
 import { campoApi, liveDistrict, loadMunicipioRows, loadNationalIndex, nationalDistrictPlace, placeByName, placeByPoint, type FarmPlace, type MunicipioRow, type NationalIndex } from './national.ts'
 import '../theme.css'
 import './campo.css'
@@ -44,6 +45,8 @@ interface Saved {
   agua?: WaterRegime
   rotacion?: string
   prioridad?: PriorityId | null
+  /** Farm size, asked only where a guarantee price depends on it. */
+  ha?: FarmSize
   step: Step
 }
 
@@ -159,8 +162,10 @@ function Campo() {
             agua={agua}
             option={options.find((o) => o.id === state.rotacion) ?? options[0]}
             prioridad={state.prioridad ?? null}
+            size={state.ha ?? null}
+            onSize={(ha) => setState({ ...state, ha })}
             onEdit={(step) => setState({ ...state, step })}
-            onRestart={() => setState({ step: 'place' })}
+            onRestart={() => setState({ step: 'place', ha: state.ha })}
           />
         )}
       </main>
@@ -299,7 +304,84 @@ function Money({ rotation }: { rotation: DistrictRotation }) {
 /** The first risk that is not the income difference (already shown above it). */
 const mainRisk = (r: DistrictRotation) => r.tarjeta.riesgos.find((x) => !/^(menos ingreso|diferencia de ingreso|less income|income difference)/i.test(x)) ?? r.tarjeta.riesgos[0]
 
-function Option({ rotation, open }: { rotation: DistrictRotation; open?: boolean }) {
+interface SellContext {
+  agua: WaterRegime
+  state: string
+  size: FarmSize | null
+  onSize: (size: FarmSize) => void
+  /** Ask the farm size here (the main suggestion only). */
+  ask: boolean
+}
+
+const SIZES: FarmSize[] = ['hasta5', 'hasta30', 'mas30']
+
+function Sell({ rotation, sell, asked }: { rotation: DistrictRotation; sell: SellContext; asked: boolean }) {
+  const { t, fmt } = useI18n()
+  const lines = sellLines(rotation, sell.agua, sell.state, sell.size)
+  if (!lines.length) return null
+  const money = (n: number) => fmt.number(Math.round(n))
+  const hasGuarantee = lines.some((l) => l.kind === 'guarantee')
+  return (
+    <div className="campo-sell">
+      <p className="campo-sell-title">{t('campo.answer.sell.title')}</p>
+      {asked && hasGuarantee && (
+        <div className="campo-sell-size" role="group" aria-label={t('campo.answer.sell.size')}>
+          <span>{t('campo.answer.sell.size')}</span>
+          {SIZES.map((s) => (
+            <button key={s} type="button" className="chip" aria-pressed={sell.size === s} onClick={() => sell.onSize(s)}>
+              {t(`campo.answer.sell.${s}`)}
+            </button>
+          ))}
+        </div>
+      )}
+      <ul>
+        {lines.map((l) =>
+          l.kind === 'guarantee' ? (
+            <li key={l.program}>
+              <strong>{capital(t(`campo.answer.sell.crop.${l.program}`))}:</strong> {t('campo.answer.sell.guarantee', { crop: t(`campo.answer.sell.crop.${l.program}`), price: money(l.price), maxT: l.maxT, maxTHa: fmt.number(l.maxTHa, l.maxTHa % 1 ? 1 : 0) })}{' '}
+              {l.eligible === null ? t('campo.answer.sell.ifSize', { ha: l.maxHa }) : l.eligible ? t('campo.answer.sell.eligible') : t('campo.answer.sell.notEligible', { ha: l.maxHa })}{' '}
+              {l.districtPrice != null && l.eligible === false && t('campo.answer.sell.districtOnly', { price: money(l.districtPrice) })}
+              {l.districtPrice != null &&
+                l.eligible !== false &&
+                t('campo.answer.sell.district', {
+                  price: money(l.districtPrice),
+                  diff: t(l.price >= l.districtPrice ? 'campo.answer.sell.above' : 'campo.answer.sell.below', { n: money(Math.abs(l.price - l.districtPrice)) }),
+                })}{' '}
+              {l.pigmented != null && t('campo.answer.sell.pigmented', { price: money(l.pigmented) })}
+            </li>
+          ) : (
+            <li key="market">
+              {t('campo.answer.sell.market', { crops: capital(l.crops.map((c) => c.crop.toLowerCase()).join(', ')) })}{' '}
+              {l.crops.some((c) => c.price != null) &&
+                t('campo.answer.sell.marketPrices', {
+                  list: l.crops
+                    .filter((c) => c.price != null)
+                    .map((c) => `${c.crop.toLowerCase()} $${money(c.price!)}/t`)
+                    .join(', '),
+                })}
+            </li>
+          ),
+        )}
+      </ul>
+      <p className="campo-small">
+        {hasGuarantee && (
+          <>
+            <a href={SELL_LINKS.acopio} target="_blank" rel="noreferrer">
+              {t('campo.answer.sell.centres')}
+            </a>
+            {' · '}
+          </>
+        )}
+        <a href={SELL_LINKS.sniim} target="_blank" rel="noreferrer">
+          {t('campo.answer.sell.sniim')}
+        </a>
+        {hasGuarantee && <> · {t('campo.answer.sell.check', { year: GUARANTEE.year })}</>}
+      </p>
+    </div>
+  )
+}
+
+function Option({ rotation, open, sell }: { rotation: DistrictRotation; open?: boolean; sell: SellContext }) {
   const { t } = useI18n()
   const card = rotation.tarjeta
   const risk = mainRisk(rotation)
@@ -313,6 +395,7 @@ function Option({ rotation, open }: { rotation: DistrictRotation; open?: boolean
           <strong>{t('campo.answer.watch')}:</strong> {risk}
         </p>
       )}
+      <Sell rotation={rotation} sell={sell} asked={sell.ask} />
       {card.revisar_con_tecnico[0] && (
         <p>
           <strong>{t('campo.answer.askTech')}:</strong> {card.revisar_con_tecnico[0]}
@@ -353,12 +436,14 @@ function Option({ rotation, open }: { rotation: DistrictRotation; open?: boolean
   )
 }
 
-function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }: {
+function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit, onRestart }: {
   place: FarmPlace
   district: DistrictPlace
   agua: WaterRegime
   option: CurrentRotationOption | undefined
   prioridad: PriorityId | null
+  size: FarmSize | null
+  onSize: (size: FarmSize) => void
   onEdit: (step: Step) => void
   onRestart: () => void
 }) {
@@ -418,6 +503,9 @@ function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }:
   const byIncome = prioridad === 'ingreso' ? [...alternativesOf(result)].filter((r) => r.vs_actual_ingreso && !r.adopcion.condicional).sort((a, b) => b.vs_actual_ingreso!.media - a.vs_actual_ingreso!.media)[0] : undefined
   const best = byIncome ?? bestAlternative(result)
   const others = alternativesOf(result).filter((r) => r !== best)
+  const sell: SellContext = { agua, state: place.state, size, onSize, ask: false }
+  // the size question goes on the main card; when only another option has maíz or frijol, it goes on the first of those
+  const askOn = best && needsSize([best], agua, place.state) ? best : others.find((r) => needsSize([r], agua, place.state))
   const goalOf = prioridad === 'ingreso' ? 'earn' : prioridad === 'agua' ? 'water' : prioridad === 'suelo' ? 'soil' : null
   const wofostOption = wofost ? wofostPick(translate(wofost), regimeOf(agua), goalOf) : null
   const handoff = () => {
@@ -447,7 +535,7 @@ function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }:
           {byIncome && <p className="campo-small">{t('campo.answer.byIncome')}</p>}
           <h1>{capital(splitName(best.nombre).crops)}</h1>
           <p className="campo-small">{best.secuencia}</p>
-          <Option rotation={best} open />
+          <Option rotation={best} open sell={{ ...sell, ask: askOn === best }} />
         </article>
       ) : (
         <p className="campo-note">{result.nota_opciones ?? t('campo.answer.none')}</p>
@@ -473,7 +561,7 @@ function Answer({ place, district, agua, option, prioridad, onEdit, onRestart }:
         <div className="campo-card">
           <p className="campo-kicker">{t('campo.answer.others')}</p>
           {others.map((r) => (
-            <Option key={r.id + r.nombre} rotation={r} />
+            <Option key={r.id + r.nombre} rotation={r} sell={{ ...sell, ask: askOn === r }} />
           ))}
         </div>
       )}
