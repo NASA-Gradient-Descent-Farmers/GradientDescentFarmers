@@ -4,7 +4,7 @@
 
 |  |  |
 |---|---|
-| **Live demo** | https://yolia.netlify.app (nothing to install; Spanish first, English with the toggle in the top bar) |
+| **Live demo** | https://yoliaa.online (nothing to install; Spanish first, English with the toggle in the top bar) |
 | **Code** | https://github.com/NASA-Gradient-Descent-Farmers/GradientDescentFarmers |
 | **Try it in 2 minutes** | [How to see it](#try-it-in-2-minutes) |
 
@@ -43,7 +43,7 @@ exploratory scenarios (low confidence, not validated in the field); see [Limits]
 
 ## Try it in 2 minutes
 
-1. Open **https://yolia.netlify.app** and press **Entrar a YoliA**. Create a test account (no password: it is a local
+1. Open **https://yoliaa.online** and press **Entrar a YoliA**. Create a test account (no password: it is a local
    simulation) as **Agricultor**.
 2. Mark a field on the map (or pick Sonora, Sinaloa or Guanajuato), answer the five short questions, then ask
    **"What should I plant?"**. You get the plan card above, then the district-history comparison.
