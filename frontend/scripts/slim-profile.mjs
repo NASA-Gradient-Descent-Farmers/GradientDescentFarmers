@@ -49,7 +49,7 @@ const slim = {
   qaOk: audit.qa_ok === true,
   latitude: profile.farmer_inputs.latitude,
   longitude: profile.farmer_inputs.longitude,
-  country: profile.farmer_inputs.country_iso3,
+  countryIso3: profile.farmer_inputs.country_iso3,
   period: { from: day(weather[0].date), to: day(weather[weather.length - 1].date) },
   climate: {
     monthly: csv('climate_monthly_features.csv').map((r) => ({
