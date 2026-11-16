@@ -18,7 +18,17 @@ STAGE=$(mktemp -d)
 trap 'rm -rf "$STAGE"' EXIT
 cp deploy/district-api/Dockerfile "$STAGE/"
 cp -r gradientdescentfarmers "$STAGE/" && find "$STAGE" -name __pycache__ -prune -exec rm -rf {} +
-gcloud builds submit "$STAGE" --tag "$IMAGE" --project="$PROJECT" --region="$REGION"
+# --async + polling: accounts without project log access cannot stream build logs, which gcloud treats as a failure
+BUILD=$(gcloud builds submit "$STAGE" --tag "$IMAGE" --project="$PROJECT" --region="$REGION" --async --format='value(id)')
+echo "build $BUILD"
+while true; do
+  STATUS=$(gcloud builds describe "$BUILD" --project="$PROJECT" --region="$REGION" --format='value(status)')
+  case "$STATUS" in
+    SUCCESS) break ;;
+    QUEUED|WORKING|PENDING) sleep 10 ;;
+    *) echo "build $BUILD: $STATUS" >&2; exit 1 ;;
+  esac
+done
 
 gcloud run deploy "$SERVICE" --image "$IMAGE" --project="$PROJECT" --region="$REGION" \
   --service-account="$RUNTIME_SA" --allow-unauthenticated \
