@@ -2,4 +2,5 @@
 # (such as /demo/whatsapp) gets index.html. Real files (assets, data/*.json, favicon) are served as they are.
 # The chat's language model (netlify/functions/yolia-chat.mts); must come before the catch-all.
 /api/yolia-chat    /.netlify/functions/yolia-chat    200
+/api/yolia-translate    /.netlify/functions/yolia-translate    200
 /*    /index.html   200

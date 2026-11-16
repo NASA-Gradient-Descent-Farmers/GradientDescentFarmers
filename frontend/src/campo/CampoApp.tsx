@@ -4,7 +4,7 @@ import { LangToggle } from '../components/LangToggle.tsx'
 import { currentPosition } from '../farmer/geolocate.ts'
 import { loadPlaces, searchPlaces, stateLabel, type IndexedPlace } from '../farmer/places.ts'
 import { I18nProvider, useI18n } from '../i18n/index.tsx'
-import { useDataTranslation } from '../lib/dataI18n.ts'
+import { translateLive, useDataTranslation } from '../lib/dataI18n.ts'
 import { DEMO_LOCATIONS } from '../lib/demoLocations.ts'
 import {
   alternativesOf,
@@ -109,6 +109,7 @@ function Campo() {
   const regimes = district ? (['riego', 'temporal'] as WaterRegime[]).filter((r) => (district.regimenes[r]?.length ?? 0) > 0) : []
   const agua = state.agua && regimes.includes(state.agua) ? state.agua : regimes[0]
   const options = (district && agua && district.regimenes[agua]) || []
+  const labels = useLiveLabels(options.map((o) => o.etiqueta))
 
   const steps: Step[] = ['place', 'water', 'crop', 'goal']
   const stepIndex = steps.indexOf(state.step)
@@ -145,8 +146,8 @@ function Campo() {
             {state.agua && agua && state.agua !== agua && (
               <p className="campo-note">{t('campo.water.missing', { regime: t(`district.regime.${state.agua}`), other: t(`district.regime.${agua}`) })}</p>
             )}
-            {options.map((o) => (
-              <BigChoice key={o.id} label={capital(o.etiqueta)} selected={state.rotacion === o.id} onClick={() => setState({ ...state, agua, rotacion: o.id, step: 'goal' })} />
+            {options.map((o, i) => (
+              <BigChoice key={o.id} label={capital(labels[i] ?? o.etiqueta)} selected={state.rotacion === o.id} onClick={() => setState({ ...state, agua, rotacion: o.id, step: 'goal' })} />
             ))}
           </Question>
         )}
@@ -173,6 +174,24 @@ function Campo() {
       </main>
     </div>
   )
+}
+
+/** The current-rotation labels in the page's language: the live engine's are translated on the spot in English. */
+function useLiveLabels(spanish: string[]): string[] {
+  const { lang } = useI18n()
+  const translate = useDataTranslation()
+  const key = spanish.join('|')
+  const [live, setLive] = useState<{ key: string; labels: string[] } | null>(null)
+  useEffect(() => {
+    if (lang !== 'en' || !key) return
+    let alive = true
+    void translateLive(key.split('|').map((etiqueta) => ({ etiqueta })), import.meta.env.BASE_URL).then(({ value }) => alive && setLive({ key, labels: value.map((v) => v.etiqueta) }))
+    return () => {
+      alive = false
+    }
+  }, [lang, key])
+  if (lang !== 'en') return spanish
+  return live?.key === key ? live.labels : spanish.map((etiqueta) => translate({ etiqueta }).etiqueta)
 }
 
 function Question({ title, hint, onBack, children }: { title: string; hint?: string; onBack?: () => void; children: React.ReactNode }) {
@@ -464,6 +483,8 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
   const translate = useDataTranslation()
   const base = import.meta.env.BASE_URL
   const [answer, setAnswer] = useState<DistrictAnswer | null | undefined>(undefined)
+  /** In English, whether some of the live engine's text could not be translated (it is then shown in Spanish, with a note). */
+  const [spanishLeft, setSpanishLeft] = useState(false)
   const [wofost, setWofost] = useState<Rotations | null>(null)
   const [centres, setCentres] = useState<Centres | null>(null)
   useEffect(() => {
@@ -477,14 +498,25 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
       setAnswer(null)
       return
     }
-    districtAnswerFor(district, { agua, rotacion: option.id, prioridades: prioridad ? [prioridad] : [] }, {}, base, { translate, api: place.district ? campoApi() : null }).then(
-      (a) => alive && setAnswer(a),
-      () => alive && setAnswer(null),
-    )
+    districtAnswerFor(district, { agua, rotacion: option.id, prioridades: prioridad ? [prioridad] : [] }, {}, base, { translate, api: place.district ? campoApi() : null })
+      .then(async (a) => {
+        // outside the demo places the engine's text was never translated ahead of time: ask for the English now
+        if (!a || lang !== 'en' || place.demoId) return { a, left: false }
+        const live = await translateLive(a, base)
+        return { a: live.value, left: !live.complete }
+      })
+      .then(
+        ({ a, left }) => {
+          if (!alive) return
+          setAnswer(a)
+          setSpanishLeft(left)
+        },
+        () => alive && setAnswer(null),
+      )
     return () => {
       alive = false
     }
-  }, [district, agua, option, prioridad, base, translate, place.district])
+  }, [district, agua, option, prioridad, base, translate, place.district, place.demoId, lang])
 
   useEffect(() => {
     if (!place.demoId) return setWofost(null)
@@ -546,7 +578,7 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
         </button>
       </p>
       {place.how === 'gps' && <p className="campo-small">{t('campo.place.approx')}</p>}
-      {lang === 'en' && !place.demoId && <p className="campo-small">{t('campo.answer.english')}</p>}
+      {lang === 'en' && spanishLeft && <p className="campo-small">{t('campo.answer.english')}</p>}
 
       {best ? (
         <article className="campo-card is-main">

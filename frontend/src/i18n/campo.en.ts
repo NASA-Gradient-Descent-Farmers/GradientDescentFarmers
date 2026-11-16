@@ -88,6 +88,6 @@ export const campoEn = {
     whatsapp: 'Ask YoliA on WhatsApp',
     restart: 'Start again',
     source: 'Your district\'s history: SIAP 2003-2025 and NASA climate.',
-    english: 'Outside the three demo places, the engine\'s explanations are shown in Spanish.',
+    english: 'Some of the engine\'s explanations could not be translated just now and are shown in Spanish.',
   },
 }

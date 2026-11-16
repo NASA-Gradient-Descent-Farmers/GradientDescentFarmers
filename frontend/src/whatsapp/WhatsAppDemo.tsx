@@ -5,7 +5,7 @@ import { DEMO_LOCATIONS, demoLocation, type DemoLocationId } from '../lib/demoLo
 import { loadEnvironment, type EnvironmentByLocation } from '../lib/environment.ts'
 import { loadRotations, type RotationsByLocation } from '../lib/rotations.ts'
 import { liveApi, loadDistrictIndex, type DistrictIndex } from '../lib/district.ts'
-import { loadTranslations, translateData, type Translations } from '../lib/dataI18n.ts'
+import { loadTranslations, translateData, translateLive, type Translations } from '../lib/dataI18n.ts'
 import { llmEnabled, makeNarrator, probeNarrator, type Narrator } from '../llm/client.ts'
 import type { DashboardData } from '../lib/types.ts'
 import { EMPTY_CHAT, greeting, resultsKind, type BotBubble, type ChatState, type Env, type QuickReply } from './engine.ts'
@@ -114,7 +114,7 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
       const translate = <T,>(value: T): T => translateData(value, map)
       return {
         data, rotations: translate(rotations), environment, t, fmt, distance, lang, narrate: narrate ?? null,
-        ...(district ? { district: { index: translate(district), base, api: liveApi(), translate } } : {}),
+        ...(district ? { district: { index: translate(district), base, api: liveApi(), translate, translateLive: async <T,>(value: T) => (await translateLive(value, base)).value } } : {}),
       }
     },
     [data, rotations, environment, t, fmt, distance, lang, narrate, district, base, translations],

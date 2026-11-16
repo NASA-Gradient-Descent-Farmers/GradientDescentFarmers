@@ -90,7 +90,7 @@ export interface Env {
    * The SIAP district engine's precomputed answers (lib/district.ts). When given, a planting question gets one summary of both
    * engines with follow-up buttons, and the WOFOST details are one tap away; without it the chat answers as before.
    */
-  district?: { index: DistrictIndex; base: string; fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T }
+  district?: { index: DistrictIndex; base: string; fetcher?: typeof fetch; api?: string | null; translate?: <T>(value: T) => T; /** In English: the live engine's text not translated ahead of time, asked for now. */ translateLive?: <T>(value: T) => Promise<T> }
   /** The language model that phrases the summary (llm/client.ts); null or failing means the written summary. */
   narrate?: Narrator | null
 }
@@ -435,7 +435,8 @@ async function districtFor(state: ChatState, place: DemoLocation, env: Env): Pro
   if (!env.district || !where) return null
   try {
     const { water, goal, previous } = state.situation
-    return await districtAnswerFor(where, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: state.national && !state.location && state.national.api ? state.national.api : env.district.api, translate: env.district.translate })
+    const answer = await districtAnswerFor(where, state.district ?? {}, { water, goal, previous }, env.district.base, { fetcher: env.district.fetcher, api: state.national && !state.location && state.national.api ? state.national.api : env.district.api, translate: env.district.translate })
+    return answer && env.lang === 'en' && env.district.translateLive ? await env.district.translateLive(answer) : answer
   } catch {
     return null
   }
