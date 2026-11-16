@@ -106,6 +106,7 @@ export const whatsappEn = {
   locationLabel: 'Location',
   noLocation: 'Pick a location',
   statusExperimental: 'Experimental data',
+  statusDistrict: 'District history (SIAP)',
   statusUnavailable: 'Data unavailable',
   notUnderstood: 'I did not quite understand. You can tap one of the answers or write it another way.',
   typing: 'YoliA is typing…',

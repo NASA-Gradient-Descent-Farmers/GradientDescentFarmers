@@ -107,6 +107,7 @@ export const whatsappEs = {
   noLocation: 'Elige una ubicación',
   statusRotations: 'Resultados experimentales de rotación',
   statusExperimental: 'Datos experimentales',
+  statusDistrict: 'Historial del distrito (SIAP)',
   statusUnavailable: 'Datos no disponibles',
   notUnderstood: 'No te entendí bien. Puedes tocar una de las respuestas o escribirla de otra forma.',
   typing: 'YoliA está escribiendo…',

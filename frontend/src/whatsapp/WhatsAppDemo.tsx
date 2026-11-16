@@ -126,6 +126,8 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
   const [draft, setDraft] = useState('')
   const [typing, setTyping] = useState(false)
   const [location, setLocation] = useState<DemoLocationId | null>(null)
+  /** A place handed over from /campo that is not a demo place: its name goes where a demo place's coordinates would. */
+  const [nationalLabel, setNationalLabel] = useState<string | null>(null)
   const chat = useRef<ChatState>(EMPTY_CHAT)
   const busy = useRef(false)
   const generation = useRef(0)
@@ -145,6 +147,7 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
   const begin = useCallback(async () => {
     const mine = ++generation.current
     chat.current = EMPTY_CHAT
+    setNationalLabel(null)
     busy.current = true
     setLocation(null)
     setMessages([])
@@ -179,7 +182,10 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
           add('user', { text })
           chat.current = await converse(text, chat.current, envRef.current, { typing: (on) => mine === generation.current && setTyping(on), show: (bubble) => add('bot', bubble), wait: sleep, alive: () => mine === generation.current }, typingMs)
         }
-        if (mine === generation.current) setLocation(chat.current.location)
+        if (mine === generation.current) {
+          setLocation(chat.current.location)
+          setNationalLabel(chat.current.national && !chat.current.location ? chat.current.national.label : null)
+        }
       }
     } finally {
       if (mine === generation.current) {
@@ -206,7 +212,10 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
       add('user', { text })
       try {
         chat.current = await converse(text, chat.current, env, { typing: (on) => mine === generation.current && setTyping(on), show: (bubble) => add('bot', bubble), wait: sleep, alive: () => mine === generation.current }, typingMs)
-        if (mine === generation.current) setLocation(chat.current.location)
+        if (mine === generation.current) {
+          setLocation(chat.current.location)
+          setNationalLabel(chat.current.national && !chat.current.location ? chat.current.national.label : null)
+        }
       } finally {
         if (mine === generation.current) busy.current = false
       }
@@ -269,7 +278,7 @@ export function WhatsAppChat({ data, rotations, environment, district, narrate, 
             </button>
           ))}
           <p className={`wa-place-status${picked && !pickedKind ? ' none' : ''}`}>
-            {picked ? `${picked.latitude}, ${picked.longitude} · ${t(pickedKind === 'rotations' ? 'whatsapp.statusRotations' : pickedKind === 'experimental' ? 'whatsapp.statusExperimental' : 'whatsapp.statusUnavailable')}` : t('whatsapp.noLocation')}
+            {!picked && nationalLabel ? `${nationalLabel} · ${t('whatsapp.statusDistrict')}` : picked ? `${picked.latitude}, ${picked.longitude} · ${t(pickedKind === 'rotations' ? 'whatsapp.statusRotations' : pickedKind === 'experimental' ? 'whatsapp.statusExperimental' : 'whatsapp.statusUnavailable')}` : t('whatsapp.noLocation')}
           </p>
         </div>
 

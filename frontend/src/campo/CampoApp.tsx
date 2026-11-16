@@ -38,6 +38,7 @@ const STORAGE_KEY = 'yolia-campo'
 const GOALS: (PriorityId | null)[] = ['ingreso', 'riesgo', 'agua', 'suelo', null]
 /** A claimed income gap this large held in 98% of held-out tests (resources/district_backtest). */
 const BIG_GAP = 5000
+const SOLID = ['alta', 'media']
 
 type Step = 'place' | 'water' | 'crop' | 'goal' | 'answer'
 
@@ -514,9 +515,11 @@ function Answer({ place, district, agua, option, prioridad, size, onSize, onEdit
   }
   const { result } = answer
   const current = currentOf(result)
-  // "Earn more": the engine's income score saturates at 40,000 MXN/ha (scoring.SCALES), so irrigated options all score 100
+  // "Earn more": only options whose income rests on recorded district yields (evidence alta/media); a figure built on an
+  // assumed yield (milpa's beans and squash, a crop barely grown here) is never the headline pick.
+  // The engine's income score saturates at 40,000 MXN/ha (scoring.SCALES), so irrigated options all score 100
   // and it cannot rank them; here the suggestion is the alternative that recorded the most income in the district.
-  const byIncome = prioridad === 'ingreso' ? [...alternativesOf(result)].filter((r) => r.vs_actual_ingreso && !r.adopcion.condicional).sort((a, b) => b.vs_actual_ingreso!.media - a.vs_actual_ingreso!.media)[0] : undefined
+  const byIncome = prioridad === 'ingreso' ? [...alternativesOf(result)].filter((r) => r.vs_actual_ingreso && !r.adopcion.condicional && SOLID.includes(r.indicadores.ingreso?.evidencia ?? 'baja')).sort((a, b) => b.vs_actual_ingreso!.media - a.vs_actual_ingreso!.media)[0] : undefined
   const best = byIncome ?? bestAlternative(result)
   const others = alternativesOf(result).filter((r) => r !== best)
   const sell: SellContext = { agua, state: place.state, size, onSize, ask: false, centres, point: place.point, municipality: place.municipality }
