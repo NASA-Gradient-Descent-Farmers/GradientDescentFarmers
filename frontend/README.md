@@ -129,10 +129,12 @@ then one answer card:
 scale and saturates for irrigated districts, so it cannot rank them (see "Open issues" in
 gradientdescentfarmers/model_builder/rotations/README.md).
 
-Data: any municipality maps to its district through `public/data/district/national/index.json` (2,095 of 2,463
-municipalities have a district with enough SIAP data); the engine's answers for 187 districts are precomputed there by
-`web_export_national.py`. Near the three demo points the richer demo answers are used. Answers are saved on the phone
-under `yolia-campo`.
+Data: answers are computed live by the district engine on Cloud Run (deploy/README.md): the municipality (by name, or
+the closest one to the phone's position) is looked up with `GET /district`, which also lists the district's main crops,
+and every answer is a `POST /compare` (1-3 s), on the latest monthly panel. Near the three demo points the precomputed
+demo answers are used instead (they work offline, in English, and come with the WOFOST simulation). The farmer's answers
+are saved on the phone under `yolia-campo`. Engine text from live answers is in Spanish; only strings already in
+`public/data/i18n/en.json` show in English.
 
 ## Two engines: WOFOST simulation and SIAP district history
 
