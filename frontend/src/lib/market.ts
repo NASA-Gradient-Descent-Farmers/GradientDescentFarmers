@@ -164,7 +164,8 @@ export function sellSentences(lines: SellLine[], t: T, fmt: Fmt): string[] {
 
 /** The nearest collection centres as sentences: only when a guarantee price is in play and the directory is loaded. */
 export function nearestSentences(near: NearCentre[], downloaded: string | null, t: T, fmt: Fmt): string[] {
-  if (!near.length) return []
+  // the directory is loaded but has no centre in the farmer's state (Sinaloa and Sonora, for one)
+  if (!near.length) return downloaded ? [t('campo.answer.sell.nearestNone', { date: downloaded })] : []
   const place = (c: NearCentre) => [c.locality, c.municipality].filter((x, i, all) => x && all.indexOf(x) === i).join(', ')
   const title = (x: string) => (x === x.toUpperCase() ? x.toLowerCase().replace(/(^|\s)(\p{L})/gu, (_, sp: string, ch: string) => sp + ch.toUpperCase()) : x)
   const name = (c: NearCentre) => title(c.name.replace(/^\d+\s+/, '')).replace(/^Ca\s+/, 'Centro de acopio ')

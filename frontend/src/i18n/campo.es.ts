@@ -55,6 +55,7 @@ export const campoEs = {
       marketPrices: 'En tu distrito: {list}.',
       nearest: 'Centro de acopio registrado más cercano en tu estado: {name} ({place}), a unos {km} km en línea recta. Dirección: {address}.',
       nearestSame: 'Hay un centro de acopio registrado en tu municipio: {name} ({place}). Dirección: {address}.',
+      nearestNone: 'El directorio oficial de centros de acopio (descargado el {date}) no tiene centros en tu estado; pregunta en tu CADER o DDR si abrirán alguno este ciclo.',
       nearestNote: 'Directorio oficial descargado el {date}. La ubicación es aproximada (por municipio) y el directorio no dice qué grano recibe cada centro ni si ya abrió: confírmalo antes de llevar tu cosecha.',
       centres: 'Lista oficial de centros de acopio y fechas',
       sniim: 'Precios del SNIIM',

@@ -55,6 +55,7 @@ export const campoEn = {
       marketPrices: 'In your district: {list}.',
       nearest: 'Nearest registered collection centre in your state: {name} ({place}), about {km} km in a straight line. Address: {address}.',
       nearestSame: 'There is a registered collection centre in your municipality: {name} ({place}). Address: {address}.',
+      nearestNone: 'The official directory of collection centres (downloaded on {date}) lists none in your state; ask your local agricultural office (CADER or DDR) whether one will open this cycle.',
       nearestNote: 'Official directory downloaded on {date}. Locations are approximate (by municipality), and the directory does not say which grain each centre takes or whether it is open: confirm before hauling your harvest.',
       centres: 'Official list of collection centres and dates',
       sniim: 'SNIIM prices',

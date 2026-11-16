@@ -43,6 +43,20 @@ describe('collection centres', () => {
     expect(nearestSentences(same, null, t, makeFormat('es'))[0]).toMatch(/en tu municipio/)
   })
 
+  it('says so when the directory has no centre in the farmer\'s state', () => {
+    expect(nearestSentences([], '2026-11-15', t, makeFormat('es'))[0]).toMatch(/no tiene centros en tu estado/)
+    expect(nearestSentences([], null, t, makeFormat('es'))).toEqual([])
+  })
+
+  it('the full directory: every centre placed, in the states the program runs', () => {
+    const full = centresOf(JSON.parse(readFileSync(new URL('../../public/data/acopio.json', import.meta.url), 'utf8')) as AcopioFile)
+    expect(full.length).toBeGreaterThan(400)
+    expect(full.every((c) => c.point)).toBe(true)
+    expect(nearestCentres(full, { lat: 24.8, lon: -107.4 }, 'Sinaloa')).toEqual([])
+    // Tlaxco, Tlaxcala has a centre in the municipality
+    expect(nearestCentres(full, { lat: 19.61, lon: -98.12 }, 'Tlaxcala', 'Tlaxco', 1)[0]).toMatchObject({ municipality: 'Tlaxco', sameMunicipality: true })
+  })
+
   it('without the directory file there is simply nothing to say', async () => {
     resetCentres()
     const missing = (async () => new Response('not found', { status: 404 })) as typeof fetch

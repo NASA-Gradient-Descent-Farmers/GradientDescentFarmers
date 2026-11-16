@@ -37,9 +37,19 @@ for (const [state, municipality, lat, lon] of municipios) {
   byState.get(key).places.set(fold(municipality), { municipality, lat, lon })
 }
 
+// names the 2018 catalogue writes differently, and municipalities created since (placed at the one they split from)
+const ALIASES = {
+  'puebla|santa rita tlahuapan': 'Tlahuapan',
+  'morelos|xoxocotla': 'Puente de Ixtla',
+  'guerrero|san nicolas': 'Cuajinicuilapa',
+  'campeche|dzitbalche': 'Calkiní',
+}
+
 const rows = parseCsv(decode(readFileSync(input)))
+// the export marks its line wraps with "; " ("Michoacán De; Ocampo"): they become spaces
+const unwrap = (text) => text.replace(/\s*;\s*/g, ' ').replace(/\s+/g, ' ').trim()
 const pick = (row, ...names) => {
-  for (const name of names) for (const key of Object.keys(row)) if (fold(key) === fold(name)) return (row[key] ?? '').trim()
+  for (const name of names) for (const key of Object.keys(row)) if (fold(key) === fold(name)) return unwrap(row[key] ?? '')
   return ''
 }
 const centres = []
@@ -50,7 +60,8 @@ for (const row of rows) {
   const stateName = code && STATES[Number(code) - 1] ? STATES[Number(code) - 1] : pick(row, 'estado')
   const state = byState.get(stateKey(stateName))
   const municipality = pick(row, 'municipio')
-  const found = state?.places.get(fold(municipality)) ?? [...(state?.places.values() ?? [])].find((p) => fold(p.municipality).startsWith(fold(municipality)) || fold(municipality).startsWith(fold(p.municipality)))
+  const alias = ALIASES[`${stateKey(stateName)}|${fold(municipality)}`]
+  const found = state?.places.get(fold(alias ?? municipality)) ?? [...(state?.places.values() ?? [])].find((p) => fold(p.municipality).startsWith(fold(municipality)) || fold(municipality).startsWith(fold(p.municipality)))
   if (!found) missing.push(`${pick(row, 'estado')} / ${municipality} (${clave})`)
   centres.push([state?.name ?? pick(row, 'estado'), found?.municipality ?? municipality, pick(row, 'localidad'), pick(row, 'nombre_centro_acopio', 'nombre del centro de acopio'), pick(row, 'direccion', 'dirección'), found?.lat ?? null, found?.lon ?? null, clave])
 }

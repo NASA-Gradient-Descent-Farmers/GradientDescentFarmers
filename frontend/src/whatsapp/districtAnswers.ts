@@ -148,7 +148,7 @@ function sell(answer: DistrictAnswer, ctx: DistrictCtx): BotBubble[] {
   const unknownSize = guarantee && !ctx.size
   return [
     { text: [bold(t('campo.answer.sell.title')), bullets(sellSentences(lines, t, ctx.fmt))].join('\n') },
-    ...(guarantee && ctx.near?.length ? [{ text: nearestSentences(ctx.near, ctx.downloaded ?? null, t, ctx.fmt).join('\n') }] : []),
+    ...(guarantee && (ctx.near?.length || ctx.downloaded) ? [{ text: nearestSentences(ctx.near ?? [], ctx.downloaded ?? null, t, ctx.fmt).join('\n') }] : []),
     { text: [guarantee ? t('whatsapp.district.sellWhere', { year: 2026 }) : t('whatsapp.district.sellSniim'), unknownSize ? t('whatsapp.district.sellAskSize') : ''].filter(Boolean).join('\n') },
   ]
 }
