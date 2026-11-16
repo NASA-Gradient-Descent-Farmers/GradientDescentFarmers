@@ -1,6 +1,6 @@
 // "Where to sell": crops and prices read from the engine's evidence, the guarantee-price rules, and the eligibility check.
 import { describe, expect, it } from 'vitest'
-import type { DistrictRotation } from '../lib/district.ts'
+import type { DistrictRotation } from './district.ts'
 import { cropPrices, needsSize, programOf, sellLines } from './market.ts'
 
 const line = (crop: string, season: string, price?: number) => ({

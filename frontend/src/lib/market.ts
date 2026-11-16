@@ -1,4 +1,4 @@
-import type { DistrictRotation, WaterRegime } from '../lib/district.ts'
+import type { DistrictRotation, WaterRegime } from './district.ts'
 
 // "Where to sell": for each crop in a rotation, the official buyer and price when there is one, else where wholesale
 // prices are published. Maíz and frijol from small producers have a federal guarantee price (Acopio para el Bienestar,
@@ -116,3 +116,64 @@ export function sellLines(rotation: DistrictRotation, agua: WaterRegime, state: 
 /** Whether asking the farm size changes anything for these rotations. */
 export const needsSize = (rotations: DistrictRotation[], agua: WaterRegime, state: string) =>
   rotations.some((r) => sellLines(r, agua, state, null).some((l) => l.kind === 'guarantee'))
+
+/** The size bucket of a farm given in hectares. */
+export const sizeOf = (hectares: number | null | undefined): FarmSize | null =>
+  hectares == null || !Number.isFinite(hectares) || hectares <= 0 ? null : hectares <= 5 ? 'hasta5' : hectares <= 30 ? 'hasta30' : 'mas30'
+
+/** The sell lines for several rotations at once (each crop once): what a chat says about the current and suggested crops. */
+export function sellLinesFor(rotations: DistrictRotation[], agua: WaterRegime, state: string, size: FarmSize | null): SellLine[] {
+  const merged = { tarjeta: { evidencia: rotations.flatMap((r) => r.tarjeta.evidencia) } } as unknown as DistrictRotation
+  return sellLines(merged, agua, state, size)
+}
+
+type T = (path: string, vars?: Record<string, string | number>) => string
+interface Fmt {
+  number: (value: number, digits?: number) => string
+}
+
+/** The sell lines as plain sentences (chat bubbles), in the farmer view's words. */
+export function sellSentences(lines: SellLine[], t: T, fmt: Fmt): string[] {
+  const money = (n: number) => fmt.number(Math.round(n))
+  return lines.map((l) => {
+    if (l.kind === 'market') {
+      const priced = l.crops.filter((c) => c.price != null)
+      return [
+        t('campo.answer.sell.market', { crops: l.crops.map((c) => c.crop.toLowerCase()).join(', ').replace(/^./, (c) => c.toUpperCase()) }),
+        priced.length ? t('campo.answer.sell.marketPrices', { list: priced.map((c) => `${c.crop.toLowerCase()} $${money(c.price!)}/t`).join(', ') }) : '',
+      ]
+        .filter(Boolean)
+        .join(' ')
+    }
+    const crop = t(`campo.answer.sell.crop.${l.program}`)
+    const parts = [
+      `*${crop.charAt(0).toUpperCase() + crop.slice(1)}:* ${t('campo.answer.sell.guarantee', { crop, price: money(l.price), maxT: l.maxT, maxTHa: fmt.number(l.maxTHa, l.maxTHa % 1 ? 1 : 0) })}`,
+      l.eligible === null ? t('campo.answer.sell.ifSize', { ha: l.maxHa }) : l.eligible ? t('campo.answer.sell.eligible') : t('campo.answer.sell.notEligible', { ha: l.maxHa }),
+    ]
+    if (l.districtPrice != null)
+      parts.push(
+        l.eligible === false
+          ? t('campo.answer.sell.districtOnly', { price: money(l.districtPrice) })
+          : t('campo.answer.sell.district', { price: money(l.districtPrice), diff: t(l.price >= l.districtPrice ? 'campo.answer.sell.above' : 'campo.answer.sell.below', { n: money(Math.abs(l.price - l.districtPrice)) }) }),
+      )
+    if (l.pigmented != null) parts.push(t('campo.answer.sell.pigmented', { price: money(l.pigmented) }))
+    return parts.join(' ')
+  })
+}
+
+/** The sell lines as facts for the language model (Spanish, the engines' figures only). */
+export function sellFacts(lines: SellLine[], fmt: Fmt): string[] {
+  const money = (n: number) => fmt.number(Math.round(n))
+  const out = lines.map((l) =>
+    l.kind === 'guarantee'
+      ? `Dónde vender ${l.program === 'maiz' ? 'maíz' : 'frijol'}: Alimentación para el Bienestar (Acopio para el Bienestar, reglas ${GUARANTEE.year}) compra a $${money(l.price)}/t a productores de hasta ${l.maxHa} ha con este régimen de agua, hasta ${fmt.number(l.maxTHa, l.maxTHa % 1 ? 1 : 0)} t por ha y ${l.maxT} t por ciclo` +
+        (l.eligible === null ? ' (no sabemos cuántas hectáreas siembra)' : l.eligible ? ' (con su superficie califica)' : ' (con su superficie no califica)') +
+        (l.districtPrice != null ? `; en su distrito el precio medio rural fue $${money(l.districtPrice)}/t.` : '.') +
+        (l.pigmented != null ? ` Maíz nativo o criollo pigmentado: $${money(l.pigmented)}/t en este estado.` : '')
+      : `Dónde vender ${l.crops.map((c) => c.crop.toLowerCase()).join(', ')}: sin precio de garantía; los precios al mayoreo de las centrales de abasto los publica el SNIIM (Secretaría de Economía); en la parcela suelen pagar menos.` +
+        (l.crops.some((c) => c.price != null) ? ` Precio medio rural en su distrito: ${l.crops.filter((c) => c.price != null).map((c) => `${c.crop.toLowerCase()} $${money(c.price!)}/t`).join(', ')}.` : ''),
+  )
+  if (lines.some((l) => l.kind === 'guarantee'))
+    out.push('Los centros de acopio y sus fechas se publican en gob.mx/alimentacionparaelbienestar; cambian cada ciclo y no todos abren: hay que confirmarlo en el CADER o DDR. No tenemos la lista de compradores privados.')
+  return out
+}

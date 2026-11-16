@@ -22,6 +22,7 @@ import { locatedNote, rotationBubbles, type RotationTopic } from './rotationAnsw
 import { districtAnswerFor, type DistrictAnswer, type DistrictIndex, type DistrictInputs, type DistrictPlace, type PriorityId } from '../lib/district.ts'
 import type { Narrator } from '../llm/client.ts'
 import type { FollowUp } from '../llm/prompt.ts'
+import { sizeOf } from '../lib/market.ts'
 import { districtBubbles } from './districtAnswers.ts'
 import { availableFollowUps, DEFAULT_FOLLOW_UPS, followUpLabel, narrateRequest, writtenSummary } from './summary.ts'
 
@@ -463,12 +464,18 @@ _${env.t('whatsapp.district.byModel')}_` : writtenSummary(place, answer, rotatio
   return withFollowUps({ state, bubbles: [{ text }], showsResults: true }, answer, env, [], narrated?.followUps)
 }
 
-const FOLLOW_UP_IDS: readonly FollowUp[] = ['wofost', 'district', 'why', 'risks', 'money', 'trends', 'water', 'trust', 'rotation', 'priority', 'regime']
+const FOLLOW_UP_IDS: readonly FollowUp[] = ['wofost', 'district', 'why', 'risks', 'money', 'trends', 'water', 'trust', 'rotation', 'priority', 'regime', 'sell']
+
+/** A farm size with its unit: "4 hectareas", "2.5 ha", "10 hectares" (folded text). */
+const STATED_HECTARES = /\b(\d+(?:\.\d+)?) ?(?:ha|has|hectareas?|hectares?)\b/
+
+/** "¿Dónde vendo?", "¿quién me compra el frijol?", "centro de acopio", "precio de garantía", "where can I sell". */
+const SELL_WORDS = /\b(vend[oea]\w*|comprador\w*|me compra\w*|compran|acopio|precio de garantia|precios de garantia|sell|selling|buyers?|collection cent(?:re|er)s?|guarantee price)\b/
 
 /** The follow-up a message is (a tapped button, or the same words typed), or null. */
 export function followUpOf(text: string, t: T): FollowUp | null {
   const q = fold(text)
-  return FOLLOW_UP_IDS.find((id) => fold(followUpLabel(id, t)) === q) ?? null
+  return FOLLOW_UP_IDS.find((id) => fold(followUpLabel(id, t)) === q) ?? (SELL_WORDS.test(q) ? 'sell' : null)
 }
 
 const PRIORITY_ORDER: PriorityId[] = ['ingreso', 'riesgo', 'agua', 'suelo', 'erosion', 'plagas', 'forraje']
@@ -513,7 +520,7 @@ async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation,
   const answer = await districtFor(state, place, env)
   const rotations = env.rotations?.[place.id]
   const base: ChatState = { ...state, pending: null, focus: null }
-  const ctx = { t: env.t, fmt: env.fmt }
+  const ctx = { t: env.t, fmt: env.fmt, size: sizeOf(state.situation.hectares) }
   const wofost = (topic: RotationTopic) => (rotations ? rotationBubbles(topic, rotations, { ...env, observed: env.environment?.[place.id] ?? null, goal: state.situation.goal ?? null, water: state.situation.water ?? null }) : [unavailableBubble(place, env.t)])
   const none = [{ text: env.t('whatsapp.district.districtNone') }]
   let bubbles: BotBubble[]
@@ -529,6 +536,9 @@ async function followUpTurn(id: FollowUp, state: ChatState, place: DemoLocation,
     case 'trends':
     case 'water':
       bubbles = answer ? districtBubbles(id, answer, ctx) : none
+      break
+    case 'sell':
+      bubbles = answer ? districtBubbles('sell', answer, ctx) : none
       break
     case 'money':
       bubbles = [...(rotations ? wofost('money') : []), ...(answer ? districtBubbles('money', answer, ctx) : [])]
@@ -599,6 +609,12 @@ async function districtReply(text: string, state: ChatState, env: Env): Promise<
   if (place && state.pending && DISTRICT_QUESTIONS.includes(state.pending)) {
     const inputs = readDistrictAnswer(state.pending as DistrictQuestion, text, state, place, env)
     if (inputs) return summaryTurn({ ...state, pending: null, focus: null, district: inputs }, place, env, 'summary', '')
+  }
+  // a farm size said in passing ("siembro 4 hectáreas") is kept, and answers whether a guarantee price applies
+  const size = state.pending === 'hectares' ? null : STATED_HECTARES.exec(text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/(\d),(\d)/g, '$1.$2'))
+  if (size && place && !followUpOf(text.replace(STATED_HECTARES, ''), env.t)) {
+    const hectares = Number(size[1])
+    if (validHectares(hectares)) return followUpTurn('sell', { ...state, situation: { ...state.situation, hectares } }, place, env)
   }
   const id = followUpOf(text, env.t)
   if (!id && national) {

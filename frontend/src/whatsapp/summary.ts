@@ -56,7 +56,7 @@ export function availableFollowUps(answer: DistrictAnswer | null, rotations: Rot
   const out: FollowUp[] = []
   if (rotations) out.push('wofost')
   if (answer) {
-    out.push('district', 'why', 'risks', 'money', 'trends')
+    out.push('district', 'why', 'risks', 'money', 'sell', 'trends')
     if (answer.result.agua_region) out.push('water')
   }
   out.push('trust')
@@ -65,7 +65,7 @@ export function availableFollowUps(answer: DistrictAnswer | null, rotations: Rot
 }
 
 /** The default buttons after a summary, in order of usefulness, when no model chose them. */
-export const DEFAULT_FOLLOW_UPS: FollowUp[] = ['wofost', 'why', 'risks', 'priority', 'rotation', 'money']
+export const DEFAULT_FOLLOW_UPS: FollowUp[] = ['wofost', 'why', 'sell', 'risks', 'priority', 'rotation', 'money']
 
 export const followUpLabel = (id: FollowUp, t: T) => t(`whatsapp.district.followUps.${id}`)
 

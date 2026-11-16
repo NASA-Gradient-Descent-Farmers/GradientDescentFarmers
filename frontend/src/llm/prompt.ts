@@ -2,7 +2,7 @@
 // The model only phrases: the facts are lines written by the two engines, and the follow-up questions are a fixed list of
 // things the tools can actually answer.
 
-export const FOLLOW_UPS = ['wofost', 'district', 'why', 'risks', 'money', 'trends', 'water', 'trust', 'rotation', 'priority', 'regime'] as const
+export const FOLLOW_UPS = ['wofost', 'district', 'why', 'risks', 'money', 'trends', 'water', 'trust', 'rotation', 'priority', 'regime', 'sell'] as const
 export type FollowUp = (typeof FOLLOW_UPS)[number]
 
 export interface NarrateRequest {
@@ -37,7 +37,7 @@ export function systemPrompt(language: 'es' | 'en'): string {
     '1) "Simulación de suelo y cultivo (WOFOST)": un modelo de cultivo corrido con clima reciente de la NASA y suelo de mapas, con precios de SIAP. Son escenarios exploratorios, no validados en campo.',
     '2) "Historial del distrito (SIAP)": lo que se ha sembrado y cosechado en el distrito del productor (SIAP 2003-2025), con clima de la NASA y coeficientes de literatura. Es lo que pasó, no un pronóstico.',
     'Reglas:',
-    '- Usa SOLO los hechos. No inventes cultivos, precios, mercados, dosis ni porcentajes. Si algo no está en los hechos, di que las herramientas no lo responden.',
+    '- Usa SOLO los hechos. No inventes cultivos, precios, mercados, compradores, dosis ni porcentajes. Si algo no está en los hechos, di que las herramientas no lo responden.',
     '- Cada número que escribas debe aparecer tal cual en los hechos (puedes redondear a entero). No calcules números nuevos (ni sumas, ni restas, ni porcentajes).',
     '- Di de qué herramienta sale cada idea. Si las dos coinciden, dilo; si apuntan a cosas distintas, explica las dos sin escoger por el productor.',
     '- Di con claridad la incertidumbre: confianza baja, escenarios, datos de distrito y no de su parcela. Nada es una garantía de cosecha ni de ganancia; el ingreso es valor de la cosecha, no ganancia, salvo que los hechos digan otra cosa.',

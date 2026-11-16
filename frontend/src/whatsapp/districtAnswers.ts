@@ -6,6 +6,7 @@
 import type { Format } from '../lib/format.ts'
 import { alternativesOf, bestAlternative, currentOf, incomeDelta, splitName, type DistrictAnswer, type DistrictRotation } from '../lib/district.ts'
 import type { BotBubble } from './engine.ts'
+import { sellFacts, sellLinesFor, sellSentences, type FarmSize } from '../lib/market.ts'
 
 type T = (path: string, vars?: Record<string, string | number>) => string
 
@@ -14,9 +15,11 @@ export interface DistrictCtx {
   fmt: Format
   /** Agricultor: fewer lines, no technical words. */
   simple?: boolean
+  /** Farm size, when the farmer said it: whether a guarantee price applies. */
+  size?: FarmSize | null
 }
 
-export type DistrictTopic = 'summary' | 'why' | 'risks' | 'trends' | 'water' | 'place' | 'money'
+export type DistrictTopic = 'summary' | 'why' | 'risks' | 'trends' | 'water' | 'place' | 'money' | 'sell'
 
 const bold = (text: string) => `*${text}*`
 const bullets = (lines: string[]) => lines.map((line) => `• ${line}`).join('\n')
@@ -128,6 +131,23 @@ function money(answer: DistrictAnswer, ctx: DistrictCtx): BotBubble[] {
   return [{ text: [bold(t('district.moneyHead')), bullets(lines), t('district.moneyNote'), answer.result.costos.nota].join('\n') }]
 }
 
+/** The rotations a sell answer covers: what the farmer grows and the suggested alternative. */
+const sellRotations = (answer: DistrictAnswer) => [currentOf(answer.result), ...[bestAlternative(answer.result)].filter((r): r is DistrictRotation => !!r)]
+
+/** Where to sell the current and suggested crops: guarantee prices and eligibility, else where wholesale prices are. */
+function sell(answer: DistrictAnswer, ctx: DistrictCtx): BotBubble[] {
+  const { t } = ctx
+  const { lugar } = answer.result
+  const lines = sellLinesFor(sellRotations(answer), lugar.agua, lugar.estado, ctx.size ?? null)
+  if (!lines.length) return [{ text: t('whatsapp.district.sellNone') }]
+  const guarantee = lines.some((l) => l.kind === 'guarantee')
+  const unknownSize = guarantee && !ctx.size
+  return [
+    { text: [bold(t('campo.answer.sell.title')), bullets(sellSentences(lines, t, ctx.fmt))].join('\n') },
+    { text: [guarantee ? t('whatsapp.district.sellWhere', { year: 2026 }) : t('whatsapp.district.sellSniim'), unknownSize ? t('whatsapp.district.sellAskSize') : ''].filter(Boolean).join('\n') },
+  ]
+}
+
 /** The bubbles that answer one topic from the district engine's result. */
 export function districtBubbles(topic: DistrictTopic, answer: DistrictAnswer, ctx: DistrictCtx): BotBubble[] {
   const { result } = answer
@@ -140,6 +160,8 @@ export function districtBubbles(topic: DistrictTopic, answer: DistrictAnswer, ct
       return risks(answer, ctx)
     case 'money':
       return money(answer, ctx)
+    case 'sell':
+      return sell(answer, ctx)
     case 'trends':
       return [{ text: [bold(ctx.t('district.trendsHead')), ...result.tendencias.lineas].join('\n') }]
     case 'water':
@@ -174,6 +196,7 @@ export function districtFacts(answer: DistrictAnswer, ctx: Pick<DistrictCtx, 'fm
   if (result.nota_opciones) lines.push(result.nota_opciones)
   lines.push(...result.tendencias.lineas.slice(0, 4))
   if (result.agua_region?.lineas[0]) lines.push(result.agua_region.lineas[0])
+  lines.push(...sellFacts(sellLinesFor(sellRotations(answer), result.lugar.agua, result.lugar.estado, null), ctx.fmt))
   if (answer.notUsed.length > 0) lines.push(`Datos del agricultor que esta respuesta no usó (respuesta precalculada): ${answer.notUsed.join(', ')}.`)
   lines.push(result.aviso)
   return lines

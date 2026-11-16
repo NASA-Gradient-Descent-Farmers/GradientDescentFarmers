@@ -143,6 +143,10 @@ export const whatsappEn = {
     askRegime: 'Is your field irrigated or rainfed?',
     regimeRiego: 'Irrigated',
     regimeTemporal: 'Rainfed',
+    sellNone: 'With your district\'s data we found no crops to tell you where to sell.',
+    sellWhere: 'Collection centres and dates: gob.mx/alimentacionparaelbienestar. {year} rules: they change every year and not every centre opens; confirm with your local agricultural office (CADER or DDR) before planting. We do not have a list of private buyers in your area.',
+    sellSniim: 'Wholesale prices: economia-sniim.gob.mx. We do not have a list of buyers in your area; ask your local agricultural office (CADER or DDR).',
+    sellAskSize: 'Tell me how many hectares you farm (for example "I farm 4 hectares") and I will tell you whether you qualify.',
     followUps: {
       wofost: 'See the crop model rotations',
       district: 'See the district history',
@@ -155,6 +159,7 @@ export const whatsappEn = {
       rotation: 'Change my current rotation',
       priority: 'Change what matters most',
       regime: 'Change irrigated or rainfed',
+      sell: 'Where to sell?',
     },
   },
   openSite: 'Open the YoliA site',

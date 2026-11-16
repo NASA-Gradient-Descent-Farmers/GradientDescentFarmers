@@ -114,7 +114,27 @@ describe('the chat with both engines', () => {
     expect(summary.text).toMatch(/Modelo de suelo y cultivo \(WOFOST\)/)
     expect(summary.text).toMatch(/Historial del distrito Cajeme \(SIAP\)/)
     expect(summary.text).toMatch(/no una garantía/)
-    expect(summary.options!.map((o) => o.label)).toEqual(['Ver las rotaciones del modelo de cultivo', '¿Por qué esa opción?', '¿Qué riesgos tiene?', 'Cambiar lo que más me importa'])
+    expect(summary.options!.map((o) => o.label)).toEqual(['Ver las rotaciones del modelo de cultivo', '¿Por qué esa opción?', '¿Dónde vender?', '¿Qué riesgos tiene?'])
+  })
+
+  it('says where to sell: the guarantee price and who qualifies, then the farm size typed in passing', async () => {
+    const env = withDistrict()
+    const asked = await talk(env, 'Sinaloa', '¿Qué me conviene sembrar?', '¿Dónde vender?')
+    const text = flat(asked.bubbles)
+    expect(text).toMatch(/¿Dónde vender\?/)
+    expect(text).toMatch(/gob\.mx\/alimentacionparaelbienestar/)
+    expect(text).toMatch(/cuántas hectáreas/)
+    const typed = await talk(env, 'Sinaloa', '¿Dónde puedo vender mi cosecha?')
+    expect(flat(typed.bubbles)).toMatch(/¿Dónde vender\?/)
+    const sized = await reply('siembro 2.5 hectáreas', asked.state, env)
+    expect(sized.state.situation.hectares).toBe(2.5)
+    expect(flat(sized.bubbles)).not.toMatch(/cuántas hectáreas/)
+  })
+
+  it('gives the model the sell facts, with only the engines\' figures', async () => {
+    const answer = await districtAnswer('sinaloa', index, {}, {}, '/', { fetcher: diskFetch })
+    const facts = districtFacts(answer!, { fmt })
+    expect(facts.some((f) => f.startsWith('Dónde vender'))).toBe(true)
   })
 
   it('keeps the WOFOST answer word for word one tap away', async () => {

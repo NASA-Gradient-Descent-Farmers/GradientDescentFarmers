@@ -24,7 +24,7 @@ import {
 import { loadRotations, type Rotations } from '../lib/rotations.ts'
 import { DEMO_HREF, WA_HANDOFF_KEY } from '../whatsapp/route.ts'
 import { regimeOf, wofostPick } from '../whatsapp/summary.ts'
-import { needsSize, SELL_LINKS, sellLines, GUARANTEE, type FarmSize } from './market.ts'
+import { needsSize, SELL_LINKS, sellLines, GUARANTEE, type FarmSize } from '../lib/market.ts'
 import { campoApi, liveDistrict, loadMunicipioRows, loadNationalIndex, nationalDistrictPlace, placeByName, placeByPoint, type FarmPlace, type MunicipioRow, type NationalIndex } from './national.ts'
 import '../theme.css'
 import './campo.css'

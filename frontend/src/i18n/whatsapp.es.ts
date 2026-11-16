@@ -144,6 +144,10 @@ export const whatsappEs = {
     askRegime: '¿Tu parcela es de riego o de temporal?',
     regimeRiego: 'Riego',
     regimeTemporal: 'Temporal',
+    sellNone: 'Con los datos de tu distrito no encontramos cultivos para decirte dónde venderlos.',
+    sellWhere: 'Centros de acopio y fechas: gob.mx/alimentacionparaelbienestar. Reglas {year}: cambian cada año y no todos los centros abren; confírmalo en tu CADER o DDR antes de sembrar. No tenemos la lista de compradores privados de tu zona.',
+    sellSniim: 'Precios al mayoreo: economia-sniim.gob.mx. No tenemos la lista de compradores de tu zona; pregunta en tu CADER o DDR.',
+    sellAskSize: 'Si me dices cuántas hectáreas siembras (por ejemplo "siembro 4 hectáreas"), te digo si calificas.',
     followUps: {
       wofost: 'Ver las rotaciones del modelo de cultivo',
       district: 'Ver el historial del distrito',
@@ -156,6 +160,7 @@ export const whatsappEs = {
       rotation: 'Cambiar mi rotación actual',
       priority: 'Cambiar lo que más me importa',
       regime: 'Cambiar riego o temporal',
+      sell: '¿Dónde vender?',
     },
   },
   openSite: 'Abrir el sitio de YoliA',
